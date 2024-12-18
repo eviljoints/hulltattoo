@@ -10,7 +10,7 @@ import {
   FaUserAlt,
   FaCalendarAlt,
   FaSignInAlt,
-  FaInfoCircle, // Import FaInfoCircle for Aftercare link
+  FaFirstAid,
 } from "react-icons/fa";
 import {
   Menu,
@@ -69,7 +69,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             <a className="navbar-link">Aftercare</a>
           </Link>
 
-          {/* Artists Dropdown */}
+          {/* Artists Dropdown (Desktop) */}
           <Menu>
             <MenuButton
               as={Button}
@@ -85,22 +85,35 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
               bg="black"
               border="1px solid #ff007f"
               boxShadow="0 0 10px #ff007f, 0 0 15px #00d4ff"
+              color="white"
             >
-              <MenuItem>
+              <MenuItem
+                bg="transparent"
+                _hover={{ bg: "rgba(255, 0, 127, 0.2)" }}
+                color="white"
+              >
                 <Link href="/mike" passHref>
                   <a style={{ textDecoration: "none", color: "inherit" }}>
                     Mike
                   </a>
                 </Link>
               </MenuItem>
-              <MenuItem>
+              <MenuItem
+                bg="transparent"
+                _hover={{ bg: "rgba(255, 0, 127, 0.2)" }}
+                color="white"
+              >
                 <Link href="/poppy" passHref>
                   <a style={{ textDecoration: "none", color: "inherit" }}>
                     Poppy
                   </a>
                 </Link>
               </MenuItem>
-              <MenuItem>
+              <MenuItem
+                bg="transparent"
+                _hover={{ bg: "rgba(255, 0, 127, 0.2)" }}
+                color="white"
+              >
                 <Link href="/harley" passHref>
                   <a style={{ textDecoration: "none", color: "inherit" }}>
                     Harley
@@ -111,8 +124,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           </Menu>
 
           {/* Artist Login Button (if applicable) */}
-          {/* You can uncomment and customize the following block if you have an Artist Login feature */}
-          {/*
+          {/* Uncomment and customize if needed
           <Link href="/login" passHref>
             <a className="navbar-link">
               <FaSignInAlt style={{ marginRight: "8px" }} />
@@ -166,7 +178,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         {/* Aftercare Link for Mobile */}
         <Link href="/aftercare" passHref>
           <a className="navbar-icon" aria-label="Aftercare">
-            <FaInfoCircle /> {/* Icon representing Aftercare */}
+            <FaFirstAid /> {/* Icon representing Aftercare */}
           </a>
         </Link>
 
@@ -174,32 +186,47 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         <Menu>
           <MenuButton
             as={Button}
+            rightIcon={<ChevronDownIcon />}
             variant="ghost"
-            aria-label="Artists"
-            _hover={{ bg: "gray.700" }}
+            fontSize="lg"
+            fontWeight="semibold"
+            _hover={{ color: "#ff007f" }}
           >
-            <FaUserAlt />
+            Artists
           </MenuButton>
           <MenuList
             bg="black"
             border="1px solid #ff007f"
             boxShadow="0 0 10px #ff007f, 0 0 15px #00d4ff"
+            color="white"
           >
-            <MenuItem>
+            <MenuItem
+              bg="transparent"
+              _hover={{ bg: "rgba(255, 0, 127, 0.2)" }}
+              color="white"
+            >
               <Link href="/mike" passHref>
                 <a style={{ textDecoration: "none", color: "inherit" }}>
                   Mike
                 </a>
               </Link>
             </MenuItem>
-            <MenuItem>
+            <MenuItem
+              bg="transparent"
+              _hover={{ bg: "rgba(255, 0, 127, 0.2)" }}
+              color="white"
+            >
               <Link href="/poppy" passHref>
                 <a style={{ textDecoration: "none", color: "inherit" }}>
                   Poppy
                 </a>
               </Link>
             </MenuItem>
-            <MenuItem>
+            <MenuItem
+              bg="transparent"
+              _hover={{ bg: "rgba(255, 0, 127, 0.2)" }}
+              color="white"
+            >
               <Link href="/harley" passHref>
                 <a style={{ textDecoration: "none", color: "inherit" }}>
                   Harley
@@ -210,7 +237,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         </Menu>
 
         {/* Additional Mobile Icons (if needed) */}
-        {/* You can add more icons here, such as Calendar or Login */}
+        {/* Add more icons like Calendar or Login here */}
       </nav>
     </Box>
   );
