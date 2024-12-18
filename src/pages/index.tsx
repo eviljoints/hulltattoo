@@ -1,13 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Box, Grid, Spinner, Center } from "@chakra-ui/react";
 import MotionSection from "../components/MotionSection";
 import Head from "next/head";
 import ArtistCard from "../components/ArtistCard";
 import HomePageBackground from "../components/HomePageBackground";
 import TextCard from "../components/TextCard";
-import FindUs from "../components/FindUS"; // Import the FindUs component
+import FindUs from "../components/FindUS";
 import axios from "axios";
-import styles from "../components/TextCard.module.css"; // Import the CSS module for background lines
+import styles from "../components/TextCard.module.css";
 
 interface Stripe {
   left: string;
@@ -26,39 +26,25 @@ interface Artist {
   stripes: Stripe[];
 }
 
-const HomePage: React.FC = () => {
-  const [artists, setArtists] = useState<Artist[] | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
+interface HomePageProps {
+  artists: Artist[] | null;
+  error?: string;
+}
 
-  useEffect(() => {
-    const fetchArtists = async () => {
-      try {
-        const response = await axios.get("/api/artists");
-        setArtists(response.data.artists);
-        setLoading(false);
-      } catch (err) {
-        console.error(err);
-        setError("Failed to load artist data.");
-        setLoading(false);
-      }
-    };
-
-    fetchArtists();
-  }, []);
-
-  if (loading) {
-    return (
-      <Center minH="100vh">
-        <Spinner size="xl" color="#ff007f" />
-      </Center>
-    );
-  }
-
+const HomePage: React.FC<HomePageProps> = ({ artists, error }) => {
   if (error) {
     return (
       <Center minH="100vh">
         <Box color="red.500">{error}</Box>
+      </Center>
+    );
+  }
+
+  // If artists is null or empty, show a spinner just in case
+  if (!artists) {
+    return (
+      <Center minH="100vh">
+        <Spinner size="xl" color="#ff007f" />
       </Center>
     );
   }
@@ -76,7 +62,6 @@ const HomePage: React.FC = () => {
           content="Hull Tattoo Studio, Tattoo Artists, Realism Tattoo, Blackwork Tattoo, Anime Tattoo, Apprentice Tattoo Artist, Professional Tattoo, Best Tattoo Studio"
         />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        {/* Open Graph Tags for Social Media */}
         <meta
           property="og:title"
           content="Hull Tattoo Studio | Professional Tattoo Artists"
@@ -90,7 +75,6 @@ const HomePage: React.FC = () => {
         <meta property="og:type" content="website" />
       </Head>
 
-      {/* Include the HomePageBackground component */}
       <HomePageBackground />
 
       <Box
@@ -101,21 +85,18 @@ const HomePage: React.FC = () => {
         p={8}
         px={{ base: 4, md: 8 }}
         minH="100vh"
-        bg="transparent" // Ensure background is transparent to show neon lines
+        bg="transparent"
       >
-        {/* Neon Diagonal Lines Background */}
         <Box className={styles.backgroundLines} />
 
-        {/* Main Content Box with Purple and Black Faded Background */}
         <Box
           bgGradient="radial(rgba(54, 39, 255, 0.6), rgba(128, 0, 128, 0.6), rgba(0, 0, 0, 0.6))"
           borderRadius="md"
           p={8}
           boxShadow="0 0 20px #9b5de5, 0 0 30px #f15bb5"
-          position="relative" // To ensure it sits above the background lines
-          zIndex="1" // Ensures content is above the background lines
+          position="relative"
+          zIndex="1"
         >
-          {/* Welcome Section */}
           <MotionSection
             initial={{ opacity: 0, y: 50 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -136,14 +117,12 @@ There is free parking very close to the studio and convenient bus stops providin
             />
           </MotionSection>
 
-          {/* Artists Section */}
           <MotionSection
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             transition={{ duration: 0.8, delay: 0.3 }}
             viewport={{ once: true }}
           >
-            {/* Artists TextCard */}
             <TextCard
               title="ARTISTS"
               subtitle=""
@@ -154,8 +133,7 @@ There is free parking very close to the studio and convenient bus stops providin
               ]}
             />
 
-            {/* Add spacing between the TextCard and Grid */}
-            <Box h={10} /> {/* Adds 40px of vertical space */}
+            <Box h={10} />
 
             <Grid
               templateColumns={{
@@ -164,32 +142,50 @@ There is free parking very close to the studio and convenient bus stops providin
               }}
               gap={10}
             >
-              {/* Render ArtistCard for each artist */}
-              {artists &&
-                artists.map((artist, index) => (
-                  <ArtistCard
-                    key={index}
-                    name={artist.name}
-                    role={artist.role}
-                    image={artist.image}
-                    gallery={artist.gallery}
-                    facebook={artist.facebook}
-                    instagram={artist.instagram}
-                    artsPage={artist.artsPage}
-                    stripes={artist.stripes}
-                  />
-                ))}
+              {artists.map((artist, index) => (
+                <ArtistCard
+                  key={index}
+                  name={artist.name}
+                  role={artist.role}
+                  image={artist.image}
+                  gallery={artist.gallery}
+                  facebook={artist.facebook}
+                  instagram={artist.instagram}
+                  artsPage={artist.artsPage}
+                  stripes={artist.stripes}
+                />
+              ))}
             </Grid>
           </MotionSection>
         </Box>
 
-        {/* Find Us Section */}
         <Box mt={16}>
           <FindUs />
         </Box>
       </Box>
     </>
   );
+};
+
+export const getStaticProps = async () => {
+  try {
+    // Adjust the API endpoint as needed
+    const response = await axios.get("https://hulltattoo.vercel.app/api/artists");
+    return {
+      props: {
+        artists: response.data.artists,
+      },
+      
+    };
+  } catch (err) {
+    console.error(err);
+    return {
+      props: {
+        artists: null,
+        error: "Failed to load artist data.",
+      },
+    };
+  }
 };
 
 export default HomePage;
