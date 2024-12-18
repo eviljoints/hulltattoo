@@ -1,6 +1,22 @@
-import "@/styles/globals.css";
-import type { AppProps } from "next/app";
+// src/pages/_app.tsx
 
-export default function App({ Component, pageProps }: AppProps) {
-  return <Component {...pageProps} />;
+import { AppProps } from 'next/app';
+import Layout from '../components/Layout';
+import { ChakraProvider } from '@chakra-ui/react';
+import Head from 'next/head';
+import '../styles/globals.css'; // Ensure you have global styles
+
+function MyApp({ Component, pageProps }: AppProps) {
+  // If the page component has a 'title' property, use it. Otherwise, default.
+  const pageTitle = (Component as any).title || 'Hull Tattoo Studio';
+
+  return (
+    <ChakraProvider>
+      <Layout title={pageTitle}>
+        <Component {...pageProps} />
+      </Layout>
+    </ChakraProvider>
+  );
 }
+
+export default MyApp;

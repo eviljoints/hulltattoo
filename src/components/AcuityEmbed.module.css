@@ -1,0 +1,23 @@
+/* ./src/components/AcuityEmbed.module.css */
+
+.iframeContainer {
+    width: 100%;
+    height: 90%; /* Set height to 85% of the viewport height */
+    max-height: 1175px; /* Optional: Set a maximum height */
+    overflow: hidden; /* Hide overflow to prevent scrollbars */
+    position: relative;
+  }
+  
+  .iframeContainer iframe {
+    width: 100%;
+    height: 100%;
+    border: none; /* Remove default border */
+    overflow: hidden; /* Hide overflow within the iframe */
+    scrollbar-width: none; /* Firefox */
+  }
+  
+  /* Hide scrollbar for WebKit browsers (Chrome, Safari) */
+  .iframeContainer iframe::-webkit-scrollbar {
+    display: none;
+  }
+  
