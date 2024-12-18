@@ -17,14 +17,23 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import { FaFacebook, FaInstagram } from "react-icons/fa";
-import MotionBox from "../components/MotionBox"; // Adjusted path
+import dynamic from "next/dynamic"; // Import dynamic for code splitting
 import Image from "next/image";
 import Head from "next/head";
-import AcuityEmbed from "../components/AcuityEmbed"; // Adjusted path
-import TextCard from "../components/TextCard"; // Adjusted path
-import styles from "./artists/MikePage.module.css"; // Import the CSS module for background lines
+import styles from "./artists/MikePage.module.css";
 
-// Define the galleries with updated keys, descriptions, and images
+// Dynamically load components that might be large or not immediately needed
+const MotionBox = dynamic(() => import("../components/MotionBox"), {
+  ssr: false,
+});
+const AcuityEmbed = dynamic(() => import("../components/AcuityEmbed"), {
+  ssr: false,
+});
+const TextCard = dynamic(() => import("../components/TextCard"), {
+  ssr: false,
+});
+
+// Define the galleries
 const galleries = {
   realism: {
     description: `Realism tattooing is an art form that captures lifelike images with precise detail and shading.
@@ -103,13 +112,16 @@ const MikePage: React.FC = () => {
           content="Meet Mike, a friendly and approachable tattoo artist at Hull Tattoo Studio with 10 years of experience."
         />
         <meta property="og:image" content="/images/mike.png" />
-        <meta property="og:url" content="https://www.hulltattoostudio.com/artists/mike" />
+        <meta
+          property="og:url"
+          content="https://www.hulltattoostudio.com/artists/mike"
+        />
         <meta property="og:type" content="profile" />
       </Head>
 
       <Box
         position="relative"
-        bg="transparent" // Set to transparent to allow background lines to show
+        bg="transparent" 
         color="white"
         w="100%"
         p={8}
@@ -125,8 +137,8 @@ const MikePage: React.FC = () => {
           borderRadius="md"
           p={8}
           boxShadow="0 0 20px #9b5de5, 0 0 30px #f15bb5"
-          position="relative" // To ensure it sits above the background lines
-          zIndex="1" // Ensures content is above the background lines
+          position="relative"
+          zIndex="1"
         >
           {/* Mike's Profile Section */}
           <MotionBox
@@ -136,7 +148,6 @@ const MikePage: React.FC = () => {
             mb={16}
             as="section"
           >
-            {/* Title */}
             <Text
               fontSize={{ base: "3xl", md: "5xl" }}
               fontWeight="bold"
@@ -148,7 +159,6 @@ const MikePage: React.FC = () => {
             >
               Mike (Eggtattooer)
             </Text>
-            {/* Subtitle */}
             <Text
               fontSize={{ base: "xl", md: "2xl" }}
               fontWeight="medium"
@@ -161,13 +171,13 @@ const MikePage: React.FC = () => {
               Tattoo Artist
             </Text>
 
-            {/* Feature Image */}
             <Box mb={8} textAlign="center">
               <Image
                 src="/images/mike.png"
                 alt="Portrait of Mike"
-                width={200} // Adjust size accordingly
+                width={200}
                 height={200}
+                priority={true} // Ensure hero image loads first
                 style={{
                   borderRadius: "50%",
                   boxShadow: "0 0 15px #ff007f, 0 0 25px #00d4ff",
@@ -176,7 +186,6 @@ const MikePage: React.FC = () => {
               />
             </Box>
 
-            {/* Integrated TextCard Component */}
             <TextCard
               title="About Mike"
               subtitle="Tattoo Artist with 10 Years of Experience"
@@ -189,10 +198,6 @@ const MikePage: React.FC = () => {
                 { left: "10%", width: "50px", color: "#ff007f" },
                 { left: "70%", width: "30px", color: "#00d4ff" },
               ]}
-              // Optional props
-              // leftImage="/images/left-deco.png"
-              // rightImage="/images/right-deco.png"
-              // footer="Contact Mike for more information."
             />
           </MotionBox>
 
@@ -258,10 +263,9 @@ const MikePage: React.FC = () => {
                             <Image
                               src={`/images/mike/${img}`}
                               alt={`${key} tattoo ${index + 1}`}
-                              width={300} // Adjust size accordingly
+                              width={300}
                               height={300}
-                              layout="fill"
-                              objectFit="cover"
+                              style={{ objectFit: "cover" }}
                             />
                           </MotionBox>
                         </AspectRatio>
@@ -273,7 +277,7 @@ const MikePage: React.FC = () => {
             </Tabs>
           </MotionBox>
 
-          {/* Embed Acuity Scheduling Inline Widget */}
+          {/* Embed Acuity Scheduling Inline Widget - Dynamically Loaded */}
           <AcuityEmbed />
 
           {/* Mike's Social Media Links */}
@@ -321,5 +325,13 @@ const MikePage: React.FC = () => {
     </>
   );
 };
+
+// Use getStaticProps to pre-build the page at build time.
+// This ensures faster load times as the HTML is served statically.
+export function getStaticProps() {
+  return {
+    props: {},
+  };
+}
 
 export default MikePage;
