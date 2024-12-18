@@ -6,7 +6,7 @@
 /* Define Custom Font */
 @font-face {
   font-family: 'Ryzes';
-  src: url('/fonts/Vanilla Whale.otf') format('opentype');
+  src: url('/public/fonts/Vanilla\ Whale.otf') format('opentype');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -30,7 +30,7 @@
 }
 
 /* Prevent horizontal scrolling */
-body {
+html, body {
   background-color: black;
   font-family: "Ryzes", "Orbitron", Arial, sans-serif; /* Ensure custom font is prioritized */
   margin: 0;
