@@ -31,7 +31,8 @@
 
 /* Prevent horizontal scrolling */
 html, body {
-  background-color: black;
+  background-color: black !important;
+  color: white !important;
   font-family: "Ryzes", "Orbitron", Arial, sans-serif; /* Ensure custom font is prioritized */
   margin: 0;
   padding: 0;
