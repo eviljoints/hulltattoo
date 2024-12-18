@@ -1,11 +1,10 @@
-// ./src/pages/_document.tsx
-
 import { Html, Head, Main, NextScript } from "next/document";
 
 export default function Document() {
   return (
-    <Html lang="en">
-      <link
+    <Html lang="en" data-theme="dark">
+      <Head>
+        <link
           href="https://assets.calendly.com/assets/external/widget.css"
           rel="stylesheet"
         />
@@ -14,7 +13,7 @@ export default function Document() {
           type="text/javascript"
           async
         ></script>
-      <Head />
+      </Head>
       <body>
         <Main />
         <NextScript />
