@@ -26,7 +26,7 @@ import TextCard from "~/components/TextCard";
 // Define the gallery for Harley
 const gallery = {
   apprenticeTattoos: {
-    description: `Harley is our dedicated apprentice, working mainly in black ink but branching out into color pieces. She is hardworking and always progressing her craft. Harley works at an apprentice rate, making her work both exceptional and affordable.`,
+    description: `Harley is our latest apprentice showing great promise especially in the dotwork and pointalism area. Pop by and see hi to our newwest team member`,
     images: [
       "apprentice1.jpg",
       "apprentice2.jpg",
@@ -145,11 +145,6 @@ const HarleyPage: React.FC = () => {
               subtitle="Harley is Hull Tattoo Studios latest edition"
               description={`
 
-Thought for 5 seconds
-Certainly! Let's update HarleyPage to include an extended and more personalized "About Harley" section that highlights her approachable and quiet nature, her dedication to perfecting her skills, and her journey in building confidence through both practicing on fake skin and tattooing real clients.
-
-1. Extended "About Harley" Description
-Here's an enhanced version of Harley's bio incorporating the elements you've mentioned:
 
 Harley is the latest addition to Hull Tattoo Studio, bringing a profound passion for art and a relentless drive to perfect her craft. With a keen eye for detail, Harley specializes in simplistic designs infused with a unique pointillism twist, creating tattoos that are both elegant and intricately detailed.
 
@@ -254,7 +249,7 @@ Harley's journey extends beyond practicing on fake skin; she courageously ventur
             </Text>
             <HStack spacing={6} justify="center">
               <ChakraLink
-                href="https://www.facebook.com/harley.lee.7503"
+                href="https://www.facebook.com/harley.bovill.79"
                 isExternal
                 aria-label="Harley's Facebook"
                 _hover={{ transform: "scale(1.1)", color: "#ff007f" }}

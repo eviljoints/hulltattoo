@@ -9,14 +9,14 @@ interface Stripe {
 }
 
 interface TextCardProps {
-  title: string;
+  title: React.ReactNode;  // Updated to React.ReactNode
   subtitle?: string;
   description: string;
   footer?: string;
   leftImage?: string;
   rightImage?: string;
   stripes: Stripe[];
-  align?: "left" | "center"; // New align prop
+  align?: "left" | "center";
 }
 
 const TextCard: React.FC<TextCardProps> = ({
@@ -27,7 +27,7 @@ const TextCard: React.FC<TextCardProps> = ({
   leftImage,
   rightImage,
   stripes,
-  align = "center", // Default to center
+  align = "center",
 }) => {
   return (
     <Box
@@ -89,7 +89,7 @@ const TextCard: React.FC<TextCardProps> = ({
       <Box
         fontSize={{ base: "md", md: "lg" }}
         color="white"
-        textAlign={align} // Use the align prop here
+        textAlign={align}
         lineHeight="1.8"
         textShadow="0 0 5px #ff007f, 0 0 10px #00d4ff"
         mb={4}

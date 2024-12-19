@@ -40,7 +40,6 @@ const HomePage: React.FC<HomePageProps> = ({ artists, error }) => {
     );
   }
 
-  // If artists is null or empty, show a spinner just in case
   if (!artists) {
     return (
       <Center minH="100vh">
@@ -48,6 +47,24 @@ const HomePage: React.FC<HomePageProps> = ({ artists, error }) => {
       </Center>
     );
   }
+
+  const structuredData = {
+    "@context": "http://schema.org",
+    "@type": "TattooParlor",
+    "name": "Hull Tattoo Studio",
+    "description": "Professional tattoo studio in Hull offering various styles including realism, blackwork, anime, and apprentice work.",
+    "image": "https://www.hulltattoostudio.com/images/og-image.jpg",
+    "url": "https://www.hulltattoostudio.com",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "123 Hull Street",
+      "addressLocality": "Hull",
+      "postalCode": "HU1 1AA",
+      "addressCountry": "UK"
+    },
+    "openingHours": "Tu-F 09:30-15:00, Sa 11:30-18:00",
+    "telephone": "+44-XXXX-XXXXXX"
+  };
 
   return (
     <>
@@ -62,10 +79,7 @@ const HomePage: React.FC<HomePageProps> = ({ artists, error }) => {
           content="Hull Tattoo Studio, Tattoo Artists, Realism Tattoo, Blackwork Tattoo, Anime Tattoo, Apprentice Tattoo Artist, Professional Tattoo, Best Tattoo Studio"
         />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <meta
-          property="og:title"
-          content="Hull Tattoo Studio | Professional Tattoo Artists"
-        />
+        <meta property="og:title" content="Hull Tattoo Studio | Professional Tattoo Artists" />
         <meta
           property="og:description"
           content="Welcome to Hull Tattoo Studio. Our professional tattoo artists create stunning tattoos in a warm and welcoming environment. Book your appointment today!"
@@ -73,6 +87,14 @@ const HomePage: React.FC<HomePageProps> = ({ artists, error }) => {
         <meta property="og:image" content="/images/og-image.jpg" />
         <meta property="og:url" content="https://www.hulltattoostudio.com" />
         <meta property="og:type" content="website" />
+
+        <link rel="canonical" href="https://www.hulltattoostudio.com" />
+
+        {/* Inject JSON-LD structured data using dangerouslySetInnerHTML */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+        />
       </Head>
 
       <HomePageBackground />
@@ -175,7 +197,6 @@ export const getStaticProps = async () => {
       props: {
         artists: response.data.artists,
       },
-      
     };
   } catch (err) {
     console.error(err);

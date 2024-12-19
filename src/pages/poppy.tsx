@@ -22,6 +22,12 @@ import Image from "next/image";
 import Head from "next/head";
 import styles from "./artists/MikePage.module.css"; // Import the CSS module for background lines
 import TextCard from "~/components/TextCard";
+import dynamic from "next/dynamic"; // For dynamic imports
+
+// Dynamically load the AcuityEmbed component, just like in mike.tsx
+const AcuityEmbed = dynamic(() => import("../components/AcuityEmbed"), {
+  ssr: false,
+});
 
 // Define the gallery for Poppy
 const gallery = {
@@ -69,7 +75,7 @@ const PoppyPage: React.FC = () => {
 
       <Box
         position="relative"
-        bg="transparent" // Set to transparent to allow background lines to show
+        bg="transparent"
         color="white"
         w="100%"
         p={8}
@@ -88,8 +94,8 @@ const PoppyPage: React.FC = () => {
           borderRadius="md"
           p={8}
           boxShadow="0 0 20px #9b5de5, 0 0 30px #f15bb5"
-          position="relative" // To ensure it sits above the background lines
-          zIndex="1" // Ensures content is above the background lines
+          position="relative"
+          zIndex="1"
         >
           {/* Poppy's Profile Section */}
           <MotionBox
@@ -99,7 +105,6 @@ const PoppyPage: React.FC = () => {
             mb={16}
             as="section"
           >
-            {/* Title */}
             <Text
               fontSize={{ base: "3xl", md: "5xl" }}
               fontWeight="bold"
@@ -111,7 +116,6 @@ const PoppyPage: React.FC = () => {
             >
               Poppy
             </Text>
-            {/* Subtitle */}
             <Text
               fontSize={{ base: "xl", md: "2xl" }}
               fontWeight="medium"
@@ -124,12 +128,11 @@ const PoppyPage: React.FC = () => {
               Apprentice Tattoo Artist
             </Text>
 
-            {/* Feature Image */}
             <Box mb={8} textAlign="center">
               <Image
                 src="/images/poppy.png"
                 alt="Portrait of Poppy"
-                width={200} // Adjust size accordingly
+                width={200}
                 height={200}
                 style={{
                   borderRadius: "50%",
@@ -151,10 +154,6 @@ Come say hi, share your ideas, and let Poppy’s enthusiasm and artistry shine t
                 { left: "10%", width: "20px", color: "#ff007f" },
                 { left: "70%", width: "30px", color: "#00d4ff" },
               ]}
-              // Optional props
-              // leftImage="/images/left-deco.png"
-              // rightImage="/images/right-deco.png"
-              // footer="Contact Mike for more information."
             />
           </MotionBox>
 
@@ -224,6 +223,9 @@ Come say hi, share your ideas, and let Poppy’s enthusiasm and artistry shine t
             </Tabs>
           </MotionBox>
 
+          {/* Embed Acuity Scheduling Inline Widget - Dynamically Loaded */}
+          <AcuityEmbed link="https://app.acuityscheduling.com/schedule.php?owner=34239595&calendarID=11234698" />
+
           {/* Poppy's Social Media Links */}
           <MotionBox
             initial={{ opacity: 0 }}
@@ -243,7 +245,7 @@ Come say hi, share your ideas, and let Poppy’s enthusiasm and artistry shine t
             >
               Connect with Poppy
             </Text>
-            
+
             <HStack spacing={6} justify="center">
               <ChakraLink
                 href="https://www.facebook.com/poppy.lee.7503"
@@ -264,7 +266,6 @@ Come say hi, share your ideas, and let Poppy’s enthusiasm and artistry shine t
                 <FaInstagram size={40} color="#ff007f" />
               </ChakraLink>
             </HStack>
-            
           </MotionBox>
         </Box>
       </Box>

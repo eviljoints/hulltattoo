@@ -90,26 +90,41 @@ const galleries = {
 const MikePage: React.FC = () => {
   const [isLargerThan768] = useMediaQuery("(min-width: 768px)");
 
+  const structuredData = {
+    "@context": "http://schema.org",
+    "@type": "Person",
+    "name": "Mike (Eggtattooer)",
+    "jobTitle": "Tattoo Artist",
+    "worksFor": {
+      "@type": "Organization",
+      "name": "Hull Tattoo Studio",
+      "url": "https://www.hulltattoostudio.com"
+    },
+    "image": "https://www.hulltattoostudio.com/images/mike.png",
+    "url": "https://www.hulltattoostudio.com/artists/mike",
+    "description": "Mike is a friendly, down-to-earth tattoo artist at Hull Tattoo Studio with over 10 years of experience. He specializes in realism, bespoke realism, neotrad, and cover-up tattoos."
+  };
+
   return (
     <>
       <Head>
-        <title>Mike (Eggtattooer) - Tattoo Artist | Hull Tattoo Studio</title>
+        <title>Mike (Eggtattooer) - Professional Tattoo Artist in Hull | Hull Tattoo Studio</title>
         <meta
           name="description"
-          content="Meet Mike, a friendly and approachable tattoo artist at Hull Tattoo Studio with 10 years of experience. Specializing in various styles including realism, bespoke realism, neotrad, and cover-up tattoos."
+          content="Meet Mike (Eggtattooer), a friendly and approachable tattoo artist at Hull Tattoo Studio with over 10 years of experience. Specializing in realism, bespoke realism, neotrad, and cover-up tattoos, Mike creates one-of-a-kind artworks for every client."
         />
         <meta
           name="keywords"
-          content="Mike, Eggtattooer, Tattoo Artist, Hull Tattoo Studio, Realism Tattoos, Bespoke Realism, Neotrad Tattoos, Cover-up Tattoos, Professional Tattoo Artist, Neon Cyberpunk Tattoo"
+          content="Mike, Eggtattooer, Tattoo Artist, Hull Tattoo Studio, Realism Tattoos, Bespoke Realism, Neotrad Tattoos, Cover-up Tattoos, Professional Tattoo Artist, Hull Tattoos"
         />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta
           property="og:title"
-          content="Mike (Eggtattooer) - Tattoo Artist | Hull Tattoo Studio"
+          content="Mike (Eggtattooer) - Professional Tattoo Artist in Hull | Hull Tattoo Studio"
         />
         <meta
           property="og:description"
-          content="Meet Mike, a friendly and approachable tattoo artist at Hull Tattoo Studio with 10 years of experience."
+          content="Meet Mike, a friendly and talented tattoo artist at Hull Tattoo Studio with 10+ years of experience in realism, bespoke realism, neotrad, and cover-up tattoos."
         />
         <meta property="og:image" content="/images/mike.png" />
         <meta
@@ -117,11 +132,24 @@ const MikePage: React.FC = () => {
           content="https://www.hulltattoostudio.com/artists/mike"
         />
         <meta property="og:type" content="profile" />
+        <meta property="og:locale" content="en_GB" />
+        <meta property="og:site_name" content="Hull Tattoo Studio" />
+
+        <link
+          rel="canonical"
+          href="https://www.hulltattoostudio.com/artists/mike"
+        />
+
+        {/* JSON-LD structured data */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+        />
       </Head>
 
       <Box
         position="relative"
-        bg="transparent" 
+        bg="transparent"
         color="white"
         w="100%"
         p={8}
@@ -149,6 +177,7 @@ const MikePage: React.FC = () => {
             as="section"
           >
             <Text
+              as="h1"
               fontSize={{ base: "3xl", md: "5xl" }}
               fontWeight="bold"
               color="white"
@@ -160,6 +189,7 @@ const MikePage: React.FC = () => {
               Mike (Eggtattooer)
             </Text>
             <Text
+              as="h2"
               fontSize={{ base: "xl", md: "2xl" }}
               fontWeight="medium"
               color="white"
@@ -168,7 +198,7 @@ const MikePage: React.FC = () => {
               mb={8}
               fontFamily="body"
             >
-              Tattoo Artist
+              Professional Tattoo Artist in Hull
             </Text>
 
             <Box mb={8} textAlign="center">
@@ -189,11 +219,7 @@ const MikePage: React.FC = () => {
             <TextCard
               title="About Mike"
               subtitle="Tattoo Artist with 10 Years of Experience"
-              description={`Mike is a friendly and approachable tattoo artist with over 10 years of
-                experience. Specializing in a variety of styles including realism,
-                bespoke realism, neotraditional, and cover-up tattoos, he brings a unique
-                artistic flair to every piece. Mike is always willing to help bring your
-                tattoo ideas to life, ensuring each design is as unique as you are.`}
+              description={`Meet Mike, your down-to-earth, creative tattoo artist who’s been perfecting his craft for over a decade. Sponsored by Apollo Tattoo Aftercare, Mike specializes in everything from jaw-dropping realism and bespoke designs to bold neotraditional pieces and seamless cover-ups. With a keen eye for detail and a talent for bringing your vision to life, he’s here to ensure you leave with a work of art that's as unique as you are. Friendly, fun, and always up for a challenge—Mike’s got you covered, literally!`}
               stripes={[
                 { left: "10%", width: "50px", color: "#ff007f" },
                 { left: "70%", width: "30px", color: "#00d4ff" },
@@ -277,8 +303,8 @@ const MikePage: React.FC = () => {
             </Tabs>
           </MotionBox>
 
-          {/* Embed Acuity Scheduling Inline Widget - Dynamically Loaded */}
-          <AcuityEmbed />
+          {/* Embed Acuity Scheduling Inline Widget with the new link */}
+          <AcuityEmbed link="https://app.acuityscheduling.com/schedule.php?owner=34239595&calendarID=11220578" />
 
           {/* Mike's Social Media Links */}
           <MotionBox
@@ -289,6 +315,7 @@ const MikePage: React.FC = () => {
             as="section"
           >
             <Text
+              as="h2"
               fontSize={{ base: "2xl", md: "3xl" }}
               fontWeight="bold"
               color="white"
@@ -327,7 +354,6 @@ const MikePage: React.FC = () => {
 };
 
 // Use getStaticProps to pre-build the page at build time.
-// This ensures faster load times as the HTML is served statically.
 export function getStaticProps() {
   return {
     props: {},

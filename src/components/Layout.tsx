@@ -89,7 +89,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             >
               <MenuItem
                 bg="transparent"
-                _hover={{ bg: "rgba(255, 0, 127, 0.2)" }}
+                _hover={{ bg: "rgba(255, 7, 131, 0.86)" }}
                 color="white"
               >
                 <Link href="/mike" passHref>
@@ -100,7 +100,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
               </MenuItem>
               <MenuItem
                 bg="transparent"
-                _hover={{ bg: "rgba(255, 0, 127, 0.2)" }}
+                _hover={{ bg: "rgba(255, 7, 131, 0.86)" }}
                 color="white"
               >
                 <Link href="/poppy" passHref>
@@ -111,7 +111,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
               </MenuItem>
               <MenuItem
                 bg="transparent"
-                _hover={{ bg: "rgba(255, 0, 127, 0.2)" }}
+                _hover={{ bg: "rgba(255, 7, 131, 0.86)" }}
                 color="white"
               >
                 <Link href="/harley" passHref>
