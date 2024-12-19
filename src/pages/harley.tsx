@@ -26,7 +26,7 @@ import TextCard from "~/components/TextCard";
 // Define the gallery for Harley
 const gallery = {
   apprenticeTattoos: {
-    description: `Harley is our latest apprentice showing great promise especially in the dotwork and pointalism area. Pop by and see hi to our newwest team member`,
+    description: `Harley is our latest apprentice showing great promise especially in the dotwork and pointalism area. Pop by and say hi to our newest team member`,
     images: [
       "apprentice1.jpg",
       "apprentice2.jpg",
