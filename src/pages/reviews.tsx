@@ -6,6 +6,7 @@ import Head from 'next/head';
 import { useRouter } from 'next/router';
 import MotionSection from '../components/MotionSection';
 import styles from './artists/MikePage.module.css';
+import { PrismaClient } from '@prisma/client';
 
 interface Review {
   name: string;
@@ -36,12 +37,11 @@ export default function ReviewsPage({ reviews }: ReviewsPageProps) {
       });
       const data = await res.json();
       if (res.ok) {
-        // Successfully added a review
         setName('');
         setRating('5');
         setComment('');
-        // Refresh page to show the new review
-        router.replace(router.asPath);
+        // Since this is a fully static site, new reviews won't appear until next build
+        // No need to router.replace(), as it won't fetch new SSR data.
       } else {
         console.error('Error adding review:', data.error);
       }
@@ -189,19 +189,24 @@ export default function ReviewsPage({ reviews }: ReviewsPageProps) {
   );
 }
 
-export async function getServerSideProps(context) {
-  // In production on Vercel, VERCEL_URL is set.
-  // If you have a custom domain, set NEXT_PUBLIC_BASE_URL in your project environment variables.
-  const protocol = context.req.headers['x-forwarded-proto'] || 'http';
-  const host = context.req.headers.host;
-  const baseUrl = `${protocol}://${host}`;
+export async function getStaticProps() {
+  const prisma = new PrismaClient();
 
-  const res = await fetch(`${baseUrl}/api/reviews`);
-  const data = await res.json();
+  // Fetch reviews from your database
+  const reviewsFromDB = await prisma.review.findMany({
+    orderBy: { createdAt: 'desc' },
+  });
+
+  const reviews: Review[] = reviewsFromDB.map((r) => ({
+    name: r.name,
+    rating: r.rating,
+    comment: r.comment,
+    createdAt: r.createdAt.toISOString(),
+  }));
 
   return {
     props: {
-      reviews: data.reviews || []
+      reviews
     }
   };
 }

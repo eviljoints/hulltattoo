@@ -25,7 +25,7 @@ interface FAQPageProps {
   reviews: CustomReview[];
 }
 
-// Sample FAQ data
+// Sample FAQ data (hardcoded - completely static)
 const faqs: FAQ[] = [
   {
     question: "How do I book an appointment?",
@@ -37,13 +37,11 @@ const faqs: FAQ[] = [
   },
   {
     question: "What should I do to prepare for my appointment?",
-    answer:
-      "Get a good night’s sleep, stay hydrated, and eat a meal beforehand. Avoid alcohol and drugs before your session."
+    answer: "Get a good night’s sleep, stay hydrated, and eat a meal beforehand. Avoid alcohol and drugs before your session."
   },
   {
     question: "How do I care for my new tattoo?",
-    answer:
-      "Follow our aftercare instructions, keep it clean, moisturized, and protected from direct sunlight. Check out our Aftercare page for detailed guidance."
+    answer: "Follow our aftercare instructions, keep it clean, moisturized, and protected from direct sunlight."
   }
 ];
 
@@ -154,7 +152,6 @@ const FAQPage: React.FC<FAQPageProps> = ({ faqs, reviews }) => {
             </VStack>
           </MotionSection>
 
-          {/* Display Custom Reviews - Statically Generated Once a Week */}
           <MotionSection
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -216,7 +213,6 @@ export async function getStaticProps() {
     orderBy: { createdAt: 'desc' },
   });
 
-  // Convert to the required shape if necessary
   const reviews: CustomReview[] = reviewsFromDB.map((r) => ({
     name: r.name,
     rating: r.rating,
@@ -228,8 +224,6 @@ export async function getStaticProps() {
     props: {
       faqs,
       reviews
-    },
-    // Re-generate the page once a week (604800 seconds)
-    revalidate: 604800,
+    }
   };
 }
