@@ -192,7 +192,7 @@ There is free parking very close to the studio and convenient bus stops providin
 export const getStaticProps = async () => {
   try {
     // Adjust the API endpoint as needed
-    const response = await axios.get("hulltattoostudio.com/api/artists");
+    const response = await axios.get("https://www.hulltattoostudio.com/api/artists");
     return {
       props: {
         artists: response.data.artists,
