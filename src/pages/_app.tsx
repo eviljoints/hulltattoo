@@ -20,8 +20,9 @@ function MyApp({ Component, pageProps }: AppProps) {
     <ChakraProvider theme={theme}>
       <ColorModeScript initialColorMode={theme.config.initialColorMode} />
       <Layout title={pageTitle}>
-      <SpeedInsights />
+      
         <Component {...pageProps} />
+        <SpeedInsights />
       </Layout>
     </ChakraProvider>
   );
