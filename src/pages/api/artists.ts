@@ -54,7 +54,7 @@ const artists: Artist[] = [
     role: "Apprentice Tattoo Artist",
     image: "/images/harley.png",
     gallery: "/images/harley-gallery.png",
-    instagram: "https://instagram.com/harleybovilltattoos",
+    instagram: "https://www.instagram.com/harleybovilltattoos/",
     artsPage: "/harley",
     stripes: generateStripes(),
   },
