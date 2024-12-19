@@ -80,6 +80,7 @@ const HomePage: React.FC<HomePageProps> = ({ artists, error }) => {
         />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta property="og:title" content="Hull Tattoo Studio | Professional Tattoo Artists" />
+        <meta property="og:site_name" content="Hull Tattoo Studio"></meta>
         <meta
           property="og:description"
           content="Welcome to Hull Tattoo Studio. Our professional tattoo artists create stunning tattoos in a warm and welcoming environment. Book your appointment today!"

@@ -7,10 +7,8 @@ import {
   FaFacebook,
   FaInstagram,
   FaHome,
-  FaUserAlt,
-  FaCalendarAlt,
-  FaSignInAlt,
   FaFirstAid,
+  FaQuestionCircle,
 } from "react-icons/fa";
 import {
   Menu,
@@ -28,7 +26,6 @@ interface LayoutProps {
 }
 
 const Layout: React.FC<LayoutProps> = ({ children }) => {
-  // Calculate the current year once
   const currentYear = new Date().getFullYear();
 
   return (
@@ -37,8 +34,8 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       overflowX="hidden"
       minH="100vh"
       color="white"
-      position="relative" // Allows Background to position correctly
-      bg="transparent" // Ensure transparency
+      position="relative"
+      bg="transparent"
     >
       {/* Header with Logo */}
       <header className="header">
@@ -46,27 +43,31 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           <Link href="/" passHref>
             <a aria-label="Go to home">
               <Image
-                src="/images/logo.png" // Path to the logo image
+                src="/images/logo.png"
                 alt="Tattoo Studio Logo"
-                width={300} // Explicit width
-                height={120} // Explicit height
-                priority // Ensure the logo loads quickly
+                width={300}
+                height={120}
+                priority
               />
             </a>
           </Link>
         </div>
       </header>
 
-      {/* Navbar */}
+      {/* Navbar - Desktop */}
       <nav className="navbar">
         <div className="navbar-desktop">
           <Link href="/" passHref>
             <a className="navbar-link">Home</a>
           </Link>
 
-          {/* Aftercare Link */}
           <Link href="/aftercare" passHref>
             <a className="navbar-link">Aftercare</a>
+          </Link>
+
+          {/* FAQ Link on Desktop */}
+          <Link href="/faq" passHref>
+            <a className="navbar-link">FAQ</a>
           </Link>
 
           {/* Artists Dropdown (Desktop) */}
@@ -122,16 +123,6 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
               </MenuItem>
             </MenuList>
           </Menu>
-
-          {/* Artist Login Button (if applicable) */}
-          {/* Uncomment and customize if needed
-          <Link href="/login" passHref>
-            <a className="navbar-link">
-              <FaSignInAlt style={{ marginRight: "8px" }} />
-              Login
-            </a>
-          </Link>
-          */}
         </div>
       </nav>
 
@@ -175,10 +166,16 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           </a>
         </Link>
 
-        {/* Aftercare Link for Mobile */}
         <Link href="/aftercare" passHref>
           <a className="navbar-icon" aria-label="Aftercare">
-            <FaFirstAid /> {/* Icon representing Aftercare */}
+            <FaFirstAid />
+          </a>
+        </Link>
+
+        {/* FAQ Link on Mobile */}
+        <Link href="/faq" passHref>
+          <a className="navbar-icon" aria-label="FAQ">
+            <FaQuestionCircle />
           </a>
         </Link>
 
@@ -235,9 +232,6 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             </MenuItem>
           </MenuList>
         </Menu>
-
-        {/* Additional Mobile Icons (if needed) */}
-        {/* Add more icons like Calendar or Login here */}
       </nav>
     </Box>
   );
