@@ -189,11 +189,12 @@ export default function ReviewsPage({ reviews }: ReviewsPageProps) {
   );
 }
 
-export async function getServerSideProps() {
-  // In production, set the BASE_URL or rely on VERCEL_URL environment variable.
-  const baseUrl = process.env.VERCEL_URL
-    ? `https://${process.env.VERCEL_URL}`
-    : (process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000');
+export async function getServerSideProps(context) {
+  // In production on Vercel, VERCEL_URL is set.
+  // If you have a custom domain, set NEXT_PUBLIC_BASE_URL in your project environment variables.
+  const protocol = context.req.headers['x-forwarded-proto'] || 'http';
+  const host = context.req.headers.host;
+  const baseUrl = `${protocol}://${host}`;
 
   const res = await fetch(`${baseUrl}/api/reviews`);
   const data = await res.json();
