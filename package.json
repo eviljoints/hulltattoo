@@ -8,10 +8,10 @@
     "analyze": "ANALYZE=true yarn build",
     "dev": "next dev",
     "format": "prettier --write .",
-    "build": "next build",
     "start": "next start",
-    "seed": "node ./scripts/seedArtists.js",
-    "lint": "next lint"
+    "lint": "next lint",
+    "prisma:generate": "prisma generate",
+    "build": "yarn prisma:generate && next build"
   },
   "dependencies": {
     "@chakra-ui/icons": "^2.0.17",
