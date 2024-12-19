@@ -3,7 +3,7 @@ import Layout from "../components/Layout";
 import { ChakraProvider, ColorModeScript, extendTheme } from "@chakra-ui/react";
 import Head from "next/head";
 import "../styles/globals.css";
-import { SpeedInsights } from '@vercel/speed-insights/next';
+import { SpeedInsights } from '@vercel/speed-insights/react';
 
 // Force dark mode globally
 const theme = extendTheme({
