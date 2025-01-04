@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import {
   Box,
   Heading,
@@ -8,24 +8,87 @@ import {
   FormControl,
   FormLabel,
   Button,
+  useToast,
 } from "@chakra-ui/react";
 import { motion } from "framer-motion";
-import styles from "../components/TextCard.module.css"; // Import neonLines styles
+import styles from "../components/TextCard.module.css"; // NeonLines style
+
+interface ClientData {
+  name: string;
+  clientId: string;
+  hours: number;
+  stamps: number;
+  signUpDate: string;
+}
 
 const ClientLoyaltyPage = () => {
   const [name, setName] = useState("");
   const [clientId, setClientId] = useState("");
-  const [clientData, setClientData] = useState(null);
-  const [stampSlots, setStampSlots] = useState([false, false, false, false, false, false]);
+  const [clientData, setClientData] = useState<ClientData | null>(null);
+  const [stampSlots, setStampSlots] = useState<boolean[]>([false, false, false, false, false, false]);
+
+  // Keep track of the previous stamp count to detect new stamps
+  const [prevStamps, setPrevStamps] = useState(0);
+
+  const toast = useToast();
+
+  // Every 4 hours => 1 stamp; if user has X hours, they might have X/4 stamps
+  // This logic can be adjusted to match how your backend awards stamps.
 
   const fetchClientData = async () => {
-    const res = await fetch(`/api/clients?name=${name}&clientId=${clientId}`);
-    const data = await res.json();
-    setClientData(data);
+    try {
+      const res = await fetch(`/api/clients?name=${name}&clientId=${clientId}`);
+      if (!res.ok) {
+        // Handle not found or error
+        setClientData(null);
+        alert("Client not found or server error");
+        return;
+      }
 
-    // Fill stamps based on fetched data
-    const stamps = Math.min(data.stamps, 6);
-    setStampSlots(Array(6).fill(false).map((_, i) => i < stamps));
+      const data: ClientData = await res.json();
+      setClientData(data);
+
+      // Fill stamps (max 6 in your UI)
+      const stamps = Math.min(data.stamps, 6);
+
+      // Show a toast for each newly earned stamp compared to our previous stamp count
+      if (stamps > prevStamps) {
+        for (let s = prevStamps + 1; s <= stamps; s++) {
+          toast({
+            title: `Congratulations!`,
+            description: `You just earned stamp #${s}! Keep going!`,
+            status: "success",
+            duration: 4000,
+            isClosable: true,
+          });
+        }
+      }
+      setPrevStamps(stamps);
+
+      // Update the stamp slots for the UI
+      setStampSlots(
+        Array(6)
+          .fill(false)
+          .map((_, i) => i < stamps)
+      );
+    } catch (error) {
+      console.error("Error fetching client data:", error);
+      alert("Failed to fetch client data. Please try again later.");
+    }
+  };
+
+  // Calculate how many hours until next stamp
+  // e.g., if each stamp requires 4 hours, then:
+  // next stamp threshold = (currentStamps + 1) * 4
+  // hours left = threshold - currentHours
+  const hoursUntilNextStamp = () => {
+    if (!clientData) return 0;
+    // If user already has 6 stamps (full card), they may not need more hours
+    if (clientData.stamps >= 6) return 0;
+
+    const threshold = (clientData.stamps + 1) * 4;
+    const remaining = threshold - clientData.hours;
+    return remaining > 0 ? remaining : 0;
   };
 
   return (
@@ -119,6 +182,24 @@ const ClientLoyaltyPage = () => {
           </Button>
         </VStack>
 
+        {/* Display Additional Info if clientData is found and stamps = 0 */}
+        {clientData && (
+          <Box textAlign="center" mb={8}>
+            <Text>
+              <strong>Total Tattoo Hours:</strong> {clientData.hours}
+            </Text>
+            <Text>
+              <strong>Signed Up:</strong>{" "}
+              {new Date(clientData.signUpDate).toLocaleDateString("en-GB")}
+            </Text>
+            {clientData.stamps < 6 && (
+              <Text>
+                <strong>Hours until next stamp:</strong> {hoursUntilNextStamp()}
+              </Text>
+            )}
+          </Box>
+        )}
+
         {/* Loyalty Card */}
         <Box
           border="2px solid pink"
@@ -178,7 +259,9 @@ const ClientLoyaltyPage = () => {
             <Text fontSize="sm">- Earn 1 stamp for every 4 hours of tattooing.</Text>
             <Text fontSize="sm">- Complete all 6 stamps to claim 1 full day of tattooing.</Text>
             <Text fontSize="sm">- Stamps reset after redemption.</Text>
-            <Text fontSize="sm">- Loyalty reward can be gifted but must be claimed within 1 year of the last stamp.</Text>
+            <Text fontSize="sm">
+              - Loyalty reward can be gifted but must be claimed within 1 year of the last stamp.
+            </Text>
           </Box>
         </motion.div>
       </Box>

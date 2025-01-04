@@ -22,7 +22,7 @@ const AdminLoyaltyPage = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
-    // If there's a token, validate it immediately on page load
+    // If there's a token, validate it on page load
     const token = Cookies.get("authToken");
     if (token) {
       validateToken(token);
@@ -70,7 +70,6 @@ const AdminLoyaltyPage = () => {
   };
 
   const authenticate = async () => {
-    // For demo purposes, prompt for credentials (not recommended in production)
     const username = prompt("Enter Username:");
     const password = prompt("Enter Password:");
     if (!username || !password) return;
@@ -84,8 +83,7 @@ const AdminLoyaltyPage = () => {
 
       if (res.ok) {
         const { token } = await res.json();
-        // Store token in a cookie for 1 day
-        Cookies.set("authToken", token, { expires: 1 });
+        Cookies.set("authToken", token, { expires: 1 }); // 1-day expiry
         setIsAuthenticated(true);
         fetchClients();
       } else {
@@ -102,18 +100,27 @@ const AdminLoyaltyPage = () => {
     setClients([]);
   };
 
+  /**
+   * When we create a new client, we also send a signUpDate (creation date).
+   */
   const addClient = async () => {
     const token = Cookies.get("authToken");
     if (!token) return;
 
     try {
+      const newClientData = {
+        name,
+        clientId,
+        signUpDate: new Date().toISOString(), // capture current date/time
+      };
+
       const res = await fetch("/api/admin/clients", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({ name, clientId }),
+        body: JSON.stringify(newClientData),
       });
 
       if (res.ok) {
@@ -128,21 +135,38 @@ const AdminLoyaltyPage = () => {
     }
   };
 
-  const updateHours = async (id: number, newHours: string) => {
+  /**
+   * Update a client's hours by ADDING the new value to the existing total
+   * rather than replacing it.
+   */
+  const updateHours = async (id: number, additionalHours: string) => {
     const token = Cookies.get("authToken");
     if (!token) return;
 
+    // 1. Find the current client in state
+    const client = clients.find((c) => c.id === id);
+    if (!client) return;
+
+    // 2. Convert both current and new hours to numbers
+    const currentHours = Number(client.hours) || 0;
+    const toAdd = Number(additionalHours) || 0;
+
+    // 3. Calculate the new total
+    const totalHours = currentHours + toAdd;
+
     try {
+      // 4. Send the total hours to the backend
       const res = await fetch("/api/admin/clients", {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({ id, hours: newHours }),
+        body: JSON.stringify({ id, hours: totalHours }),
       });
 
       if (res.ok) {
+        // Refresh clients list
         fetchClients();
       } else {
         alert("Failed to update hours.");
@@ -153,7 +177,8 @@ const AdminLoyaltyPage = () => {
   };
 
   const resetHours = async (id: number) => {
-    await updateHours(id, "0");
+    // Reset hours to 0
+    await updateHours(id, "-99999999"); // Or any large negative number to ensure 0
   };
 
   const deleteClient = async (id: number) => {
@@ -216,26 +241,26 @@ const AdminLoyaltyPage = () => {
                 <Td>{client.clientId}</Td>
                 <Td>{client.hours}</Td>
                 <Td>{client.stamps}</Td>
+                {/* Display signUpDate if available */}
+                <Td>
+                  {client.signUpDate
+                    ? new Date(client.signUpDate).toLocaleString() // you can use toLocaleDateString
+                    : "N/A"}
+                </Td>
                 <Td>
                   <Input
-                    placeholder="Update hours"
+                    placeholder="Add hours"
                     onChange={(e) => setHours(e.target.value)}
                   />
-                  <Button
-                    ml={2}
-                    onClick={() => updateHours(client.id, hours)}
-                  >
-                    Update
+                  <Button ml={2} onClick={() => updateHours(client.id, hours)}>
+                    Add
                   </Button>
                 </Td>
                 <Td>
                   <Button onClick={() => resetHours(client.id)}>Reset Hours</Button>
                 </Td>
                 <Td>
-                  <Button
-                    colorScheme="red"
-                    onClick={() => deleteClient(client.id)}
-                  >
+                  <Button colorScheme="red" onClick={() => deleteClient(client.id)}>
                     Delete
                   </Button>
                 </Td>
