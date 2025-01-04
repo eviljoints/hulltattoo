@@ -34,7 +34,6 @@ const ClientLoyaltyPage = () => {
 
   // Every 4 hours => 1 stamp; if user has X hours, they might have X/4 stamps
   // This logic can be adjusted to match how your backend awards stamps.
-
   const fetchClientData = async () => {
     try {
       const res = await fetch(`/api/clients?name=${name}&clientId=${clientId}`);
@@ -230,8 +229,8 @@ const ClientLoyaltyPage = () => {
                 transition={{ duration: 0.5 }}
               >
                 <Box
-                  w="80px"
-                  h="80px"
+                  w={{ base: "60px", md: "80px" }}
+                  h={{ base: "60px", md: "80px" }}
                   bg={stamped ? "pink.500" : "gray.700"}
                   borderRadius="50%"
                   display="flex"
