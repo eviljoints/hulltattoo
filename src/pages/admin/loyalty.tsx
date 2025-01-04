@@ -15,18 +15,21 @@ import {
 import Cookies from "js-cookie";
 
 const AdminLoyaltyPage = () => {
-  const [clients, setClients] = useState([]);
+  const [clients, setClients] = useState<any[]>([]);
   const [name, setName] = useState("");
   const [clientId, setClientId] = useState("");
   const [hours, setHours] = useState("");
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
+    // If there's a token, validate it immediately on page load
     const token = Cookies.get("authToken");
-    if (token) validateToken(token);
+    if (token) {
+      validateToken(token);
+    }
   }, []);
 
-  const validateToken = async (token) => {
+  const validateToken = async (token: string) => {
     try {
       const res = await fetch("/api/auth/validate", {
         headers: { Authorization: `Bearer ${token}` },
@@ -34,25 +37,30 @@ const AdminLoyaltyPage = () => {
 
       if (res.ok) {
         setIsAuthenticated(true);
-        fetchClients();
+        fetchClients(); // Load clients if token is valid
       } else {
         Cookies.remove("authToken");
         setIsAuthenticated(false);
       }
     } catch (error) {
       console.error("Error validating token:", error);
+      Cookies.remove("authToken");
+      setIsAuthenticated(false);
     }
   };
 
   const fetchClients = async () => {
     try {
       const token = Cookies.get("authToken");
+      if (!token) return;
+
       const res = await fetch("/api/admin/clients", {
         headers: { Authorization: `Bearer ${token}` },
       });
 
       if (res.ok) {
-        setClients(await res.json());
+        const data = await res.json();
+        setClients(data);
       } else {
         alert("Failed to fetch clients.");
       }
@@ -62,8 +70,11 @@ const AdminLoyaltyPage = () => {
   };
 
   const authenticate = async () => {
+    // For demo purposes, prompt for credentials (not recommended in production)
     const username = prompt("Enter Username:");
     const password = prompt("Enter Password:");
+    if (!username || !password) return;
+
     try {
       const res = await fetch("/api/auth/login", {
         method: "POST",
@@ -73,6 +84,7 @@ const AdminLoyaltyPage = () => {
 
       if (res.ok) {
         const { token } = await res.json();
+        // Store token in a cookie for 1 day
         Cookies.set("authToken", token, { expires: 1 });
         setIsAuthenticated(true);
         fetchClients();
@@ -92,59 +104,80 @@ const AdminLoyaltyPage = () => {
 
   const addClient = async () => {
     const token = Cookies.get("authToken");
-    const res = await fetch("/api/admin/clients", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({ name, clientId }),
-    });
+    if (!token) return;
 
-    if (res.ok) {
-      fetchClients();
-      setName("");
-      setClientId("");
-    } else {
-      alert("Failed to add client.");
+    try {
+      const res = await fetch("/api/admin/clients", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ name, clientId }),
+      });
+
+      if (res.ok) {
+        fetchClients();
+        setName("");
+        setClientId("");
+      } else {
+        alert("Failed to add client.");
+      }
+    } catch (error) {
+      console.error("Error adding client:", error);
     }
   };
 
-  const updateHours = async (id, newHours) => {
+  const updateHours = async (id: number, newHours: string) => {
     const token = Cookies.get("authToken");
-    const res = await fetch("/api/admin/clients", {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({ id, hours: newHours }),
-    });
+    if (!token) return;
 
-    if (res.ok) {
-      fetchClients();
-    } else {
-      alert("Failed to update hours.");
+    try {
+      const res = await fetch("/api/admin/clients", {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ id, hours: newHours }),
+      });
+
+      if (res.ok) {
+        fetchClients();
+      } else {
+        alert("Failed to update hours.");
+      }
+    } catch (error) {
+      console.error("Error updating hours:", error);
     }
   };
 
-  const resetHours = async (id) => {
-    await updateHours(id, 0); // Reset hours to 0
+  const resetHours = async (id: number) => {
+    await updateHours(id, "0");
   };
 
-  const deleteClient = async (id) => {
+  const deleteClient = async (id: number) => {
     const token = Cookies.get("authToken");
-    const res = await fetch(`/api/admin/clients`, {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({ id }),
-    });
+    if (!token) return;
 
-    if (res.ok) fetchClients();
-    else alert("Failed to delete client.");
+    try {
+      const res = await fetch("/api/admin/clients", {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ id }),
+      });
+
+      if (res.ok) {
+        fetchClients();
+      } else {
+        alert("Failed to delete client.");
+      }
+    } catch (error) {
+      console.error("Error deleting client:", error);
+    }
   };
 
   if (!isAuthenticated) {
@@ -188,13 +221,21 @@ const AdminLoyaltyPage = () => {
                     placeholder="Update hours"
                     onChange={(e) => setHours(e.target.value)}
                   />
-                  <Button onClick={() => updateHours(client.id, hours)}>Update</Button>
+                  <Button
+                    ml={2}
+                    onClick={() => updateHours(client.id, hours)}
+                  >
+                    Update
+                  </Button>
                 </Td>
                 <Td>
                   <Button onClick={() => resetHours(client.id)}>Reset Hours</Button>
                 </Td>
                 <Td>
-                  <Button colorScheme="red" onClick={() => deleteClient(client.id)}>
+                  <Button
+                    colorScheme="red"
+                    onClick={() => deleteClient(client.id)}
+                  >
                     Delete
                   </Button>
                 </Td>
