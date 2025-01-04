@@ -6,7 +6,7 @@ import MotionSection from "../components/MotionSection";
 import Head from "next/head";
 import Script from "next/script";
 import TextCard from "../components/TextCard";
-import styles from "./artists/MikePage.module.css";
+import styles from "../components/TextCard.module.css";
 
 const structuredData = {
   "@context": "http://schema.org",
@@ -95,6 +95,7 @@ const AfterCarePage: React.FC = () => {
       >
         {JSON.stringify(structuredData)}
       </Script>
+      <Box className={styles.neonLines}></Box>
 
       <Box
         as="main"

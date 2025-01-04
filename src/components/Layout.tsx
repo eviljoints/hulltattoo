@@ -1,5 +1,3 @@
-// ./src/components/Layout.tsx
-
 import React, { ReactNode } from "react";
 import Link from "next/link";
 import Image from "next/image";
@@ -9,6 +7,7 @@ import {
   FaHome,
   FaFirstAid,
   FaQuestionCircle,
+  FaStar,
 } from "react-icons/fa";
 import {
   Menu,
@@ -68,6 +67,11 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           {/* FAQ Link on Desktop */}
           <Link href="/faq" passHref>
             <a className="navbar-link">FAQ</a>
+          </Link>
+
+          {/* Loyalty Page Link for Desktop */}
+          <Link href="/loyalty" passHref>
+            <a className="navbar-link">Loyalty</a>
           </Link>
 
           {/* Artists Dropdown (Desktop) */}
@@ -176,6 +180,13 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         <Link href="/faq" passHref>
           <a className="navbar-icon" aria-label="FAQ">
             <FaQuestionCircle />
+          </a>
+        </Link>
+
+        {/* Loyalty Page Link for Mobile */}
+        <Link href="/loyalty" passHref>
+          <a className="navbar-icon" aria-label="Loyalty">
+            <FaStar />
           </a>
         </Link>
 

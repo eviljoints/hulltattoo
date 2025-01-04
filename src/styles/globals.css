@@ -28,6 +28,16 @@
 *::after {
   box-sizing: border-box;
 }
+/* Slick Carousel styles */
+.slick-prev:before,
+.slick-next:before {
+  color: white;
+}
+
+.slick-dots li button:before {
+  color: white;
+}
+
 
 /* Prevent horizontal scrolling */
 html, body {

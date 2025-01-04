@@ -1,11 +1,12 @@
-// ./src/pages/faq.tsx
-
 import React from "react";
-import { Box, VStack, Text, Heading, SimpleGrid } from "@chakra-ui/react";
+import { Box, VStack, Text, Heading } from "@chakra-ui/react";
 import MotionSection from "../components/MotionSection";
 import Head from "next/head";
 import Script from "next/script";
-import styles from "./artists/MikePage.module.css";
+import Slider from "react-slick"; // Import the carousel library
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
+import styles from "../components/TextCard.module.css";
 import { PrismaClient } from "@prisma/client";
 
 interface FAQ {
@@ -29,37 +30,51 @@ interface FAQPageProps {
 const faqs: FAQ[] = [
   {
     question: "How do I book an appointment?",
-    answer: "You can book online through our website or call the studio directly."
+    answer: "You can book online through our website or call the studio directly.",
   },
   {
     question: "Do you accept walk-ins?",
-    answer: "We do accept walk-ins when artists are available, but booking is encouraged."
+    answer: "We do accept walk-ins when artists are available, but booking is encouraged.",
   },
   {
     question: "What should I do to prepare for my appointment?",
-    answer: "Get a good night’s sleep, stay hydrated, and eat a meal beforehand. Avoid alcohol and drugs before your session."
+    answer:
+      "Get a good night’s sleep, stay hydrated, and eat a meal beforehand. Avoid alcohol and drugs before your session.",
   },
   {
     question: "How do I care for my new tattoo?",
-    answer: "Follow our aftercare instructions, keep it clean, moisturized, and protected from direct sunlight."
-  }
+    answer:
+      "Follow our aftercare instructions, keep it clean, moisturized, and protected from direct sunlight.",
+  },
 ];
 
 // FAQ Schema for SEO
 const faqStructuredData = {
   "@context": "http://schema.org",
   "@type": "FAQPage",
-  "mainEntity": faqs.map((faq) => ({
+  mainEntity: faqs.map((faq) => ({
     "@type": "Question",
-    "name": faq.question,
-    "acceptedAnswer": {
+    name: faq.question,
+    acceptedAnswer: {
       "@type": "Answer",
-      "text": faq.answer
-    }
-  }))
+      text: faq.answer,
+    },
+  })),
 };
 
 const FAQPage: React.FC<FAQPageProps> = ({ faqs, reviews }) => {
+  // Carousel settings for react-slick
+  const carouselSettings = {
+    dots: true,
+    infinite: true,
+    speed: 500,
+    slidesToShow: 1,
+    slidesToScroll: 1,
+    autoplay: true,
+    autoplaySpeed: 3000,
+    pauseOnHover: true,
+  };
+
   return (
     <>
       <Head>
@@ -85,14 +100,10 @@ const FAQPage: React.FC<FAQPageProps> = ({ faqs, reviews }) => {
         <link rel="canonical" href="https://www.hulltattoostudio.com/faq" />
       </Head>
 
-      <Script
-        id="faq-structured-data"
-        type="application/ld+json"
-        strategy="beforeInteractive"
-      >
+      <Script id="faq-structured-data" type="application/ld+json" strategy="beforeInteractive">
         {JSON.stringify(faqStructuredData)}
       </Script>
-
+      <Box className={styles.neonLines}></Box>
       <Box
         as="main"
         position="relative"
@@ -115,6 +126,7 @@ const FAQPage: React.FC<FAQPageProps> = ({ faqs, reviews }) => {
           position="relative"
           zIndex="1"
         >
+          {/* FAQ Section */}
           <MotionSection
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
@@ -152,6 +164,7 @@ const FAQPage: React.FC<FAQPageProps> = ({ faqs, reviews }) => {
             </VStack>
           </MotionSection>
 
+          {/* Carousel Section */}
           <MotionSection
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -170,7 +183,7 @@ const FAQPage: React.FC<FAQPageProps> = ({ faqs, reviews }) => {
               What Our Clients Say
             </Heading>
             {reviews.length > 0 ? (
-              <SimpleGrid columns={{ base: 1, md: 2 }} spacing={6} maxW="800px" mx="auto" mb={10}>
+              <Slider {...carouselSettings}>
                 {reviews.map((review, i) => (
                   <Box
                     key={i}
@@ -178,6 +191,7 @@ const FAQPage: React.FC<FAQPageProps> = ({ faqs, reviews }) => {
                     p={6}
                     borderRadius="md"
                     boxShadow="0 0 10px #ff007f, 0 0 20px #00d4ff"
+                    textAlign="center"
                   >
                     <Text fontWeight="bold" mb={2}>
                       {review.name} - {`${review.rating}★`}
@@ -190,7 +204,7 @@ const FAQPage: React.FC<FAQPageProps> = ({ faqs, reviews }) => {
                     </Text>
                   </Box>
                 ))}
-              </SimpleGrid>
+              </Slider>
             ) : (
               <Text textAlign="center" fontSize="lg" mb={10}>
                 No reviews available at this time.
@@ -223,7 +237,7 @@ export async function getStaticProps() {
   return {
     props: {
       faqs,
-      reviews
-    }
+      reviews,
+    },
   };
 }

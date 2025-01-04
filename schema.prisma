@@ -13,4 +13,16 @@ model Review {
   rating    Int
   comment   String
   createdAt DateTime @default(now())
+  status    String   @default("pending") // "pending", "approved", "rejected"
 }
+model Client {
+  id          Int      @id @default(autoincrement())
+  name        String
+  hours       Int      @default(0) // Total hours tattooed
+  stamps      Int      @default(0) // Stamps earned
+  clientId    String   @unique // Unique identifier for the client
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+

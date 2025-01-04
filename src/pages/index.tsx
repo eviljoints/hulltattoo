@@ -98,7 +98,7 @@ const HomePage: React.FC<HomePageProps> = ({ artists, error }) => {
         />
       </Head>
 
-      <HomePageBackground />
+      <Box className={styles.neonLines}></Box>
 
       <Box
         as="main"
