@@ -1,6 +1,6 @@
 import React from "react";
-import { Box, Text, Image } from "@chakra-ui/react";
-import styles from "./TextCard.module.css"; // Ensure the path is correct
+import { Box, Text } from "@chakra-ui/react";
+import styles from "./TextCard.module.css";
 
 interface Stripe {
   left: string;
@@ -9,12 +9,11 @@ interface Stripe {
 }
 
 interface TextCardProps {
-  title: React.ReactNode;  // Updated to React.ReactNode
+  title: React.ReactNode;  // Title can be any React node now
   subtitle?: string;
-  description: string;
+  // 'description' is a string, but we interpret it as HTML via dangerouslySetInnerHTML
+  description: string;  
   footer?: string;
-  leftImage?: string;
-  rightImage?: string;
   stripes: Stripe[];
   align?: "left" | "center";
 }
@@ -24,8 +23,6 @@ const TextCard: React.FC<TextCardProps> = ({
   subtitle,
   description,
   footer,
-  leftImage,
-  rightImage,
   stripes,
   align = "center",
 }) => {
@@ -33,7 +30,7 @@ const TextCard: React.FC<TextCardProps> = ({
     <Box
       position="relative"
       zIndex="0"
-      bg="rgba(0, 0, 0, 0.6)" // Semi-transparent background
+      bg="rgba(0, 0, 0, 0.6)"
       borderRadius="md"
       p={6}
       overflow="hidden"
@@ -43,7 +40,7 @@ const TextCard: React.FC<TextCardProps> = ({
       maxW="800px"
       mx="auto"
     >
-      {/* Background Stripes */}
+      {/* Render stripes in the background */}
       {stripes.map((stripe, index) => (
         <Box
           key={index}
@@ -72,7 +69,7 @@ const TextCard: React.FC<TextCardProps> = ({
         {title}
       </Text>
 
-      {/* Subtitle */}
+      {/* Subtitle (optional) */}
       {subtitle && (
         <Text
           fontSize="lg"
@@ -85,7 +82,7 @@ const TextCard: React.FC<TextCardProps> = ({
         </Text>
       )}
 
-      {/* Description */}
+      {/* Description with HTML */}
       <Box
         fontSize={{ base: "md", md: "lg" }}
         color="white"
@@ -94,10 +91,11 @@ const TextCard: React.FC<TextCardProps> = ({
         textShadow="0 0 5px #ff007f, 0 0 10px #00d4ff"
         mb={4}
         className="text-card-content"
+        // Use dangerouslySetInnerHTML to render HTML strings
         dangerouslySetInnerHTML={{ __html: description }}
       />
 
-      {/* Footer */}
+      {/* Footer (optional) */}
       {footer && (
         <Text
           fontSize="lg"

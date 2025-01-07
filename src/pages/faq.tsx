@@ -3,38 +3,22 @@ import { Box, VStack, Text, Heading } from "@chakra-ui/react";
 import MotionSection from "../components/MotionSection";
 import Head from "next/head";
 import Script from "next/script";
-import Slider from "react-slick"; // Import the carousel library
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
 import styles from "../components/TextCard.module.css";
-import { PrismaClient } from "@prisma/client";
 
-interface FAQ {
-  question: string;
-  answer: string;
-}
-
-interface CustomReview {
-  name: string;
-  rating: number;
-  comment: string;
-  createdAt: string;
-}
-
-interface FAQPageProps {
-  faqs: FAQ[];
-  reviews: CustomReview[];
-}
-
-// Sample FAQ data (hardcoded - completely static)
-const faqs: FAQ[] = [
+// Updated FAQ list
+const faqs = [
   {
     question: "How do I book an appointment?",
-    answer: "You can book online through our website or call the studio directly.",
+    answer:
+      "You can book online via the online booking system, come in store and discuss it with ourselves (we recommend this for cover-ups), or via our social media platforms.",
   },
   {
     question: "Do you accept walk-ins?",
     answer: "We do accept walk-ins when artists are available, but booking is encouraged.",
+  },
+  {
+    question: "What payment methods do you accept?",
+    answer: "We accept cash, bank transfer, card payments, PayPal, and Klarna.",
   },
   {
     question: "What should I do to prepare for my appointment?",
@@ -62,19 +46,7 @@ const faqStructuredData = {
   })),
 };
 
-const FAQPage: React.FC<FAQPageProps> = ({ faqs, reviews }) => {
-  // Carousel settings for react-slick
-  const carouselSettings = {
-    dots: true,
-    infinite: true,
-    speed: 500,
-    slidesToShow: 1,
-    slidesToScroll: 1,
-    autoplay: true,
-    autoplaySpeed: 3000,
-    pauseOnHover: true,
-  };
-
+const FAQPage: React.FC = () => {
   return (
     <>
       <Head>
@@ -100,10 +72,14 @@ const FAQPage: React.FC<FAQPageProps> = ({ faqs, reviews }) => {
         <link rel="canonical" href="https://www.hulltattoostudio.com/faq" />
       </Head>
 
+      {/* Structured Data for SEO */}
       <Script id="faq-structured-data" type="application/ld+json" strategy="beforeInteractive">
         {JSON.stringify(faqStructuredData)}
       </Script>
+
+      {/* Neon background effects */}
       <Box className={styles.neonLines}></Box>
+
       <Box
         as="main"
         position="relative"
@@ -132,7 +108,6 @@ const FAQPage: React.FC<FAQPageProps> = ({ faqs, reviews }) => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
             viewport={{ once: true }}
-            mb={16}
           >
             <Heading
               as="h1"
@@ -163,54 +138,6 @@ const FAQPage: React.FC<FAQPageProps> = ({ faqs, reviews }) => {
               ))}
             </VStack>
           </MotionSection>
-
-          {/* Carousel Section */}
-          <MotionSection
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.8, delay: 0.3 }}
-            viewport={{ once: true }}
-            mt={16}
-          >
-            <Heading
-              as="h2"
-              size="xl"
-              color="white"
-              textAlign="center"
-              mb={8}
-              textShadow="0 0 10px #ff007f, 0 0 20px #00d4ff"
-            >
-              What Our Clients Say
-            </Heading>
-            {reviews.length > 0 ? (
-              <Slider {...carouselSettings}>
-                {reviews.map((review, i) => (
-                  <Box
-                    key={i}
-                    bg="rgba(0,0,0,0.5)"
-                    p={6}
-                    borderRadius="md"
-                    boxShadow="0 0 10px #ff007f, 0 0 20px #00d4ff"
-                    textAlign="center"
-                  >
-                    <Text fontWeight="bold" mb={2}>
-                      {review.name} - {`${review.rating}★`}
-                    </Text>
-                    <Text fontSize="md" lineHeight="1.8">
-                      {review.comment}
-                    </Text>
-                    <Text fontSize="sm" fontStyle="italic" mt={2}>
-                      Posted: {new Date(review.createdAt).toLocaleDateString()}
-                    </Text>
-                  </Box>
-                ))}
-              </Slider>
-            ) : (
-              <Text textAlign="center" fontSize="lg" mb={10}>
-                No reviews available at this time.
-              </Text>
-            )}
-          </MotionSection>
         </Box>
       </Box>
     </>
@@ -218,26 +145,3 @@ const FAQPage: React.FC<FAQPageProps> = ({ faqs, reviews }) => {
 };
 
 export default FAQPage;
-
-export async function getStaticProps() {
-  const prisma = new PrismaClient();
-
-  // Fetch reviews from your database
-  const reviewsFromDB = await prisma.review.findMany({
-    orderBy: { createdAt: 'desc' },
-  });
-
-  const reviews: CustomReview[] = reviewsFromDB.map((r) => ({
-    name: r.name,
-    rating: r.rating,
-    comment: r.comment,
-    createdAt: r.createdAt.toISOString(),
-  }));
-
-  return {
-    props: {
-      faqs,
-      reviews,
-    },
-  };
-}

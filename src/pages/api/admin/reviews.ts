@@ -1,3 +1,4 @@
+// src\pages\api\admin\reviews.ts
 import { NextApiRequest, NextApiResponse } from "next";
 import { PrismaClient } from "@prisma/client";
 import { authenticateAdmin } from "../../../../auth";

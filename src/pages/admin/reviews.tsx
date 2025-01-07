@@ -1,3 +1,4 @@
+//src\pages\admin\reviews.tsx
 import React, { useEffect, useState } from "react";
 import { Box, Button, Text, VStack, Heading, Select } from "@chakra-ui/react";
 import Cookies from "js-cookie";

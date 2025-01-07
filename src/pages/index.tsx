@@ -1,13 +1,14 @@
 import React from "react";
-import { Box, Grid, Spinner, Center } from "@chakra-ui/react";
+import { Box, Grid, Spinner, Center, Flex } from "@chakra-ui/react";
 import MotionSection from "../components/MotionSection";
 import Head from "next/head";
 import ArtistCard from "../components/ArtistCard";
-import HomePageBackground from "../components/HomePageBackground";
 import TextCard from "../components/TextCard";
 import FindUs from "../components/FindUS";
 import axios from "axios";
 import styles from "../components/TextCard.module.css";
+import ReviewsModal from "~/components/ReviewsModal";
+import ContactUsModal from "~/components/ContactUsModal";
 
 interface Stripe {
   left: string;
@@ -50,16 +51,16 @@ const HomePage: React.FC<HomePageProps> = ({ artists, error }) => {
 
   const structuredData = {
     "@context": "http://schema.org",
-    "@type": "TattooParlor",
+    "@type": "TattooStudio",
     "name": "Hull Tattoo Studio",
     "description": "Professional tattoo studio in Hull offering various styles including realism, blackwork, anime, and apprentice work.",
     "image": "https://www.hulltattoostudio.com/images/og-image.jpg",
     "url": "https://www.hulltattoostudio.com",
     "address": {
       "@type": "PostalAddress",
-      "streetAddress": "123 Hull Street",
+      "streetAddress": "652 Anlaby road",
       "addressLocality": "Hull",
-      "postalCode": "HU1 1AA",
+      "postalCode": "HU3 6UU",
       "addressCountry": "UK"
     },
     "openingHours": "Tu-F 09:30-15:00, Sa 11:30-18:00",
@@ -99,7 +100,6 @@ const HomePage: React.FC<HomePageProps> = ({ artists, error }) => {
       </Head>
 
       <Box className={styles.neonLines}></Box>
-
       <Box
         as="main"
         position="relative"
@@ -128,35 +128,113 @@ const HomePage: React.FC<HomePageProps> = ({ artists, error }) => {
             mb={16}
           >
             <TextCard
-              title="WELCOME TO HULL TATTOO STUDIO"
-              description={`At Hull Tattoo Studio, our knowledgeable artists strive to create the best tattoos possible. We provide a warm and welcoming atmosphere to make every client feel as comfortable as possible during the tattoo procedure. Trust us to bring your tattoo ideas to life!
-    
-There is free parking very close to the studio and convenient bus stops providing easy means of transport.`}
-              footer="OPEN TUES-FRI 9:30-15:00 | SAT 11:30-18:00"
-              stripes={[
-                { left: "10%", width: "10px", color: "#ff007f" },
-                { left: "30%", width: "15px", color: "#00d4ff" },
-              ]}
-            />
+  title="WELCOME TO HULL TATTOO STUDIO"
+  description={`
+    <p>
+      At Hull Tattoo Studio, our knowledgeable artists strive to create exceptional tattoos
+      that reflect your unique style. Whether you’re seeking a vibrant custom design or a
+      subtle black-and-grey masterpiece, we take pride in being the go-to choice for tattoos
+      in Hull.
+    </p>
+
+    <p>
+      Our welcoming environment, combined with expert skill and a passion for artistry,
+      ensures that every client feels confident in choosing Hull Tattoo Studio for their
+      next piece. As a leading tattoo artist in Hull, we remain committed to delivering safe,
+      innovative, and personalized services — leaving you with a tattoo you’ll be proud of
+      for years to come.
+    </p>
+  `}
+  footer="OPEN TUES-FRI 9:30-15:00 | SAT 11:30-18:00"
+  stripes={[
+    { left: "10%", width: "10px", color: "#ff007f" },
+    { left: "30%", width: "15px", color: "#00d4ff" },
+  ]}
+/>
+
           </MotionSection>
 
+          {/* Buttons side by side */}
+          <Center mb={10}>
+            <Flex gap={4} flexWrap="wrap" justify="center">
+              <ReviewsModal
+                buttonProps={{
+                  w: "200px",
+                  colorScheme: "blue",
+                  boxShadow: "0 0 10px #00d4ff",
+                  _hover: {
+                    boxShadow: "0 0 20px #00d4ff, 0 0 40px #ff007f",
+                    transform: "scale(1.05)",
+                  },
+                }}
+              />
+              <ContactUsModal
+                buttonProps={{
+                  w: "200px",
+                  colorScheme: "pink",
+                  boxShadow: "0 0 10px #ff007f",
+                  _hover: {
+                    boxShadow: "0 0 20px #ff007f, 0 0 40px #00d4ff",
+                    transform: "scale(1.05)",
+                  },
+                }}
+              />
+            </Flex>
+          </Center>
+
+          {/* Example content, e.g. an Artists section */}
           <MotionSection
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             transition={{ duration: 0.8, delay: 0.3 }}
             viewport={{ once: true }}
+            mb={16}
           >
             <TextCard
-              title="ARTISTS"
-              subtitle=""
-              description="Meet our talented artists who specialize in various tattoo styles. Click their profiles to explore their work."
-              stripes={[
-                { left: "10%", width: "10px", color: "#ff007f" },
-                { left: "30%", width: "15px", color: "#00d4ff" },
-              ]}
-            />
+  title="ARTISTS"
+  description={`
+    <p>
+      Meet our talented team at Hull Tattoo Studio, your premier destination
+      for tattoos in Hull.
+    </p>
+    </br>
 
-            <Box h={10} />
+    <p>
+      <strong>Eggtattooer (Mike)</strong>, specializes in
+      black and gray and color realism tattoos, backed by roughly 8 years of
+      industry experience. He’s constantly honing his craft and is currently
+      sponsored by 
+      <a href="https://hulltattoostudio.com/aftercare" style="color:#00d4ff;">
+       <strong> Apollo Tattoo Aftercare </strong>
+      </a>.
+    </p>
+    </br>
+
+    <p>
+      <strong>Poppy</strong>, focuses on simple black
+      and gray, blackwork, and limited color pieces. She’s easy to talk with
+      and always happy to discuss your unique ideas. Follow her journey on
+      her <a href="/poppy" style="color:#00d4ff;">Poppy Page</a>.
+    </p>
+    </br>
+
+    <p>
+      <strong>Harley</strong>, our latest addition, is diligently practicing
+      on fake skin with a goal to specialize in blackwork and pointillism.
+      Stay tuned for updates on her
+      <a href="/harley" style="color:#00d4ff;">
+        Harleys page
+      </a>
+      as she refines her skills.
+    </p>
+  `}
+  stripes={[
+    { left: "10%", width: "10px", color: "#ff007f" },
+    { left: "30%", width: "15px", color: "#00d4ff" },
+  ]}
+/>
+
+
 
             <Grid
               templateColumns={{
@@ -164,6 +242,7 @@ There is free parking very close to the studio and convenient bus stops providin
                 md: "repeat(auto-fit, minmax(250px, 1fr))",
               }}
               gap={10}
+              mt={8}
             >
               {artists.map((artist, index) => (
                 <ArtistCard
@@ -192,7 +271,6 @@ There is free parking very close to the studio and convenient bus stops providin
 
 export const getStaticProps = async () => {
   try {
-    // Adjust the API endpoint as needed
     const response = await axios.get("https://www.hulltattoostudio.com/api/artists");
     return {
       props: {
