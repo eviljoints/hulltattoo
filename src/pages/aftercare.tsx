@@ -95,7 +95,7 @@ const AfterCarePage: React.FC = () => {
       >
         {JSON.stringify(structuredData)}
       </Script>
-      <Box className={styles.neonLines}></Box>
+      
 
       <Box
         as="main"

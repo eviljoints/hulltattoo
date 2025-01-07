@@ -6,7 +6,7 @@ import ArtistCard from "../components/ArtistCard";
 import TextCard from "../components/TextCard";
 import FindUs from "../components/FindUS";
 import axios from "axios";
-import styles from "../components/TextCard.module.css";
+
 import ReviewsModal from "~/components/ReviewsModal";
 import ContactUsModal from "~/components/ContactUsModal";
 
@@ -64,7 +64,7 @@ const HomePage: React.FC<HomePageProps> = ({ artists, error }) => {
       "addressCountry": "UK"
     },
     "openingHours": "Tu-F 09:30-15:00, Sa 11:30-18:00",
-    "telephone": "+44-XXXX-XXXXXX"
+    "telephone": "07940080790"
   };
 
   return (
@@ -99,7 +99,7 @@ const HomePage: React.FC<HomePageProps> = ({ artists, error }) => {
         />
       </Head>
 
-      <Box className={styles.neonLines}></Box>
+      
       <Box
         as="main"
         position="relative"
@@ -110,7 +110,7 @@ const HomePage: React.FC<HomePageProps> = ({ artists, error }) => {
         minH="100vh"
         bg="transparent"
       >
-        <Box className={styles.backgroundLines} />
+        
 
         <Box
           bgGradient="radial(rgba(54, 39, 255, 0.6), rgba(128, 0, 128, 0.6), rgba(0, 0, 0, 0.6))"

@@ -1,4 +1,4 @@
-//src\pages\admin\reviews.tsx
+// src\pages\admin\reviews.tsx
 import React, { useEffect, useState } from "react";
 import { Box, Button, Text, VStack, Heading, Select } from "@chakra-ui/react";
 import Cookies from "js-cookie";
@@ -13,6 +13,14 @@ const AdminReviews = () => {
     const token = Cookies.get("authToken");
     if (token) validateToken(token);
   }, []);
+
+  // ⇩⇩ NEW EFFECT: re-fetch reviews on statusFilter or isAuthenticated change ⇩⇩
+  useEffect(() => {
+    if (isAuthenticated) {
+      fetchReviews();
+    }
+  }, [statusFilter, isAuthenticated]);
+  // ⇧⇧ NEW EFFECT: re-fetch reviews on statusFilter or isAuthenticated change ⇧⇧
 
   // Validate existing token
   const validateToken = async (token: string) => {
@@ -153,9 +161,7 @@ const AdminReviews = () => {
 
       <Select
         value={statusFilter}
-        onChange={(e) => {
-          setStatusFilter(e.target.value);
-        }}
+        onChange={(e) => setStatusFilter(e.target.value)}
         mb={4}
       >
         <option value="pending">Pending</option>

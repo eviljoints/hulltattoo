@@ -11,7 +11,7 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import { motion } from "framer-motion";
-import styles from "../components/TextCard.module.css"; // NeonLines style
+
 
 interface ClientData {
   name: string;
@@ -105,7 +105,7 @@ const ClientLoyaltyPage = () => {
       overflow="hidden"
     >
       {/* Neon Lines Background */}
-      <Box className={styles.neonLines}></Box>
+      
 
       {/* Page Content Wrapper */}
       <Box

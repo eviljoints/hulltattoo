@@ -78,7 +78,7 @@ const FAQPage: React.FC = () => {
       </Script>
 
       {/* Neon background effects */}
-      <Box className={styles.neonLines}></Box>
+     
 
       <Box
         as="main"
