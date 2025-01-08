@@ -8,7 +8,8 @@ import {
   FaFirstAid,
   FaQuestionCircle,
   FaStar,
-  FaNewspaper, // <-- import an icon for "Blog"
+  FaNewspaper,
+  FaYoutube,
 } from "react-icons/fa";
 import {
   Menu,
@@ -51,6 +52,37 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
               />
             </a>
           </Link>
+        </div>
+
+        {/* Icons under logo using the same classes as the footer */}
+        <div className="footer-socials">
+          <a
+            href="https://www.instagram.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="footer-icon"
+            aria-label="Instagram"
+          >
+            <FaInstagram />
+          </a>
+          <a
+            href="https://www.facebook.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="footer-icon"
+            aria-label="Facebook"
+          >
+            <FaFacebook />
+          </a>
+          <a
+            href="https://www.youtube.com/@HTSpodcast"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="footer-icon"
+            aria-label="YouTube"
+          >
+            <FaYoutube />
+          </a>
         </div>
       </header>
 
@@ -104,7 +136,9 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                 color="white"
               >
                 <Link href="/mike" passHref>
-                  <a style={{ textDecoration: "none", color: "inherit" }}>Mike</a>
+                  <a style={{ textDecoration: "none", color: "inherit" }}>
+                    Mike
+                  </a>
                 </Link>
               </MenuItem>
               <MenuItem
@@ -113,7 +147,9 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                 color="white"
               >
                 <Link href="/poppy" passHref>
-                  <a style={{ textDecoration: "none", color: "inherit" }}>Poppy</a>
+                  <a style={{ textDecoration: "none", color: "inherit" }}>
+                    Poppy
+                  </a>
                 </Link>
               </MenuItem>
               <MenuItem
@@ -122,7 +158,9 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                 color="white"
               >
                 <Link href="/harley" passHref>
-                  <a style={{ textDecoration: "none", color: "inherit" }}>Harley</a>
+                  <a style={{ textDecoration: "none", color: "inherit" }}>
+                    Harley
+                  </a>
                 </Link>
               </MenuItem>
             </MenuList>
@@ -153,6 +191,15 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             aria-label="Facebook"
           >
             <FaFacebook />
+          </a>
+          <a
+            href="https://www.youtube.com/@HTSpodcast"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="footer-icon"
+            aria-label="YouTube"
+          >
+            <FaYoutube />
           </a>
         </div>
         <p className="footer-text">
