@@ -30,7 +30,8 @@ const FindUs: React.FC = () => {
         >
           Hull Tattoo Studio <br />
           652 Anlaby Road, <br />
-          Hull, HU3 6UU, UK
+          Hull, HU3 6UU, UK <br />
+          Tel. 07940080790
         </Text>
 
         {/* Google Maps Embed */}

@@ -8,6 +8,7 @@ import {
   FaFirstAid,
   FaQuestionCircle,
   FaStar,
+  FaNewspaper, // <-- import an icon for "Blog"
 } from "react-icons/fa";
 import {
   Menu,
@@ -18,7 +19,6 @@ import {
   Box,
 } from "@chakra-ui/react";
 import { ChevronDownIcon } from "@chakra-ui/icons";
-
 
 interface LayoutProps {
   children: ReactNode;
@@ -75,6 +75,11 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             <a className="navbar-link">Loyalty</a>
           </Link>
 
+          {/* Blog Link on Desktop */}
+          <Link href="/blog" passHref>
+            <a className="navbar-link">Blog</a>
+          </Link>
+
           {/* Artists Dropdown (Desktop) */}
           <Menu>
             <MenuButton
@@ -99,9 +104,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                 color="white"
               >
                 <Link href="/mike" passHref>
-                  <a style={{ textDecoration: "none", color: "inherit" }}>
-                    Mike
-                  </a>
+                  <a style={{ textDecoration: "none", color: "inherit" }}>Mike</a>
                 </Link>
               </MenuItem>
               <MenuItem
@@ -110,9 +113,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                 color="white"
               >
                 <Link href="/poppy" passHref>
-                  <a style={{ textDecoration: "none", color: "inherit" }}>
-                    Poppy
-                  </a>
+                  <a style={{ textDecoration: "none", color: "inherit" }}>Poppy</a>
                 </Link>
               </MenuItem>
               <MenuItem
@@ -121,9 +122,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                 color="white"
               >
                 <Link href="/harley" passHref>
-                  <a style={{ textDecoration: "none", color: "inherit" }}>
-                    Harley
-                  </a>
+                  <a style={{ textDecoration: "none", color: "inherit" }}>Harley</a>
                 </Link>
               </MenuItem>
             </MenuList>
@@ -191,6 +190,13 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           </a>
         </Link>
 
+        {/* Blog Link on Mobile */}
+        <Link href="/blog" passHref>
+          <a className="navbar-icon" aria-label="Blog">
+            <FaNewspaper />
+          </a>
+        </Link>
+
         {/* Artists Dropdown for Mobile */}
         <Menu>
           <MenuButton
@@ -215,9 +221,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
               color="white"
             >
               <Link href="/mike" passHref>
-                <a style={{ textDecoration: "none", color: "inherit" }}>
-                  Mike
-                </a>
+                <a style={{ textDecoration: "none", color: "inherit" }}>Mike</a>
               </Link>
             </MenuItem>
             <MenuItem
@@ -226,9 +230,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
               color="white"
             >
               <Link href="/poppy" passHref>
-                <a style={{ textDecoration: "none", color: "inherit" }}>
-                  Poppy
-                </a>
+                <a style={{ textDecoration: "none", color: "inherit" }}>Poppy</a>
               </Link>
             </MenuItem>
             <MenuItem
@@ -237,9 +239,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
               color="white"
             >
               <Link href="/harley" passHref>
-                <a style={{ textDecoration: "none", color: "inherit" }}>
-                  Harley
-                </a>
+                <a style={{ textDecoration: "none", color: "inherit" }}>Harley</a>
               </Link>
             </MenuItem>
           </MenuList>
