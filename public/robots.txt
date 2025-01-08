@@ -1,0 +1,9 @@
+# *
+User-agent: *
+Allow: /
+
+# Host
+Host: https://hulltattoostudio.com
+
+# Sitemaps
+Sitemap: https://hulltattoostudio.com/sitemap.xml
