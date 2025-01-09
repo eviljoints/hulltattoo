@@ -21,6 +21,9 @@ interface ContactUsModalProps {
   buttonProps?: ButtonProps; // Allows external styles
 }
 
+const MAX_FILE_SIZE_MB = 5; // 5 MB limit
+const MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024;
+
 const ContactUsModal: React.FC<ContactUsModalProps> = ({ buttonProps }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [name, setName] = useState("");
@@ -36,6 +39,23 @@ const ContactUsModal: React.FC<ContactUsModalProps> = ({ buttonProps }) => {
     setMessage("");
     setImages(null);
     setSuccessMessage(null);
+  };
+
+  // Validate files on selection
+  const handleFileSelection = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const selectedFiles = e.target.files;
+    if (!selectedFiles) return;
+
+    // Check each file's size
+    for (const file of Array.from(selectedFiles)) {
+      if (file.size > MAX_FILE_SIZE_BYTES) {
+        alert(`File "${file.name}" exceeds ${MAX_FILE_SIZE_MB} MB. Please select smaller files.`);
+        e.target.value = ""; // Reset the file input
+        return; // Exit so we don't set large file
+      }
+    }
+
+    setImages(selectedFiles);
   };
 
   const handleSubmit = async () => {
@@ -54,6 +74,15 @@ const ContactUsModal: React.FC<ContactUsModalProps> = ({ buttonProps }) => {
       formData.append("message", message);
 
       if (images) {
+        // (Optional double-check) Validate file sizes again before sending
+        for (const file of Array.from(images)) {
+          if (file.size > MAX_FILE_SIZE_BYTES) {
+            alert(`File "${file.name}" exceeds ${MAX_FILE_SIZE_MB} MB. Please select smaller files.`);
+            setIsSubmitting(false);
+            return;
+          }
+        }
+
         Array.from(images).forEach((file, index) =>
           formData.append(`image${index}`, file)
         );
@@ -134,12 +163,14 @@ const ContactUsModal: React.FC<ContactUsModalProps> = ({ buttonProps }) => {
                   />
                 </FormControl>
                 <FormControl mb={4}>
-                  <FormLabel color="white">Upload Images (Optional)</FormLabel>
+                  <FormLabel color="white">
+                    Upload Images (Optional, max {MAX_FILE_SIZE_MB} MB each)
+                  </FormLabel>
                   <Input
                     type="file"
                     accept="image/*"
                     multiple
-                    onChange={(e) => setImages(e.target.files)}
+                    onChange={handleFileSelection}
                     bg="white"
                     color="black"
                   />
