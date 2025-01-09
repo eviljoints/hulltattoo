@@ -5,7 +5,7 @@ import fs from "fs/promises";
 
 export const config = {
   api: {
-    bodyParser: false, // Disable body parsing to handle file uploads
+    bodyParser: false,
   },
 };
 
@@ -40,13 +40,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   try {
     const { fields, files } = await parseForm(req);
+
     const { name, emailOrPhone, message } = fields;
 
+    // Validate mandatory fields
     if (!name || !emailOrPhone || !message) {
-      return res.status(400).json({ error: "All mandatory fields must be filled." });
+      return res
+        .status(400)
+        .json({ error: "Please provide your name, email/phone, and message." });
     }
 
-    // Validate total file count
+    // Validate total file count and size
     const totalFiles = Object.values(files as Record<string, File | File[]>).reduce(
       (acc, fileList) => acc + (Array.isArray(fileList) ? fileList.length : 1),
       0
@@ -66,9 +70,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
               const file = fileObj as File;
               const fileBuffer = await fs.readFile(file.filepath);
               return {
-                filename: file.originalFilename, // Use original file name
-                content: fileBuffer, // File content as a buffer
-                contentType: file.mimetype || "application/octet-stream", // MIME type
+                filename: file.originalFilename,
+                content: fileBuffer,
+                contentType: file.mimetype || "application/octet-stream",
               };
             })
           );
@@ -99,6 +103,22 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return res.status(200).json({ message: "Your message has been sent successfully!" });
   } catch (error: any) {
     console.error("[contact.ts] Unexpected error:", error);
-    return res.status(500).json({ error: "An unexpected error occurred. Please try again later." });
+
+    // Handle Formidable errors
+    if (error.code === "LIMIT_FILE_SIZE") {
+      return res
+        .status(413)
+        .json({ error: `A file exceeds the maximum allowed size of ${MAX_FILE_SIZE_MB} MB.` });
+    }
+
+    if (error.message.includes("Request timeout")) {
+      return res
+        .status(504)
+        .json({ error: "The request timed out. Please try again with fewer or smaller files." });
+    }
+
+    return res
+      .status(500)
+      .json({ error: "An unexpected error occurred. Please try again later." });
   }
 }

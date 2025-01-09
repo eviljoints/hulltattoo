@@ -64,7 +64,7 @@ const FAQPage: React.FC = () => {
           property="og:description"
           content="Got questions? Our FAQ page provides answers about booking, sessions, aftercare, and more."
         />
-        <meta property="og:image" content="/images/og-image.jpg" />
+        <meta property="og:image" content="/images/og-image.png" />
         <meta property="og:url" content="https://www.hulltattoostudio.com/faq" />
         <meta property="og:type" content="website" />
         <meta property="og:locale" content="en_GB" />

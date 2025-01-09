@@ -54,7 +54,7 @@ const HomePage: React.FC<HomePageProps> = ({ artists, error }) => {
     "@type": "TattooStudio",
     "name": "Hull Tattoo Studio",
     "description": "Professional tattoo studio in Hull offering various styles including realism, blackwork, anime, and apprentice work.",
-    "image": "https://www.hulltattoostudio.com/images/og-image.jpg",
+    "image": "https://www.hulltattoostudio.com/images/og-image.png",
     "url": "https://www.hulltattoostudio.com",
     "address": {
       "@type": "PostalAddress",
@@ -89,7 +89,7 @@ const HomePage: React.FC<HomePageProps> = ({ artists, error }) => {
   />
   <meta
     property="og:image"
-    content="https://www.hulltattoostudio.com/images/og-image.jpg"
+    content="https://www.hulltattoostudio.com/images/og-image.png"
   />
   <meta property="og:image:alt" content="A sample tattoo design from Hull Tattoo Studio" />
   <meta property="og:url" content="https://www.hulltattoostudio.com" />
@@ -105,7 +105,7 @@ const HomePage: React.FC<HomePageProps> = ({ artists, error }) => {
   />
   <meta
     name="twitter:image"
-    content="https://www.hulltattoostudio.com/images/og-image.jpg"
+    content="https://www.hulltattoostudio.com/images/og-image.png"
   />
   <meta name="twitter:image:alt" content="A sample tattoo design from Hull Tattoo Studio" />
 
