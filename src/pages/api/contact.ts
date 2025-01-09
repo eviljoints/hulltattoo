@@ -57,22 +57,24 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
 
     // Prepare email attachments
-    const attachments = await Promise.all(
-      Object.values(files).flatMap(async (fileList) => {
-        const filesArray = Array.isArray(fileList) ? fileList : [fileList];
-        return Promise.all(
-          filesArray.map(async (fileObj) => {
-            const file = fileObj as File;
-            const fileBuffer = await fs.readFile(file.filepath);
-            return {
-              filename: file.originalFilename,
-              content: fileBuffer,
-              contentType: file.mimetype || "application/octet-stream",
-            };
-          })
-        );
-      })
-    );
+    const attachments = (
+      await Promise.all(
+        Object.values(files).flatMap(async (fileList) => {
+          const filesArray = Array.isArray(fileList) ? fileList : [fileList];
+          return Promise.all(
+            filesArray.map(async (fileObj) => {
+              const file = fileObj as File;
+              const fileBuffer = await fs.readFile(file.filepath);
+              return {
+                filename: file.originalFilename, // Use original file name
+                content: fileBuffer, // File content as a buffer
+                contentType: file.mimetype || "application/octet-stream", // MIME type
+              };
+            })
+          );
+        })
+      )
+    ).flat();
 
     // Create Nodemailer transporter
     const transporter = nodemailer.createTransport({
