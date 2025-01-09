@@ -15,14 +15,17 @@ import {
   useDisclosure,
   Text,
   ButtonProps,
+  Alert,
+  AlertIcon,
 } from "@chakra-ui/react";
 
 interface ContactUsModalProps {
   buttonProps?: ButtonProps; // Allows external styles
 }
 
-const MAX_FILE_SIZE_MB = 5; // 5 MB limit
+const MAX_FILE_SIZE_MB = 5;        // 5 MB per file
 const MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024;
+const MAX_FILES = 10;              // user can select up to 3 files
 
 const ContactUsModal: React.FC<ContactUsModalProps> = ({ buttonProps }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -32,6 +35,7 @@ const ContactUsModal: React.FC<ContactUsModalProps> = ({ buttonProps }) => {
   const [images, setImages] = useState<FileList | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const resetForm = () => {
     setName("");
@@ -39,6 +43,7 @@ const ContactUsModal: React.FC<ContactUsModalProps> = ({ buttonProps }) => {
     setMessage("");
     setImages(null);
     setSuccessMessage(null);
+    setErrorMessage(null);
   };
 
   // Validate files on selection
@@ -46,25 +51,34 @@ const ContactUsModal: React.FC<ContactUsModalProps> = ({ buttonProps }) => {
     const selectedFiles = e.target.files;
     if (!selectedFiles) return;
 
+    // Check total file count
+    if (selectedFiles.length > MAX_FILES) {
+      setErrorMessage(`You can only upload up to ${MAX_FILES} files.`);
+      e.target.value = "";
+      return;
+    }
+
     // Check each file's size
     for (const file of Array.from(selectedFiles)) {
       if (file.size > MAX_FILE_SIZE_BYTES) {
-        alert(`File "${file.name}" exceeds ${MAX_FILE_SIZE_MB} MB. Please select smaller files.`);
-        e.target.value = ""; // Reset the file input
-        return; // Exit so we don't set large file
+        setErrorMessage(`File "${file.name}" exceeds ${MAX_FILE_SIZE_MB} MB.`);
+        e.target.value = "";
+        return; // Exit so we don’t set any large files
       }
     }
 
     setImages(selectedFiles);
+    setErrorMessage(null);
   };
 
   const handleSubmit = async () => {
     if (!name || !emailOrPhone || !message) {
-      alert("Please fill in all mandatory fields.");
+      setErrorMessage("Please fill in all mandatory fields.");
       return;
     }
 
     setIsSubmitting(true);
+    setErrorMessage(null);
 
     try {
       // Build form data to send to our Next.js API
@@ -74,10 +88,16 @@ const ContactUsModal: React.FC<ContactUsModalProps> = ({ buttonProps }) => {
       formData.append("message", message);
 
       if (images) {
-        // (Optional double-check) Validate file sizes again before sending
+        // Double-check file count and size before upload
+        if (images.length > MAX_FILES) {
+          setErrorMessage(`You can only upload up to ${MAX_FILES} files.`);
+          setIsSubmitting(false);
+          return;
+        }
+
         for (const file of Array.from(images)) {
           if (file.size > MAX_FILE_SIZE_BYTES) {
-            alert(`File "${file.name}" exceeds ${MAX_FILE_SIZE_MB} MB. Please select smaller files.`);
+            setErrorMessage(`File "${file.name}" exceeds ${MAX_FILE_SIZE_MB} MB.`);
             setIsSubmitting(false);
             return;
           }
@@ -97,11 +117,12 @@ const ContactUsModal: React.FC<ContactUsModalProps> = ({ buttonProps }) => {
       if (response.ok) {
         setSuccessMessage("Your message has been sent successfully!");
       } else {
-        alert("Failed to send your message. Please try again.");
+        const data = await response.json();
+        setErrorMessage(data.error || "Failed to send your message. Please try again.");
       }
     } catch (error) {
       console.error("Error submitting the form:", error);
-      alert("An error occurred. Please try again.");
+      setErrorMessage("An error occurred. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
@@ -132,6 +153,12 @@ const ContactUsModal: React.FC<ContactUsModalProps> = ({ buttonProps }) => {
               </Text>
             ) : (
               <>
+                {errorMessage && (
+                  <Alert status="error" mb={4}>
+                    <AlertIcon />
+                    {errorMessage}
+                  </Alert>
+                )}
                 <FormControl mb={4} isRequired>
                   <FormLabel color="white">Name</FormLabel>
                   <Input
@@ -164,7 +191,7 @@ const ContactUsModal: React.FC<ContactUsModalProps> = ({ buttonProps }) => {
                 </FormControl>
                 <FormControl mb={4}>
                   <FormLabel color="white">
-                    Upload Images (Optional, max {MAX_FILE_SIZE_MB} MB each)
+                    Upload Images (Optional, max {MAX_FILE_SIZE_MB} MB each, up to {MAX_FILES} files)
                   </FormLabel>
                   <Input
                     type="file"

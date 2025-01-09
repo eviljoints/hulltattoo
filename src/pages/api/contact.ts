@@ -1,11 +1,9 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import formidable, { File } from "formidable";
+import formidable, { File as FormidableFile } from "formidable";
 import nodemailer from "nodemailer";
-import { PrismaClient } from "@prisma/client";
-import fs from "fs";
-
-// Initialize Prisma Client
-const prisma = new PrismaClient();
+import prisma from "../../../lib/prisma";
+import { File } from "@prisma/client"; // Correctly import File type
+import fs from "fs/promises";
 
 export const config = {
   api: {
@@ -13,75 +11,99 @@ export const config = {
   },
 };
 
+const MAX_FILE_SIZE_MB = 5;
+const MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024;
+const MAX_FILES = 10;
+
 const parseForm = async (
   req: NextApiRequest
 ): Promise<{ fields: formidable.Fields; files: formidable.Files }> => {
   const form = formidable({
     multiples: true,
     keepExtensions: true,
-    maxFileSize: 5 * 1024 * 1024, // Set file size limit to 5 MB
+    maxFileSize: MAX_FILE_SIZE_BYTES,
   });
 
   return new Promise((resolve, reject) => {
     form.parse(req, (err, fields, files) => {
       if (err) {
-        console.error("[contact.ts] Error parsing form:", err);
-        return reject(err);
+        reject(err);
+      } else {
+        resolve({ fields, files });
       }
-      resolve({ fields, files });
     });
   });
 };
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== "POST") {
-    return res.status(405).json({ error: "Method not allowed" });
+    return res.status(405).json({ error: "Method not allowed. Use POST." });
   }
 
   try {
     const { fields, files } = await parseForm(req);
-
     const { name, emailOrPhone, message } = fields;
 
     if (!name || !emailOrPhone || !message) {
       return res.status(400).json({ error: "All mandatory fields must be filled." });
     }
 
-    const fileRecords = [];
+    const totalFiles = Object.values(files as Record<string, FormidableFile | FormidableFile[]>).reduce(
+      (acc, fileList) => {
+        if (Array.isArray(fileList)) {
+          return acc + fileList.length;
+        } else if (fileList) {
+          return acc + 1;
+        }
+        return acc;
+      },
+      0
+    );
 
-    // Store files in the database
-    for (const fileKey of Object.keys(files)) {
+    if (totalFiles > MAX_FILES) {
+      return res.status(400).json({ error: `You can upload up to ${MAX_FILES} files.` });
+    }
+
+    const fileKeys = Object.keys(files);
+    const filePromises = fileKeys.map(async (fileKey) => {
       const fileData = files[fileKey];
       const fileArray = Array.isArray(fileData) ? fileData : [fileData];
 
-      for (const fileObj of fileArray) {
-        const file = fileObj as File;
+      return Promise.all(
+        fileArray.map(async (fileObj) => {
+          const file = fileObj as FormidableFile;
+          if (file && file.filepath && file.originalFilename) {
+            const fileBuffer = await fs.readFile(file.filepath);
+            const base64Content = fileBuffer.toString("base64");
 
-        if (file && file.filepath && file.originalFilename) {
-          const fileBuffer = fs.readFileSync(file.filepath);
-          const base64Content = fileBuffer.toString("base64");
+            const storedFile = await prisma.file.create({
+              data: {
+                name: file.originalFilename,
+                mimetype: file.mimetype || "application/octet-stream",
+                content: base64Content,
+              },
+            });
 
-          const storedFile = await prisma.file.create({
-            data: {
-              name: file.originalFilename,
-              mimetype: file.mimetype || "application/octet-stream",
-              content: base64Content,
-            },
-          });
+            return storedFile;
+          }
+        })
+      );
+    });
 
-          fileRecords.push(storedFile);
-        }
-      }
+    let fileRecords: File[] = []; // Use File[] here
+    try {
+      const nestedFileRecords = await Promise.all(filePromises);
+      fileRecords = nestedFileRecords.flat().filter(Boolean) as File[];
+    } catch (fileError: any) {
+      return res.status(500).json({ error: fileError.message || "Error processing files." });
     }
 
-    // Prepare email attachments from the database
     const attachments = fileRecords.map((file) => ({
       filename: file.name,
       content: Buffer.from(file.content, "base64"),
       contentType: file.mimetype,
     }));
 
-    // Create Nodemailer transporter
     const transporter = nodemailer.createTransport({
       host: "smtppro.zoho.eu",
       port: 465,
@@ -92,25 +114,33 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       },
     });
 
-    // Send the email
-    const info = await transporter.sendMail({
-      from: process.env.EMAIL_USER,
-      to: "admin@hulltattoostudio.com",
-      subject: "New Contact Form Submission",
-      text: `Name: ${name}\nEmail/Phone: ${emailOrPhone}\nMessage: ${message}`,
-      attachments,
-    });
-
-    console.log("[contact.ts] Email sent:", info);
-
-    // Delete files from the database
-    for (const file of fileRecords) {
-      await prisma.file.delete({ where: { id: file.id } });
+    try {
+      await transporter.sendMail({
+        from: process.env.EMAIL_USER,
+        to: "admin@hulltattoostudio.com",
+        subject: "New Contact Form Submission",
+        text: `Name: ${name}\nEmail/Phone: ${emailOrPhone}\nMessage: ${message}`,
+        attachments,
+      });
+    } catch (emailError) {
+      return res.status(500).json({ error: "Failed to send email. Please try again later." });
     }
 
-    return res.status(200).json({ message: "Email sent successfully" });
-  } catch (error) {
-    console.error("[contact.ts] Error handling contact form:", error);
-    return res.status(500).json({ error: "Error sending email" });
+    const deletePromises = fileRecords.map(async (file) => {
+      try {
+        await prisma.file.delete({ where: { id: file.id } });
+      } catch (deleteError) {
+        console.error(`[contact.ts] Error deleting file with ID ${file.id}:`, deleteError);
+      }
+    });
+
+    await Promise.all(deletePromises);
+
+    return res.status(200).json({ message: "Your message has been sent successfully!" });
+  } catch (error: any) {
+    console.error("[contact.ts] Unexpected error:", error);
+    return res.status(500).json({ error: "An unexpected error occurred. Please try again later." });
+  } finally {
+    await prisma.$disconnect();
   }
 }

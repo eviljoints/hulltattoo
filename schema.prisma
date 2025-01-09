@@ -29,10 +29,11 @@ model Client {
   signUpDate  DateTime @default(now())
 }
 model File {
-  id       Int      @id @default(autoincrement())
+  id       Int    @id @default(autoincrement())
   name     String
   mimetype String
-  content  String   // Store as Base64-encoded content
+  content  String // Store the base64-encoded file content
   createdAt DateTime @default(now())
 }
+
 
