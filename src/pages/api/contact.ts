@@ -11,14 +11,16 @@ export const config = {
   },
 };
 
-// Create an uploads directory if it doesn't exist
+// Determine the appropriate uploads directory
 const ensureUploadsDir = () => {
-  const uploadDir = path.join(process.cwd(), "uploads");
+  const uploadDir =
+    process.env.VERCEL === "1" ? "/tmp/uploads" : path.join(process.cwd(), "uploads");
+
   if (!fs.existsSync(uploadDir)) {
     fs.mkdirSync(uploadDir, { recursive: true });
-    console.log("[contact.ts] Created uploads directory:", uploadDir);
+    console.log(`[contact.ts] Created uploads directory: ${uploadDir}`);
   } else {
-    console.log("[contact.ts] Uploads directory already exists:", uploadDir);
+    console.log(`[contact.ts] Uploads directory already exists: ${uploadDir}`);
   }
   return uploadDir;
 };
@@ -67,18 +69,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     // Prepare attachments
     const attachments = [];
 
-    // files can have multiple keys like image0, image1, etc.
-    // Each might be a single file object or an array of file objects.
+    // Iterate over files and prepare attachments
     for (const fileKey of Object.keys(files)) {
       const fileData = files[fileKey];
-
-      // In Formidable v2+ with multiples: true,
-      // fileData can be either a single File object or an array of File objects.
       const fileArray = Array.isArray(fileData) ? fileData : [fileData];
 
       for (const fileObj of fileArray) {
         const file = fileObj as File;
-        // Validate that we actually have a file with path
         if (file && file.filepath && file.originalFilename) {
           console.log(`[contact.ts] Preparing attachment from fileKey='${fileKey}'`);
           const fileBuffer = fs.readFileSync(file.filepath);
@@ -93,17 +90,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     console.log("[contact.ts] attachments array:", attachments);
 
-    // Create Nodemailer transporter with debug enabled
+    // Create Nodemailer transporter
     const transporter = nodemailer.createTransport({
       host: "smtppro.zoho.eu",
       port: 465,
       secure: true,
       auth: {
-        user: process.env.EMAIL_USER, // e.g. 'admin@hulltattoostudio.com'
+        user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS,
       },
-      logger: true, // log to console
-      debug: true,  // include SMTP traffic in the logs
+      logger: true,
+      debug: true,
     });
 
     // Send the email
@@ -117,7 +114,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     console.log("[contact.ts] Nodemailer send info:", info);
 
-    // If we reach here, the email was sent
+    // If successful, return success response
     return res.status(200).json({ message: "Email sent successfully" });
   } catch (error) {
     console.error("[contact.ts] Error handling contact form:", error);
