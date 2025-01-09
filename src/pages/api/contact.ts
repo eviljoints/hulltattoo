@@ -35,6 +35,7 @@ const parseForm = async (
     multiples: true, // allow multiple files per field
     uploadDir,       // specify the uploads directory
     keepExtensions: true,
+    maxFileSize: 5 * 1024 * 1024, // Set file size limit to 5 MB
   });
 
   return new Promise((resolve, reject) => {
