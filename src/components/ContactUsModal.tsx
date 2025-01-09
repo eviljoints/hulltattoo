@@ -25,7 +25,7 @@ interface ContactUsModalProps {
 
 const MAX_FILE_SIZE_MB = 5;        // 5 MB per file
 const MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024;
-const MAX_FILES = 10;              // user can select up to 3 files
+const MAX_FILES = 5;              // User can upload up to 10 files
 
 const ContactUsModal: React.FC<ContactUsModalProps> = ({ buttonProps }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -63,7 +63,7 @@ const ContactUsModal: React.FC<ContactUsModalProps> = ({ buttonProps }) => {
       if (file.size > MAX_FILE_SIZE_BYTES) {
         setErrorMessage(`File "${file.name}" exceeds ${MAX_FILE_SIZE_MB} MB.`);
         e.target.value = "";
-        return; // Exit so we don’t set any large files
+        return;
       }
     }
 
@@ -88,21 +88,6 @@ const ContactUsModal: React.FC<ContactUsModalProps> = ({ buttonProps }) => {
       formData.append("message", message);
 
       if (images) {
-        // Double-check file count and size before upload
-        if (images.length > MAX_FILES) {
-          setErrorMessage(`You can only upload up to ${MAX_FILES} files.`);
-          setIsSubmitting(false);
-          return;
-        }
-
-        for (const file of Array.from(images)) {
-          if (file.size > MAX_FILE_SIZE_BYTES) {
-            setErrorMessage(`File "${file.name}" exceeds ${MAX_FILE_SIZE_MB} MB.`);
-            setIsSubmitting(false);
-            return;
-          }
-        }
-
         Array.from(images).forEach((file, index) =>
           formData.append(`image${index}`, file)
         );
@@ -118,11 +103,17 @@ const ContactUsModal: React.FC<ContactUsModalProps> = ({ buttonProps }) => {
         setSuccessMessage("Your message has been sent successfully!");
       } else {
         const data = await response.json();
-        setErrorMessage(data.error || "Failed to send your message. Please try again.");
+        if (response.status === 413) {
+          setErrorMessage("Uploaded files exceed the maximum allowed size.");
+        } else if (response.status === 504) {
+          setErrorMessage("The request timed out. Please try again with fewer or smaller files.");
+        } else {
+          setErrorMessage(data.error || "Failed to send your message. Please try again.");
+        }
       }
     } catch (error) {
       console.error("Error submitting the form:", error);
-      setErrorMessage("An error occurred. Please try again.");
+      setErrorMessage("An error occurred while submitting your message. Please try again.");
     } finally {
       setIsSubmitting(false);
     }

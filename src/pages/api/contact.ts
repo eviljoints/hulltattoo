@@ -11,7 +11,7 @@ export const config = {
 
 const MAX_FILE_SIZE_MB = 50;
 const MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024;
-const MAX_FILES = 10;
+const MAX_FILES = 5;
 
 const parseForm = async (
   req: NextApiRequest
