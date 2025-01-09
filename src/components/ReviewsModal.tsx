@@ -17,6 +17,7 @@ import {
   ButtonProps,
 } from "@chakra-ui/react";
 import { FaStar } from "react-icons/fa";
+import ClientReviewModal from "./ClientReviewModal";
 
 interface Review {
   name: string;
@@ -67,7 +68,7 @@ const ReviewsModal: React.FC<ReviewsModalProps> = ({ buttonProps }) => {
     ));
 
   return (
-    <>
+    <><>
       <Button onClick={onOpen} {...buttonProps}>
         Reviews
       </Button>
@@ -120,7 +121,7 @@ const ReviewsModal: React.FC<ReviewsModalProps> = ({ buttonProps }) => {
           </ModalFooter>
         </ModalContent>
       </Modal>
-    </>
+    </><ClientReviewModal reviews={reviews} /></>
   );
 };
 

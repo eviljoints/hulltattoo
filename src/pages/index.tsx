@@ -9,6 +9,7 @@ import axios from "axios";
 
 import ReviewsModal from "~/components/ReviewsModal";
 import ContactUsModal from "~/components/ContactUsModal";
+import LeaveReviewButton from "~/components/ClientReviewModal";
 
 interface Stripe {
   left: string;
@@ -219,6 +220,8 @@ const HomePage: React.FC<HomePageProps> = ({ artists, error }) => {
                   },
                 }}
               />
+              
+              
             </Flex>
           </Center>
 

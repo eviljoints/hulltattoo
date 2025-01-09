@@ -33,26 +33,44 @@ export default function BlogIndex({ posts }: { posts: PostMeta[] }) {
   return (
     <>
       <Head>
-        {/* Basic SEO */}
-        <title>{seoTitle}</title>
-        <meta name="description" content={seoDescription} />
+  <title>Blog | Hull Tattoo Studio</title>
+  <meta
+    name="description"
+    content="Discover the latest updates, insights, and tattoo advice from Hull Tattoo Studio. Explore our blog to learn about our artists, booking tips, aftercare, and more."
+  />
+  <meta
+    name="keywords"
+    content="Tattoo Blog, Hull Tattoo Studio Blog, Tattoo Tips, Aftercare Advice, Artist Stories, Booking Tips, Tattoo Insights"
+  />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-        {/* Open Graph / Facebook */}
-        <meta property="og:type" content="website" />
-        <meta property="og:title" content={seoTitle} />
-        <meta property="og:description" content={seoDescription} />
-        <meta property="og:image" content={seoImage} />
-        <meta property="og:url" content={siteUrl} />
+  {/* Open Graph / Facebook Metadata */}
+  <meta property="og:title" content="Blog | Hull Tattoo Studio" />
+  <meta
+    property="og:description"
+    content="Discover the latest updates, insights, and tattoo advice from Hull Tattoo Studio. Stay informed and inspired."
+  />
+  <meta property="og:image" content="/images/og-image.png" />
+  <meta property="og:image:alt" content="Hull Tattoo Studio Blog Banner" />
+  <meta property="og:url" content="https://www.hulltattoostudio.com/blog" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Hull Tattoo Studio" />
+  <meta property="og:locale" content="en_GB" />
 
-        {/* Twitter */}
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content={seoTitle} />
-        <meta name="twitter:description" content={seoDescription} />
-        <meta name="twitter:image" content={seoImage} />
+  {/* Twitter Metadata */}
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Blog | Hull Tattoo Studio" />
+  <meta
+    name="twitter:description"
+    content="Discover tattoo tips, artist insights, and the latest updates from Hull Tattoo Studio. Explore our blog today!"
+  />
+  <meta name="twitter:image" content="/images/og-image.png" />
+  <meta name="twitter:image:alt" content="Hull Tattoo Studio Blog Banner" />
 
-        {/* Canonical Link (optional) */}
-        <link rel="canonical" href={siteUrl} />
-      </Head>
+  {/* Canonical Link */}
+  <link rel="canonical" href="https://www.hulltattoostudio.com/blog" />
+</Head>
+
 
       <Box
         minH="100vh"
