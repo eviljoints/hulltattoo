@@ -82,7 +82,7 @@ const AfterCarePage: React.FC = () => {
           property="og:description"
           content="Detailed aftercare instructions to help your tattoo heal properly. Use Apollo Aftercare products for the best results."
         />
-        <meta property="og:image" content="/images/apollo-aftercare.svg" />
+        <meta property="og:image" content="/images/og-image.png" />
         <meta property="og:url" content="https://www.hulltattoostudio.com/aftercare" />
         <meta property="og:type" content="website" />
         <meta property="og:locale" content="en_GB" />
@@ -93,7 +93,7 @@ const AfterCarePage: React.FC = () => {
           name="twitter:description"
           content="Learn how to care for your tattoo with Apollo Aftercare products and expert advice from Hull Tattoo Studio."
         />
-        <meta name="twitter:image" content="/images/apollo-aftercare.svg" />
+        <meta name="twitter:image" content="/images/og-image.png" />
         <link rel="canonical" href="https://www.hulltattoostudio.com/aftercare" />
       </Head>
 

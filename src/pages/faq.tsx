@@ -50,27 +50,62 @@ const FAQPage: React.FC = () => {
   return (
     <>
       <Head>
-        <title>Frequently Asked Questions | Hull Tattoo Studio</title>
-        <meta
-          name="description"
-          content="Find answers to common questions about booking, preparation, aftercare, and more at Hull Tattoo Studio."
-        />
-        <meta
-          name="keywords"
-          content="Tattoo FAQ, Booking Questions, Aftercare, Hull Tattoo Studio, Tattoo Preparation"
-        />
-        <meta property="og:title" content="Frequently Asked Questions | Hull Tattoo Studio" />
-        <meta
-          property="og:description"
-          content="Got questions? Our FAQ page provides answers about booking, sessions, aftercare, and more."
-        />
-        <meta property="og:image" content="/images/og-image.png" />
-        <meta property="og:url" content="https://www.hulltattoostudio.com/faq" />
-        <meta property="og:type" content="website" />
-        <meta property="og:locale" content="en_GB" />
-        <meta property="og:site_name" content="Hull Tattoo Studio" />
-        <link rel="canonical" href="https://www.hulltattoostudio.com/faq" />
-      </Head>
+  <title>Frequently Asked Questions | Hull Tattoo Studio</title>
+  <meta
+    name="description"
+    content="Find answers to common questions about booking, preparation, aftercare, payment methods, and more at Hull Tattoo Studio."
+  />
+  <meta
+    name="keywords"
+    content="Tattoo FAQ, Booking Questions, Tattoo Aftercare, Hull Tattoo Studio, Tattoo Preparation, Payment Methods, Walk-Ins"
+  />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  {/* Open Graph Metadata */}
+  <meta property="og:title" content="Frequently Asked Questions | Hull Tattoo Studio" />
+  <meta
+    property="og:description"
+    content="Got questions? Our FAQ page provides answers about booking, sessions, payment methods, tattoo preparation, and more at Hull Tattoo Studio."
+  />
+  <meta property="og:image" content="/images/og-image.png" />
+  <meta property="og:image:alt" content="Hull Tattoo Studio's FAQ page cover" />
+  <meta property="og:url" content="https://www.hulltattoostudio.com/faq" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Hull Tattoo Studio" />
+
+  {/* Twitter Card Metadata */}
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Frequently Asked Questions | Hull Tattoo Studio" />
+  <meta
+    name="twitter:description"
+    content="Answers to your questions about tattoo booking, aftercare, payment options, and more at Hull Tattoo Studio."
+  />
+  <meta name="twitter:image" content="/images/og-image.png" />
+  <meta name="twitter:image:alt" content="Hull Tattoo Studio FAQ Cover" />
+
+  {/* Canonical URL */}
+  <link rel="canonical" href="https://www.hulltattoostudio.com/faq" />
+
+  {/* Inject JSON-LD structured data */}
+  <script
+    type="application/ld+json"
+    dangerouslySetInnerHTML={{
+      __html: JSON.stringify({
+        "@context": "http://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": faqs.map((faq) => ({
+          "@type": "Question",
+          "name": faq.question,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": faq.answer,
+          },
+        })),
+      }),
+    }}
+  />
+</Head>
+
 
       {/* Structured Data for SEO */}
       <Script id="faq-structured-data" type="application/ld+json" strategy="beforeInteractive">
