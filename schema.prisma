@@ -28,3 +28,11 @@ model Client {
   // Add this line if you'd like to keep a dedicated field for the sign-up date.
   signUpDate  DateTime @default(now())
 }
+model File {
+  id       Int      @id @default(autoincrement())
+  name     String
+  mimetype String
+  content  String   // Store as Base64-encoded content
+  createdAt DateTime @default(now())
+}
+

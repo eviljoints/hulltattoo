@@ -1,39 +1,23 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import formidable, { File } from "formidable";
 import nodemailer from "nodemailer";
+import { PrismaClient } from "@prisma/client";
 import fs from "fs";
-import path from "path";
 
-// Disable Next.js default body parsing, because we use Formidable
+// Initialize Prisma Client
+const prisma = new PrismaClient();
+
 export const config = {
   api: {
     bodyParser: false,
   },
 };
 
-// Determine the appropriate uploads directory
-const ensureUploadsDir = () => {
-  const uploadDir =
-    process.env.VERCEL === "1" ? "/tmp/uploads" : path.join(process.cwd(), "uploads");
-
-  if (!fs.existsSync(uploadDir)) {
-    fs.mkdirSync(uploadDir, { recursive: true });
-    console.log(`[contact.ts] Created uploads directory: ${uploadDir}`);
-  } else {
-    console.log(`[contact.ts] Uploads directory already exists: ${uploadDir}`);
-  }
-  return uploadDir;
-};
-
-// Parse the form with Formidable
 const parseForm = async (
   req: NextApiRequest
 ): Promise<{ fields: formidable.Fields; files: formidable.Files }> => {
-  const uploadDir = ensureUploadsDir();
-
   const form = formidable({
-    multiples: true, // allow multiple files per field
-    uploadDir,       // specify the uploads directory
+    multiples: true,
     keepExtensions: true,
     maxFileSize: 5 * 1024 * 1024, // Set file size limit to 5 MB
   });
@@ -44,8 +28,6 @@ const parseForm = async (
         console.error("[contact.ts] Error parsing form:", err);
         return reject(err);
       }
-      console.log("[contact.ts] Form fields:", fields);
-      console.log("[contact.ts] Form files:", files);
       resolve({ fields, files });
     });
   });
@@ -61,35 +43,43 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     const { name, emailOrPhone, message } = fields;
 
-    // Basic validation
     if (!name || !emailOrPhone || !message) {
-      console.error("[contact.ts] Missing required fields!");
       return res.status(400).json({ error: "All mandatory fields must be filled." });
     }
 
-    // Prepare attachments
-    const attachments = [];
+    const fileRecords = [];
 
-    // Iterate over files and prepare attachments
+    // Store files in the database
     for (const fileKey of Object.keys(files)) {
       const fileData = files[fileKey];
       const fileArray = Array.isArray(fileData) ? fileData : [fileData];
 
       for (const fileObj of fileArray) {
         const file = fileObj as File;
+
         if (file && file.filepath && file.originalFilename) {
-          console.log(`[contact.ts] Preparing attachment from fileKey='${fileKey}'`);
           const fileBuffer = fs.readFileSync(file.filepath);
-          attachments.push({
-            filename: file.originalFilename,
-            content: fileBuffer,
-            contentType: file.mimetype || "application/octet-stream",
+          const base64Content = fileBuffer.toString("base64");
+
+          const storedFile = await prisma.file.create({
+            data: {
+              name: file.originalFilename,
+              mimetype: file.mimetype || "application/octet-stream",
+              content: base64Content,
+            },
           });
+
+          fileRecords.push(storedFile);
         }
       }
     }
 
-    console.log("[contact.ts] attachments array:", attachments);
+    // Prepare email attachments from the database
+    const attachments = fileRecords.map((file) => ({
+      filename: file.name,
+      content: Buffer.from(file.content, "base64"),
+      contentType: file.mimetype,
+    }));
 
     // Create Nodemailer transporter
     const transporter = nodemailer.createTransport({
@@ -100,8 +90,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS,
       },
-      logger: true,
-      debug: true,
     });
 
     // Send the email
@@ -113,9 +101,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       attachments,
     });
 
-    console.log("[contact.ts] Nodemailer send info:", info);
+    console.log("[contact.ts] Email sent:", info);
 
-    // If successful, return success response
+    // Delete files from the database
+    for (const file of fileRecords) {
+      await prisma.file.delete({ where: { id: file.id } });
+    }
+
     return res.status(200).json({ message: "Email sent successfully" });
   } catch (error) {
     console.error("[contact.ts] Error handling contact form:", error);
