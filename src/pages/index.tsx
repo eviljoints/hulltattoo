@@ -70,34 +70,74 @@ const HomePage: React.FC<HomePageProps> = ({ artists, error }) => {
   return (
     <>
       <Head>
-        <title>Hull Tattoo Studio | Professional Tattoo Artists</title>
-        <meta
-          name="description"
-          content="Welcome to Hull Tattoo Studio. Our professional tattoo artists create stunning tattoos in a warm and welcoming environment. Book your appointment today!"
-        />
-        <meta
-          name="keywords"
-          content="Hull Tattoo Studio, Tattoo Artists, Realism Tattoo, Blackwork Tattoo, Anime Tattoo, Apprentice Tattoo Artist, Professional Tattoo, Best Tattoo Studio"
-        />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <meta property="og:title" content="Hull Tattoo Studio | Professional Tattoo Artists" />
-        <meta property="og:site_name" content="Hull Tattoo Studio"></meta>
-        <meta
-          property="og:description"
-          content="Welcome to Hull Tattoo Studio. Our professional tattoo artists create stunning tattoos in a warm and welcoming environment. Book your appointment today!"
-        />
-        <meta property="og:image" content="/images/og-image.jpg" />
-        <meta property="og:url" content="https://www.hulltattoostudio.com" />
-        <meta property="og:type" content="website" />
+  <title>Hull Tattoo Studio | Professional Tattoo Artists in Hull</title>
+  <meta
+    name="description"
+    content="Hull Tattoo Studio offers exceptional tattoos crafted by expert artists in a welcoming environment. Specializing in realism, blackwork, and anime tattoos. Book now!"
+  />
+  <meta
+    name="keywords"
+    content="Hull Tattoo Studio, Tattoo Artists, Realism Tattoo, Blackwork Tattoo, Anime Tattoo, Professional Tattoo Studio, Hull, Custom Tattoos"
+  />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-        <link rel="canonical" href="https://www.hulltattoostudio.com" />
+  {/* Open Graph Metadata */}
+  <meta property="og:title" content="Hull Tattoo Studio | Professional Tattoo Artists in Hull" />
+  <meta
+    property="og:description"
+    content="Hull Tattoo Studio offers stunning tattoos in Hull. Specializing in realism, blackwork, and anime tattoos. Book your appointment today!"
+  />
+  <meta
+    property="og:image"
+    content="https://www.hulltattoostudio.com/images/og-image.jpg"
+  />
+  <meta property="og:image:alt" content="A sample tattoo design from Hull Tattoo Studio" />
+  <meta property="og:url" content="https://www.hulltattoostudio.com" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Hull Tattoo Studio" />
 
-        {/* Inject JSON-LD structured data using dangerouslySetInnerHTML */}
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
-        />
-      </Head>
+  {/* Twitter Card Metadata */}
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Hull Tattoo Studio | Professional Tattoo Artists in Hull" />
+  <meta
+    name="twitter:description"
+    content="Expert tattoo artists in Hull creating stunning realism, blackwork, and anime tattoos. Visit Hull Tattoo Studio for your next piece!"
+  />
+  <meta
+    name="twitter:image"
+    content="https://www.hulltattoostudio.com/images/og-image.jpg"
+  />
+  <meta name="twitter:image:alt" content="A sample tattoo design from Hull Tattoo Studio" />
+
+  {/* Canonical URL */}
+  <link rel="canonical" href="https://www.hulltattoostudio.com" />
+
+  {/* Inject JSON-LD structured data */}
+  <script
+    type="application/ld+json"
+    dangerouslySetInnerHTML={{
+      __html: JSON.stringify({
+        "@context": "http://schema.org",
+        "@type": "TattooStudio",
+        "name": "Hull Tattoo Studio",
+        "description":
+          "Professional tattoo studio in Hull offering various styles including realism, blackwork, and anime tattoos.",
+        "image": "https://www.hulltattoostudio.com/images/og-image.png",
+        "url": "https://www.hulltattoostudio.com",
+        "address": {
+          "@type": "PostalAddress",
+          "streetAddress": "652 Anlaby road",
+          "addressLocality": "Hull",
+          "postalCode": "HU3 6UU",
+          "addressCountry": "UK",
+        },
+        "openingHours": "Tu-F 09:30-15:00, Sa 11:30-18:00",
+        "telephone": "07940080790",
+      }),
+    }}
+  />
+</Head>
+
 
       
       <Box
