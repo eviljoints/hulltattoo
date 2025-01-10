@@ -127,12 +127,7 @@ const HomePage: React.FC<HomePageProps> = ({ artists, error }) => {
           }}
         />
 
-        {/* Load Google AdSense script asynchronously */}
-        <Script
-          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6959045179650835"
-          strategy="lazyOnload"
-          crossOrigin="anonymous"
-        />
+        
       </Head>
 
       <Box
