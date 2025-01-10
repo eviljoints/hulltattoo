@@ -40,5 +40,5 @@
     "**/*.mts",
     "**/*.tsx",
     "src/components/**/*.tsx"
-, "scripts/seedArtists.cjs"  ]
+, "scripts/seedArtists.cjs", "global.d.ts"  ]
 }
