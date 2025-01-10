@@ -24,9 +24,10 @@ import styles from "./artists/MikePage.module.css"; // Import the CSS module for
 import TextCard from "~/components/TextCard";
 import dynamic from "next/dynamic"; // For dynamic imports
 
-// Dynamically load the AcuityEmbed component, just like in mike.tsx
+// Dynamically load the AcuityEmbed component
 const AcuityEmbed = dynamic(() => import("../components/AcuityEmbed"), {
   ssr: false,
+  loading: () => <p>Loading scheduler...</p>,
 });
 
 // Define the gallery for Poppy
@@ -34,18 +35,22 @@ const gallery = {
   apprenticeTattoos: {
     description: `Poppy is our dedicated apprentice, working mainly in black ink but branching out into color pieces. She is hardworking and always progressing her craft. Poppy works at an apprentice rate, making her work both exceptional and affordable.`,
     images: [
-      "apprentice1.jpg",
-      "apprentice2.jpg",
-      "apprentice3.jpg",
-      "apprentice4.jpg",
-      "apprentice5.jpg",
-      "apprentice6.jpg",
+      "apprentice1.webp",
+      "apprentice2.webp",
+      "apprentice3.webp",
+      "apprentice4.webp",
+      "apprentice5.webp",
+      "apprentice6.webp",
     ],
   },
 };
 
 const PoppyPage: React.FC = () => {
   const [isLargerThan768] = useMediaQuery("(min-width: 768px)");
+
+  const motionProps = isLargerThan768
+    ? { initial: { opacity: 0, y: 50 }, animate: { opacity: 1, y: 0 }, transition: { duration: 0.8 } }
+    : { initial: { opacity: 0 }, animate: { opacity: 1 }, transition: { duration: 0.5 } };
 
   return (
     <>
@@ -71,6 +76,7 @@ const PoppyPage: React.FC = () => {
         <meta property="og:image" content="/images/poppy.png" />
         <meta property="og:url" content="https://www.hulltattoostudio.com/poppy" />
         <meta property="og:type" content="profile" />
+        <link rel="preload" href="/images/poppy.png" as="image" />
       </Head>
 
       <Box
@@ -88,7 +94,7 @@ const PoppyPage: React.FC = () => {
         {/* Neon Diagonal Lines Background */}
         <Box className={styles.backgroundLines} />
 
-        {/* Main Content Box with Purple and Black Faded Background */}
+        {/* Main Content Box */}
         <Box
           bgGradient="radial(rgba(54, 39, 255, 0.6), rgba(128, 0, 128, 0.6), rgba(0,0,0,0.6))"
           borderRadius="md"
@@ -97,14 +103,7 @@ const PoppyPage: React.FC = () => {
           position="relative"
           zIndex="1"
         >
-          {/* Poppy's Profile Section */}
-          <MotionBox
-            initial={{ opacity: 0, y: 50 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            mb={16}
-            as="section"
-          >
+          <MotionBox {...motionProps} mb={16} as="section">
             <Text
               fontSize={{ base: "3xl", md: "5xl" }}
               fontWeight="bold"
@@ -134,6 +133,7 @@ const PoppyPage: React.FC = () => {
                 alt="Portrait of Poppy"
                 width={200}
                 height={200}
+                quality={75}
                 style={{
                   borderRadius: "50%",
                   boxShadow: "0 0 15px #ff007f, 0 0 25px #00d4ff",
@@ -157,14 +157,7 @@ Come say hi, share your ideas, and let Poppy’s enthusiasm and artistry shine t
             />
           </MotionBox>
 
-          {/* Poppy's Work Gallery */}
-          <MotionBox
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.8, delay: 0.3 }}
-            mb={16}
-            as="section"
-          >
+          <MotionBox {...motionProps} mb={16} as="section">
             <Tabs variant="soft-rounded" colorScheme="pink">
               <TabList justifyContent="center" mb={8}>
                 <Tab
@@ -213,6 +206,7 @@ Come say hi, share your ideas, and let Poppy’s enthusiasm and artistry shine t
                             alt={`Apprentice tattoo ${index + 1}`}
                             layout="fill"
                             objectFit="cover"
+                            loading="lazy"
                           />
                         </MotionBox>
                       </AspectRatio>
@@ -223,17 +217,9 @@ Come say hi, share your ideas, and let Poppy’s enthusiasm and artistry shine t
             </Tabs>
           </MotionBox>
 
-          {/* Embed Acuity Scheduling Inline Widget - Dynamically Loaded */}
           <AcuityEmbed link="https://app.acuityscheduling.com/schedule.php?owner=34239595&calendarID=11234698" />
 
-          {/* Poppy's Social Media Links */}
-          <MotionBox
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.8, delay: 0.6 }}
-            mb={16}
-            as="section"
-          >
+          <MotionBox {...motionProps} mb={16} as="section">
             <Text
               fontSize={{ base: "2xl", md: "3xl" }}
               fontWeight="bold"

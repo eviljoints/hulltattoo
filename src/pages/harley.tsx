@@ -17,23 +17,23 @@ import {
   HStack,
 } from "@chakra-ui/react";
 import { FaFacebook, FaInstagram } from "react-icons/fa";
-import MotionBox from "../components/MotionBox"; // Import the shared MotionBox
+import MotionBox from "../components/MotionBox";
 import Image from "next/image";
 import Head from "next/head";
-import styles from "./artists/MikePage.module.css"; // Import the CSS module for background lines
+import styles from "./artists/MikePage.module.css";
 import TextCard from "~/components/TextCard";
 
 // Define the gallery for Harley
 const gallery = {
   apprenticeTattoos: {
-    description: `Harley is our latest apprentice showing great promise especially in the dotwork and pointalism area. Pop by and say hi to our newest team member`,
+    description: `Harley is our latest apprentice showing great promise especially in the dotwork and pointillism area. Pop by and say hi to our newest team member`,
     images: [
-      "apprentice1.jpg",
-      "apprentice2.jpg",
-      "apprentice3.jpg",
-      "apprentice4.jpg",
-      "apprentice5.jpg",
-      "apprentice6.jpg",
+      "apprentice1.webp",
+      "apprentice2.webp",
+      "apprentice3.webp",
+      "apprentice4.webp",
+      "apprentice5.webp",
+      "apprentice6.webp",
     ],
   },
 };
@@ -41,17 +41,21 @@ const gallery = {
 const HarleyPage: React.FC = () => {
   const [isLargerThan768] = useMediaQuery("(min-width: 768px)");
 
+  const motionProps = isLargerThan768
+    ? { initial: { opacity: 0, y: 50 }, animate: { opacity: 1, y: 0 }, transition: { duration: 0.8 } }
+    : { initial: { opacity: 0 }, animate: { opacity: 1 }, transition: { duration: 0.5 } };
+
   return (
     <>
       <Head>
         <title>Harley - Apprentice Tattoo Artist | Hull Tattoo Studio</title>
         <meta
           name="description"
-          content="Meet Harley, our dedicated apprentice at Hull Tattoo Studio. She works mainly in black ink but is branching out into color pieces. Harley is hardworking and always progressing her craft, offering her work at an apprentice rate."
+          content="Meet Harley, our dedicated apprentice at Hull Tattoo Studio. Specializing in dotwork and pointillism, Harley offers affordable tattoos and is always improving her craft."
         />
         <meta
           name="keywords"
-          content="Harley, Apprentice Tattoo Artist, Hull Tattoo Studio, Black Ink Tattoos, Color Tattoos, Professional Tattoo Artist, Affordable Tattoos"
+          content="Harley, Apprentice Tattoo Artist, Hull Tattoo Studio, Dotwork Tattoos, Pointillism Tattoos, Professional Tattoo Artist, Affordable Tattoos"
         />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta
@@ -60,16 +64,17 @@ const HarleyPage: React.FC = () => {
         />
         <meta
           property="og:description"
-          content="Meet Harley, our dedicated apprentice at Hull Tattoo Studio. She works mainly in black ink but is branching out into color pieces."
+          content="Meet Harley, our dedicated apprentice at Hull Tattoo Studio. Specializing in dotwork and pointillism, Harley offers affordable tattoos and is always improving her craft."
         />
         <meta property="og:image" content="/images/harley.png" />
         <meta property="og:url" content="https://www.hulltattoostudio.com/harley" />
         <meta property="og:type" content="profile" />
+        <link rel="preload" href="/images/harley.png" as="image" />
       </Head>
 
       <Box
         position="relative"
-        bg="transparent" // Set to transparent to allow background lines to show
+        bg="transparent"
         color="white"
         w="100%"
         p={8}
@@ -82,24 +87,16 @@ const HarleyPage: React.FC = () => {
         {/* Neon Diagonal Lines Background */}
         <Box className={styles.backgroundLines} />
 
-        {/* Main Content Box with Purple and Black Faded Background */}
+        {/* Main Content Box */}
         <Box
           bgGradient="radial(rgba(54, 39, 255, 0.6), rgba(128, 0, 128, 0.6), rgba(0,0,0,0.6))"
           borderRadius="md"
           p={8}
           boxShadow="0 0 20px #9b5de5, 0 0 30px #f15bb5"
-          position="relative" // To ensure it sits above the background lines
-          zIndex="1" // Ensures content is above the background lines
+          position="relative"
+          zIndex="1"
         >
-          {/* Harley's Profile Section */}
-          <MotionBox
-            initial={{ opacity: 0, y: 50 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            mb={16}
-            as="section"
-          >
-            {/* Title */}
+          <MotionBox {...motionProps} mb={16} as="section">
             <Text
               fontSize={{ base: "3xl", md: "5xl" }}
               fontWeight="bold"
@@ -111,7 +108,6 @@ const HarleyPage: React.FC = () => {
             >
               Harley
             </Text>
-            {/* Subtitle */}
             <Text
               fontSize={{ base: "xl", md: "2xl" }}
               fontWeight="medium"
@@ -124,13 +120,13 @@ const HarleyPage: React.FC = () => {
               Apprentice Tattoo Artist
             </Text>
 
-            {/* Feature Image */}
             <Box mb={8} textAlign="center">
               <Image
                 src="/images/harley.png"
                 alt="Portrait of Harley"
-                width={200} // Adjust size accordingly
+                width={200}
                 height={200}
+                quality={75}
                 style={{
                   borderRadius: "50%",
                   boxShadow: "0 0 15px #ff007f, 0 0 25px #00d4ff",
@@ -139,14 +135,10 @@ const HarleyPage: React.FC = () => {
               />
             </Box>
 
-            {/* About Section */}
             <TextCard
               title="About Harley"
-              subtitle="Harley is Hull Tattoo Studios latest edition"
-              description={`
-
-
-Harley is the latest addition to Hull Tattoo Studio, bringing a profound passion for art and a relentless drive to perfect her craft. With a keen eye for detail, Harley specializes in simplistic designs infused with a unique pointillism twist, creating tattoos that are both elegant and intricately detailed.
+              subtitle="Harley is Hull Tattoo Studio's newest addition."
+              description={`Harley is the latest addition to Hull Tattoo Studio, bringing a profound passion for art and a relentless drive to perfect her craft. With a keen eye for detail, Harley specializes in simplistic designs infused with a unique pointillism twist, creating tattoos that are both elegant and intricately detailed.
 
 Despite her quiet demeanor, Harley is incredibly approachable and fosters a welcoming atmosphere for her clients. Her dedication is evident in the countless hours she spends honing her skills on fake skin, meticulously refining each stroke and shading technique. This rigorous practice not only showcases her commitment but also her patience and precision.
 
@@ -155,21 +147,10 @@ Harley's journey extends beyond practicing on fake skin; she courageously ventur
                 { left: "10%", width: "20px", color: "#ff007f" },
                 { left: "70%", width: "30px", color: "#00d4ff" },
               ]}
-              // Optional props
-              // leftImage="/images/left-deco.png"
-              // rightImage="/images/right-deco.png"
-              // footer="Contact Mike for more information."
             />
           </MotionBox>
 
-          {/* Harley's Work Gallery */}
-          <MotionBox
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.8, delay: 0.3 }}
-            mb={16}
-            as="section"
-          >
+          <MotionBox {...motionProps} mb={16} as="section">
             <Tabs variant="soft-rounded" colorScheme="pink">
               <TabList justifyContent="center" mb={8}>
                 <Tab
@@ -218,6 +199,7 @@ Harley's journey extends beyond practicing on fake skin; she courageously ventur
                             alt={`Apprentice tattoo ${index + 1}`}
                             layout="fill"
                             objectFit="cover"
+                            loading="lazy"
                           />
                         </MotionBox>
                       </AspectRatio>
@@ -228,14 +210,7 @@ Harley's journey extends beyond practicing on fake skin; she courageously ventur
             </Tabs>
           </MotionBox>
 
-          {/* Harley's Social Media Links */}
-          <MotionBox
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.8, delay: 0.6 }}
-            mb={16}
-            as="section"
-          >
+          <MotionBox {...motionProps} mb={16} as="section">
             <Text
               fontSize={{ base: "2xl", md: "3xl" }}
               fontWeight="bold"
