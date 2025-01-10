@@ -13,13 +13,7 @@ const theme = extendTheme({
 });
 
 function MyApp({ Component, pageProps }: AppProps) {
-  useEffect(() => {
-    const adScript = document.createElement('script');
-    adScript.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6959045179650835';
-    adScript.async = true;
-    adScript.crossOrigin = 'anonymous';
-    document.head.appendChild(adScript);
-  }, []);
+ 
 
   return (
     <ChakraProvider theme={theme}>
