@@ -68,6 +68,8 @@ const AfterCarePage: React.FC = () => {
   return (
     <>
       <Head>
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6959045179650835"
+     crossorigin="anonymous"></script>
         
         <title>Aftercare Instructions for Your New Tattoo | Hull Tattoo Studio</title>
         <meta
@@ -96,8 +98,7 @@ const AfterCarePage: React.FC = () => {
         />
         <meta name="twitter:image" content="/images/og-image.png" />
         <link rel="canonical" href="https://www.hulltattoostudio.com/aftercare" />
-        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6959045179650835"
-     crossOrigin="anonymous"></script>
+        
       </Head>
 
       {/* JSON-LD injected via next/script */}

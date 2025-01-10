@@ -34,7 +34,7 @@ export default function BlogIndex({ posts }: { posts: PostMeta[] }) {
     <>
       <Head>
       <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6959045179650835"
-     crossOrigin="anonymous"></script>
+     crossorigin="anonymous"></script>
   <title>Blog | Hull Tattoo Studio</title>
   <meta
     name="description"

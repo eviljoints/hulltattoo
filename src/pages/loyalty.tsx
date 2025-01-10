@@ -78,7 +78,7 @@ const ClientLoyaltyPage = () => {
     <>
       <Head>
       <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6959045179650835"
-     crossOrigin="anonymous"></script>
+     crossorigin="anonymous"></script>
         <title>HTS Loyalty Program | Hull Tattoo Studio</title>
         <meta
           name="description"
