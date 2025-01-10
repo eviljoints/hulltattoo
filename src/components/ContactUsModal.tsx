@@ -23,9 +23,20 @@ interface ContactUsModalProps {
   buttonProps?: ButtonProps; // Allows external styles
 }
 
-const MAX_FILE_SIZE_MB = 5;        // 5 MB per file
+const MAX_FILE_SIZE_MB = 5; // 5 MB per file
 const MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024;
-const MAX_FILES = 5;              // User can upload up to 10 files
+const MAX_FILES = 5; // User can upload up to 5 files
+
+// Validation functions
+const isValidEmail = (email: string) => {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email);
+};
+
+const isValidUKPhoneNumber = (phone: string) => {
+  const ukPhoneRegex = /^07\d{9}$/; // UK mobile numbers start with '07' and are 11 digits long
+  return ukPhoneRegex.test(phone);
+};
 
 const ContactUsModal: React.FC<ContactUsModalProps> = ({ buttonProps }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -46,19 +57,16 @@ const ContactUsModal: React.FC<ContactUsModalProps> = ({ buttonProps }) => {
     setErrorMessage(null);
   };
 
-  // Validate files on selection
   const handleFileSelection = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFiles = e.target.files;
     if (!selectedFiles) return;
 
-    // Check total file count
     if (selectedFiles.length > MAX_FILES) {
       setErrorMessage(`You can only upload up to ${MAX_FILES} files.`);
       e.target.value = "";
       return;
     }
 
-    // Check each file's size
     for (const file of Array.from(selectedFiles)) {
       if (file.size > MAX_FILE_SIZE_BYTES) {
         setErrorMessage(`File "${file.name}" exceeds ${MAX_FILE_SIZE_MB} MB.`);
@@ -77,11 +85,15 @@ const ContactUsModal: React.FC<ContactUsModalProps> = ({ buttonProps }) => {
       return;
     }
 
+    if (!isValidEmail(emailOrPhone) && !isValidUKPhoneNumber(emailOrPhone)) {
+      setErrorMessage("Please enter a valid email address or UK mobile phone number.");
+      return;
+    }
+
     setIsSubmitting(true);
     setErrorMessage(null);
 
     try {
-      // Build form data to send to our Next.js API
       const formData = new FormData();
       formData.append("name", name);
       formData.append("emailOrPhone", emailOrPhone);
@@ -93,7 +105,6 @@ const ContactUsModal: React.FC<ContactUsModalProps> = ({ buttonProps }) => {
         );
       }
 
-      // Send the form data to our Next.js API endpoint
       const response = await fetch("/api/contact", {
         method: "POST",
         body: formData,
@@ -101,12 +112,15 @@ const ContactUsModal: React.FC<ContactUsModalProps> = ({ buttonProps }) => {
 
       if (response.ok) {
         setSuccessMessage("Your message has been sent successfully!");
+        resetForm();
       } else {
         const data = await response.json();
         if (response.status === 413) {
           setErrorMessage("Uploaded files exceed the maximum allowed size.");
         } else if (response.status === 504) {
-          setErrorMessage("The request timed out. Please try again with fewer or smaller files.");
+          setErrorMessage(
+            "The request timed out. Please try again with fewer or smaller files."
+          );
         } else {
           setErrorMessage(data.error || "Failed to send your message. Please try again.");
         }
