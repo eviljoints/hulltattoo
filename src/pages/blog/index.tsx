@@ -51,6 +51,7 @@ export default function BlogIndex({ posts }: { posts: PostMeta[] }) {
     name="description"
     content="Discover the latest updates, insights, and tattoo advice from Hull Tattoo Studio. Explore our blog to learn about our artists, booking tips, aftercare, and more."
   />
+  <meta name="google-adsense-account" content="ca-pub-6959045179650835"></meta>
   <meta
     name="keywords"
     content="Tattoo Blog, Hull Tattoo Studio Blog, Tattoo Tips, Aftercare Advice, Artist Stories, Booking Tips, Tattoo Insights"

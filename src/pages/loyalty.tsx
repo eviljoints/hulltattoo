@@ -91,10 +91,12 @@ const ClientLoyaltyPage = () => {
     }}
   />
         <title>HTS Loyalty Program | Hull Tattoo Studio</title>
+        <meta name="google-adsense-account" content="ca-pub-6959045179650835"></meta>
         <meta
           name="description"
           content="Join Hull Tattoo Studio's Loyalty Program and earn rewards for your hours of tattooing. Complete your card and claim a free tattoo session!"
         />
+<meta name="google-adsense-account" content="ca-pub-6959045179650835"></meta>
         <meta
           name="keywords"
           content="Hull Tattoo Studio, Loyalty Program, Tattoo Rewards, Free Tattoo Session, Tattoo Stamps"

@@ -71,11 +71,28 @@ const HomePage: React.FC<HomePageProps> = ({ artists, error }) => {
   return (
     <>
       <Head>
+      <script
+    dangerouslySetInnerHTML={{
+      __html: `
+        (function() {
+          var ads = document.createElement('script');
+          ads.async = true;
+          ads.src = "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6959045179650835";
+          ads.setAttribute('crossorigin', 'anonymous');
+          document.head.appendChild(ads);
+        })();
+      `,
+    }}
+  />
+        
   <title>Hull Tattoo Studio | Professional Tattoo Artists in Hull</title>
   <meta
     name="description"
     content="Hull Tattoo Studio offers exceptional tattoos crafted by expert artists in a welcoming environment. Specializing in realism, blackwork, and anime tattoos. Book now!"
   />
+  
+  <meta name="google-adsense-account" content="ca-pub-6959045179650835"></meta>
+
   <meta
     name="keywords"
     content="Hull Tattoo Studio, Tattoo Artists, Realism Tattoo, Blackwork Tattoo, Anime Tattoo, Professional Tattoo Studio, Hull, Custom Tattoos"
