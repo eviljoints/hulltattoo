@@ -6,8 +6,7 @@ import { ChakraProvider, ColorModeScript, extendTheme } from "@chakra-ui/react";
 import "../styles/globals.css";
 import { SpeedInsights } from '@vercel/speed-insights/react';
 import { Analytics } from '@vercel/analytics/react';
-import Script from 'next/script';
-import useAdsRefresh from '../hooks/useAdsRefresh'; // If implementing the optional hook
+import Script from 'next/script'; // Import Script from next/script
 
 // Force dark mode globally
 const theme = extendTheme({
@@ -19,8 +18,6 @@ const theme = extendTheme({
 
 function MyApp({ Component, pageProps }: AppProps) {
   const pageTitle = (Component as any).title || "Hull Tattoo Studio";
-
-  useAdsRefresh(); // Initialize the ad refresh hook (optional)
 
   return (
     <ChakraProvider theme={theme}>

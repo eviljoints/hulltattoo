@@ -77,19 +77,7 @@ const ClientLoyaltyPage = () => {
   return (
     <>
       <Head>
-      <script
-    dangerouslySetInnerHTML={{
-      __html: `
-        (function() {
-          var ads = document.createElement('script');
-          ads.async = true;
-          ads.src = "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6959045179650835";
-          ads.setAttribute('crossorigin', 'anonymous');
-          document.head.appendChild(ads);
-        })();
-      `,
-    }}
-  />
+      
         <title>HTS Loyalty Program | Hull Tattoo Studio</title>
         <meta name="google-adsense-account" content="ca-pub-6959045179650835"></meta>
         <meta

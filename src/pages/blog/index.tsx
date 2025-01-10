@@ -1,4 +1,4 @@
-// pages/blog/index.tsx
+// src/pages/blog/index.tsx
 
 import fs from "fs";
 import path from "path";
@@ -22,6 +22,9 @@ interface PostMeta {
   excerpt?: string;
   coverImage?: string;
 }
+
+// Define your Ad slot ID here
+const adSlot = "9465374206"; // Replace with your actual Ad slot ID
 
 export default function BlogIndex({ posts }: { posts: PostMeta[] }) {
   const seoTitle = "Blog | Hull Tattoo Studio";
@@ -142,8 +145,10 @@ export default function BlogIndex({ posts }: { posts: PostMeta[] }) {
                 </ChakraLink>
               </Box>
 
-              {/* Insert Ad after every 2 posts */}
-              {(index + 1) % 2 === 0 && <Ad />}
+              {/* Insert Ad after the second post */}
+              {index === 1 && (
+                <Ad slot={adSlot} />
+              )}
             </React.Fragment>
           ))}
         </Box>
