@@ -68,8 +68,19 @@ const AfterCarePage: React.FC = () => {
   return (
     <>
       <Head>
-      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6959045179650835"
-     crossorigin="anonymous"></script>
+      <script
+    dangerouslySetInnerHTML={{
+      __html: `
+        (function() {
+          var ads = document.createElement('script');
+          ads.async = true;
+          ads.src = "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6959045179650835";
+          ads.setAttribute('crossorigin', 'anonymous');
+          document.head.appendChild(ads);
+        })();
+      `,
+    }}
+  />
         
         <title>Aftercare Instructions for Your New Tattoo | Hull Tattoo Studio</title>
         <meta
