@@ -9,10 +9,10 @@ export default function Document() {
           rel="stylesheet"
         />
 
-<head>
+
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6959045179650835"
      crossOrigin="anonymous"></script>
- </head>
+ 
         <script
           src="https://assets.calendly.com/assets/external/widget.js"
           type="text/javascript"

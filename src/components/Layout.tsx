@@ -1,6 +1,9 @@
 import React, { ReactNode } from "react";
 import Link from "next/link";
 import Image from "next/image";
+
+// If FaTiktok does not exist in your version of react-icons,
+// use `SiTiktok` from `react-icons/si` instead.
 import {
   FaFacebook,
   FaInstagram,
@@ -10,7 +13,9 @@ import {
   FaStar,
   FaNewspaper,
   FaYoutube,
+  FaTiktok,
 } from "react-icons/fa";
+
 import {
   Menu,
   MenuButton,
@@ -82,6 +87,16 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             aria-label="YouTube"
           >
             <FaYoutube />
+          </a>
+          {/* TikTok Link Added Here */}
+          <a
+            href="https://www.tiktok.com/@hulltattoostudio"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="footer-icon"
+            aria-label="TikTok"
+          >
+            <FaTiktok />
           </a>
         </div>
       </header>
@@ -201,6 +216,16 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           >
             <FaYoutube />
           </a>
+          {/* TikTok Link Added Here */}
+          <a
+            href="https://www.tiktok.com/@hulltattoostudio"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="footer-icon"
+            aria-label="TikTok"
+          >
+            <FaTiktok />
+          </a>
         </div>
         <p className="footer-text">
           © {currentYear} Tattoo Studio. All rights reserved.
@@ -277,7 +302,9 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
               color="white"
             >
               <Link href="/poppy" passHref>
-                <a style={{ textDecoration: "none", color: "inherit" }}>Poppy</a>
+                <a style={{ textDecoration: "none", color: "inherit" }}>
+                  Poppy
+                </a>
               </Link>
             </MenuItem>
             <MenuItem
@@ -286,7 +313,9 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
               color="white"
             >
               <Link href="/harley" passHref>
-                <a style={{ textDecoration: "none", color: "inherit" }}>Harley</a>
+                <a style={{ textDecoration: "none", color: "inherit" }}>
+                  Harley
+                </a>
               </Link>
             </MenuItem>
           </MenuList>

@@ -78,17 +78,19 @@ export default function BlogIndex({ posts }: { posts: PostMeta[] }) {
             textShadow="0 0 10px #ff007f, 0 0 20px #00d4ff"
             textAlign="center"
           >
-            Our Blog
+            Hull Tattoo Studio Blog
           </Heading>
 
           <Text
-            color="gray.300"
-            mb={8}
-            fontSize="lg"
-            textAlign="center"
-          >
-            Welcome to our Hull Tattoo Studio blog!
-          </Text>
+  color="gray.300"
+  mb={8}
+  fontSize="lg"
+  textAlign="center"
+>
+  Welcome to Hull Tattoo Studio&rsquo;s blog! Where we&rsquo;ll cover lots of different
+  tattoo topics and answer the questions you&rsquo;ve been wanting to ask.
+</Text>
+
 
           {posts.map((post, index) => (
             <React.Fragment key={post.slug}>
