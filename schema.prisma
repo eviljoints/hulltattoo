@@ -17,23 +17,21 @@ model Review {
 }
 
 model Client {
-  id          Int      @id @default(autoincrement())
-  name        String
-  hours       Int      @default(0)
-  stamps      Int      @default(0)
-  clientId    String   @unique
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  // Add this line if you'd like to keep a dedicated field for the sign-up date.
-  signUpDate  DateTime @default(now())
+  id         Int      @id @default(autoincrement())
+  name       String
+  hours      Int      @default(0)
+  stamps     Int      @default(0)
+  clientId   String   @unique
+  email      String?   @unique
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  signUpDate DateTime @default(now())
 }
+
 model File {
-  id       Int    @id @default(autoincrement())
-  name     String
-  mimetype String
-  content  String // Store the base64-encoded file content
+  id        Int      @id @default(autoincrement())
+  name      String
+  mimetype  String
+  content   String // Store the base64-encoded file content
   createdAt DateTime @default(now())
 }
-
-

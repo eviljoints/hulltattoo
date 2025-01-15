@@ -22,14 +22,68 @@ interface ClientData {
 }
 
 const ClientLoyaltyPage = () => {
+  // ----------------------
+  // SIGN-UP form state
+  // ----------------------
+  const [signupName, setSignupName] = useState("");
+  const [signupEmail, setSignupEmail] = useState("");
+
+  // -----------------------
+  // LOOKUP form state
+  // -----------------------
   const [name, setName] = useState("");
   const [clientId, setClientId] = useState("");
   const [clientData, setClientData] = useState<ClientData | null>(null);
-  const [stampSlots, setStampSlots] = useState<boolean[]>([false, false, false, false, false, false]);
-
+  const [stampSlots, setStampSlots] = useState<boolean[]>(
+    Array(6).fill(false)
+  );
   const [prevStamps, setPrevStamps] = useState(0);
+
   const toast = useToast();
 
+  // ---------------------------------
+  // 1. Handle SIGN-UP
+  // ---------------------------------
+  const signUp = async () => {
+    try {
+      const res = await fetch("/api/clients/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: signupName.trim(),
+          email: signupEmail.trim(),
+        }),
+      });
+
+      const data = await res.json();
+      if (!res.ok) {
+        alert(data.error || "Failed to register. Please try again.");
+        return;
+      }
+
+      toast({
+        title: "Registration Successful!",
+        description: 
+          "You're now part of Hull Tattoo Studio's Loyalty Program. " +
+          "Check your email for your Client ID and details. Keep track of " +
+          "your hours to earn free sessions!",
+        status: "success",
+        duration: 8000,
+        isClosable: true,
+      });
+
+      // Reset form
+      setSignupName("");
+      setSignupEmail("");
+    } catch (error) {
+      console.error("Error signing up:", error);
+      alert("An unexpected error occurred. Please try again later.");
+    }
+  };
+
+  // ---------------------------------
+  // 2. Handle existing client LOOKUP
+  // ---------------------------------
   const fetchClientData = async () => {
     try {
       const res = await fetch(`/api/clients?name=${name}&clientId=${clientId}`);
@@ -66,6 +120,7 @@ const ClientLoyaltyPage = () => {
     }
   };
 
+  // Calculate hours needed for the next stamp
   const hoursUntilNextStamp = () => {
     if (!clientData) return 0;
     if (clientData.stamps >= 6) return 0;
@@ -77,14 +132,12 @@ const ClientLoyaltyPage = () => {
   return (
     <>
       <Head>
-      
         <title>HTS Loyalty Program | Hull Tattoo Studio</title>
-        <meta name="google-adsense-account" content="ca-pub-6959045179650835"></meta>
+        <meta name="google-adsense-account" content="ca-pub-6959045179650835" />
         <meta
           name="description"
           content="Join Hull Tattoo Studio's Loyalty Program and earn rewards for your hours of tattooing. Complete your card and claim a free tattoo session!"
         />
-<meta name="google-adsense-account" content="ca-pub-6959045179650835"></meta>
         <meta
           name="keywords"
           content="Hull Tattoo Studio, Loyalty Program, Tattoo Rewards, Free Tattoo Session, Tattoo Stamps"
@@ -99,17 +152,26 @@ const ClientLoyaltyPage = () => {
           content="Earn rewards for your loyalty at Hull Tattoo Studio. Get 1 free tattoo session after completing your loyalty card!"
         />
         <meta property="og:url" content="https://hulltattoostudio.com/loyalty-program" />
-        <meta property="og:image" content="https://hulltattoostudio.com/og-image.jpg" />
+        <meta
+          property="og:image"
+          content="https://hulltattoostudio.com/og-image.jpg"
+        />
         <meta property="og:type" content="website" />
 
         {/* Twitter Card Meta Tags */}
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="HTS Loyalty Program | Hull Tattoo Studio" />
+        <meta
+          name="twitter:title"
+          content="HTS Loyalty Program | Hull Tattoo Studio"
+        />
         <meta
           name="twitter:description"
           content="Earn rewards for your loyalty at Hull Tattoo Studio. Complete your loyalty card to claim a free tattoo session!"
         />
-        <meta name="twitter:image" content="https://hulltattoostudio.com/twitter-image.jpg" />
+        <meta
+          name="twitter:image"
+          content="https://hulltattoostudio.com/twitter-image.jpg"
+        />
 
         {/* Favicon */}
         <link rel="icon" href="/favicon.ico" />
@@ -124,11 +186,12 @@ const ClientLoyaltyPage = () => {
         p={8}
         minH="100vh"
         display="flex"
-        justifyContent="center"
+        flexDirection="column"
         alignItems="center"
         bg="black"
         overflow="hidden"
       >
+        {/* SIGN UP SECTION */}
         <Box
           bgGradient="radial(rgba(54,39,255,0.6), rgba(128,0,128,0.6), rgba(0,0,0,0.6))"
           borderRadius="md"
@@ -137,7 +200,67 @@ const ClientLoyaltyPage = () => {
           position="relative"
           maxW="900px"
           w="100%"
-          zIndex="1"
+          textAlign="center"
+          mb={8}
+        >
+          <Heading
+            mb={4}
+            fontSize="2xl"
+            textShadow="0 0 10px #ff007f, 0 0 20px #00d4ff"
+          >
+            Sign Up for HTS Loyalty Program
+          </Heading>
+          <Text mb={6} fontSize="md" px={4}>
+            Complete the form below to join our Loyalty Program. We’ll email you
+            your unique Client ID. Start collecting stamps and earn a free
+            tattoo session!
+          </Text>
+          <VStack spacing={4} width={{ base: "100%", md: "50%" }} mx="auto">
+            <FormControl>
+              <FormLabel>Name</FormLabel>
+              <Input
+                placeholder="Full Name"
+                value={signupName}
+                onChange={(e) => setSignupName(e.target.value)}
+                bg="white"
+                color="black"
+              />
+            </FormControl>
+            <FormControl>
+              <FormLabel>Email</FormLabel>
+              <Input
+                placeholder="email@example.com"
+                value={signupEmail}
+                onChange={(e) => setSignupEmail(e.target.value)}
+                bg="white"
+                color="black"
+              />
+            </FormControl>
+            <Button
+              colorScheme="pink"
+              boxShadow="0 0 10px #ff007f"
+              _hover={{
+                boxShadow: "0 0 20px #ff007f, 0 0 40px #00d4ff",
+                transform: "scale(1.05)",
+              }}
+              onClick={signUp}
+            >
+              Sign Up
+            </Button>
+          </VStack>
+        </Box>
+
+        {/* LOOKUP SECTION */}
+        <Box
+          bgGradient="radial(rgba(54,39,255,0.6), rgba(128,0,128,0.6), rgba(0,0,0,0.6))"
+          borderRadius="md"
+          p={8}
+          boxShadow="0 0 20px #9b5de5, 0 0 30px #f15bb5"
+          position="relative"
+          maxW="900px"
+          w="100%"
+          textAlign="center"
+          mb={8}
         >
           <motion.div
             initial={{ opacity: 0, y: -20 }}
@@ -217,6 +340,7 @@ const ClientLoyaltyPage = () => {
             </Box>
           )}
 
+          {/* Loyalty Card Display */}
           <Box
             border="2px solid pink"
             borderRadius="md"
@@ -267,7 +391,14 @@ const ClientLoyaltyPage = () => {
           </Box>
 
           <motion.div>
-            <Box mt={6} p={6} bg="pink.800" color="white" borderRadius="md" textAlign="center">
+            <Box
+              mt={6}
+              p={6}
+              bg="pink.800"
+              color="white"
+              borderRadius="md"
+              textAlign="center"
+            >
               <Heading as="h3" size="md" mb={4}>
                 Terms and Conditions
               </Heading>
