@@ -90,7 +90,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           </a>
           {/* TikTok Link Added Here */}
           <a
-            href="https://www.tiktok.com/@hulltattoostudio"
+            href="https://www.tiktok.com/@hulltattoostudio_"
             target="_blank"
             rel="noopener noreferrer"
             className="footer-icon"
@@ -218,7 +218,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           </a>
           {/* TikTok Link Added Here */}
           <a
-            href="https://www.tiktok.com/@hulltattoostudio"
+            href="https://www.tiktok.com/@hulltattoostudio_"
             target="_blank"
             rel="noopener noreferrer"
             className="footer-icon"
