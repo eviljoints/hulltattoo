@@ -34,9 +34,7 @@ const ClientLoyaltyPage = () => {
   const [name, setName] = useState("");
   const [clientId, setClientId] = useState("");
   const [clientData, setClientData] = useState<ClientData | null>(null);
-  const [stampSlots, setStampSlots] = useState<boolean[]>(
-    Array(6).fill(false)
-  );
+  const [stampSlots, setStampSlots] = useState<boolean[]>(Array(6).fill(false));
   const [prevStamps, setPrevStamps] = useState(0);
 
   const toast = useToast();
@@ -63,7 +61,7 @@ const ClientLoyaltyPage = () => {
 
       toast({
         title: "Registration Successful!",
-        description: 
+        description:
           "You're now part of Hull Tattoo Studio's Loyalty Program. " +
           "Check your email for your Client ID and details. Keep track of " +
           "your hours to earn free sessions!",
@@ -97,6 +95,7 @@ const ClientLoyaltyPage = () => {
       setClientData(data);
 
       const stamps = Math.min(data.stamps, 6);
+      // If new stamps have been earned since last check, show toast notifications
       if (stamps > prevStamps) {
         for (let s = prevStamps + 1; s <= stamps; s++) {
           toast({
@@ -108,6 +107,7 @@ const ClientLoyaltyPage = () => {
           });
         }
       }
+
       setPrevStamps(stamps);
       setStampSlots(
         Array(6)
@@ -131,9 +131,10 @@ const ClientLoyaltyPage = () => {
 
   return (
     <>
+      {/* SEO & Social Sharing Meta Tags */}
       <Head>
+        {/* Primary Meta Tags */}
         <title>HTS Loyalty Program | Hull Tattoo Studio</title>
-        <meta name="google-adsense-account" content="ca-pub-6959045179650835" />
         <meta
           name="description"
           content="Join Hull Tattoo Studio's Loyalty Program and earn rewards for your hours of tattooing. Complete your card and claim a free tattoo session!"
@@ -146,12 +147,19 @@ const ClientLoyaltyPage = () => {
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
         {/* Open Graph Meta Tags */}
-        <meta property="og:title" content="HTS Loyalty Program | Hull Tattoo Studio" />
+        <meta
+          property="og:title"
+          content="HTS Loyalty Program | Hull Tattoo Studio"
+        />
         <meta
           property="og:description"
           content="Earn rewards for your loyalty at Hull Tattoo Studio. Get 1 free tattoo session after completing your loyalty card!"
         />
-        <meta property="og:url" content="https://hulltattoostudio.com/loyalty-program" />
+        <meta
+          property="og:url"
+          content="https://hulltattoostudio.com/loyalty-program"
+        />
+        {/* Make sure this URL is correct and publicly accessible */}
         <meta
           property="og:image"
           content="https://hulltattoostudio.com/images/loyalty.png"
@@ -168,14 +176,23 @@ const ClientLoyaltyPage = () => {
           name="twitter:description"
           content="Earn rewards for your loyalty at Hull Tattoo Studio. Complete your loyalty card to claim a free tattoo session!"
         />
+        {/* Make sure this URL is correct and publicly accessible */}
         <meta
           name="twitter:image"
           content="https://hulltattoostudio.com/images/loyalty.png"
         />
 
+        {/* Misc/Google */}
+        <meta name="google-adsense-account" content="ca-pub-6959045179650835" />
+
         {/* Favicon */}
         <link rel="icon" href="/favicon.ico" />
-        <link rel="canonical" href="https://hulltattoostudio.com/loyalty-program" />
+
+        {/* Canonical URL */}
+        <link
+          rel="canonical"
+          href="https://hulltattoostudio.com/loyalty-program"
+        />
       </Head>
 
       <Box
@@ -281,7 +298,8 @@ const ClientLoyaltyPage = () => {
               textAlign="center"
               textShadow="0 0 5px #ff007f, 0 0 10px #00d4ff"
             >
-              Earn rewards for your loyalty. Complete your card to claim a free tattoo session!
+              Earn rewards for your loyalty. Complete your card to claim a free
+              tattoo session!
             </Text>
           </motion.div>
 
@@ -323,6 +341,7 @@ const ClientLoyaltyPage = () => {
             </Button>
           </VStack>
 
+          {/* CLIENT INFO DISPLAY */}
           {clientData && (
             <Box textAlign="center" mb={8}>
               <Text>
@@ -334,7 +353,8 @@ const ClientLoyaltyPage = () => {
               </Text>
               {clientData.stamps < 6 && (
                 <Text>
-                  <strong>Hours until next stamp:</strong> {hoursUntilNextStamp()}
+                  <strong>Hours until next stamp:</strong>{" "}
+                  {hoursUntilNextStamp()}
                 </Text>
               )}
             </Box>
@@ -380,7 +400,11 @@ const ClientLoyaltyPage = () => {
                     boxShadow="0 0 10px #ff007f"
                   >
                     {stamped && (
-                      <Text fontSize="lg" color="white" textShadow="0 0 5px black">
+                      <Text
+                        fontSize="lg"
+                        color="white"
+                        textShadow="0 0 5px black"
+                      >
                         HTS
                       </Text>
                     )}
@@ -390,6 +414,7 @@ const ClientLoyaltyPage = () => {
             </Box>
           </Box>
 
+          {/* Terms & Conditions */}
           <motion.div>
             <Box
               mt={6}
@@ -402,11 +427,16 @@ const ClientLoyaltyPage = () => {
               <Heading as="h3" size="md" mb={4}>
                 Terms and Conditions
               </Heading>
-              <Text fontSize="sm">- Earn 1 stamp for every 4 hours of tattooing.</Text>
-              <Text fontSize="sm">- Complete all 6 stamps to claim 1 full day of tattooing.</Text>
+              <Text fontSize="sm">
+                - Earn 1 stamp for every 4 hours of tattooing.
+              </Text>
+              <Text fontSize="sm">
+                - Complete all 6 stamps to claim 1 full day of tattooing.
+              </Text>
               <Text fontSize="sm">- Stamps reset after redemption.</Text>
               <Text fontSize="sm">
-                - Loyalty reward can be gifted but must be claimed within 1 year of the last stamp.
+                - Loyalty reward can be gifted but must be claimed within 1 year
+                of the last stamp.
               </Text>
             </Box>
           </motion.div>
