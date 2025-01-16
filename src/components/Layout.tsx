@@ -3,7 +3,7 @@ import Link from "next/link";
 import Image from "next/image";
 
 // If FaTiktok does not exist in your version of react-icons,
-// use `SiTiktok` from `react-icons/si` instead.
+// you can use `SiTiktok` from `react-icons/si` instead.
 import {
   FaFacebook,
   FaInstagram,
@@ -14,6 +14,7 @@ import {
   FaNewspaper,
   FaYoutube,
   FaTiktok,
+  FaUserFriends, // <-- Use this icon for Artists
 } from "react-icons/fa";
 
 import {
@@ -59,7 +60,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           </Link>
         </div>
 
-        {/* Icons under logo using the same classes as the footer */}
+        {/* Icons under logo (same classes as the footer) */}
         <div className="footer-socials">
           <a
             href="https://www.instagram.com"
@@ -88,7 +89,6 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           >
             <FaYoutube />
           </a>
-          {/* TikTok Link Added Here */}
           <a
             href="https://www.tiktok.com/@hulltattoostudio_"
             target="_blank"
@@ -112,17 +112,14 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             <a className="navbar-link">Aftercare</a>
           </Link>
 
-          {/* FAQ Link on Desktop */}
           <Link href="/faq" passHref>
             <a className="navbar-link">FAQ</a>
           </Link>
 
-          {/* Loyalty Page Link for Desktop */}
           <Link href="/loyalty" passHref>
             <a className="navbar-link">Loyalty</a>
           </Link>
 
-          {/* Blog Link on Desktop */}
           <Link href="/blog" passHref>
             <a className="navbar-link">Blog</a>
           </Link>
@@ -131,12 +128,19 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           <Menu>
             <MenuButton
               as={Button}
-              rightIcon={<ChevronDownIcon />}
+              className="navbar-link"
               variant="ghost"
               fontSize="lg"
               fontWeight="semibold"
-              _hover={{ color: "#ff007f" }}
+              rightIcon={<ChevronDownIcon />}
+              px={2}
+              py={1}
+              display="flex"
+              alignItems="center"
+              _hover={{ color: "#ff007f", bg: "transparent" }}
+              _focus={{ boxShadow: "none" }}
             >
+              
               Artists
             </MenuButton>
             <MenuList
@@ -216,7 +220,6 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           >
             <FaYoutube />
           </a>
-          {/* TikTok Link Added Here */}
           <a
             href="https://www.tiktok.com/@hulltattoostudio_"
             target="_blank"
@@ -248,21 +251,18 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           </a>
         </Link>
 
-        {/* FAQ Link on Mobile */}
         <Link href="/faq" passHref>
           <a className="navbar-icon" aria-label="FAQ">
             <FaQuestionCircle />
           </a>
         </Link>
 
-        {/* Loyalty Page Link for Mobile */}
         <Link href="/loyalty" passHref>
           <a className="navbar-icon" aria-label="Loyalty">
             <FaStar />
           </a>
         </Link>
 
-        {/* Blog Link on Mobile */}
         <Link href="/blog" passHref>
           <a className="navbar-icon" aria-label="Blog">
             <FaNewspaper />
@@ -277,9 +277,12 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             variant="ghost"
             fontSize="lg"
             fontWeight="semibold"
+            display="flex"
+            alignItems="center"
             _hover={{ color: "#ff007f" }}
           >
-            Artists
+            <FaUserFriends style={{ marginRight: "6px" }} />
+            
           </MenuButton>
           <MenuList
             bg="black"
