@@ -154,7 +154,7 @@ const ClientLoyaltyPage = () => {
         <meta property="og:url" content="https://hulltattoostudio.com/loyalty-program" />
         <meta
           property="og:image"
-          content="https://hulltattoostudio.com/loyalty.png"
+          content="https://hulltattoostudio.com/images/loyalty.png"
         />
         <meta property="og:type" content="website" />
 
@@ -170,7 +170,7 @@ const ClientLoyaltyPage = () => {
         />
         <meta
           name="twitter:image"
-          content="https://hulltattoostudio.com/twitter-image.jpg"
+          content="https://hulltattoostudio.com/images/loyalty.png"
         />
 
         {/* Favicon */}
