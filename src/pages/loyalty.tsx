@@ -157,7 +157,7 @@ const ClientLoyaltyPage = () => {
         />
         <meta
           property="og:url"
-          content="https://hulltattoostudio.com/loyalty-program"
+          content="https://hulltattoostudio.com/loyalty"
         />
         {/* Make sure this URL is correct and publicly accessible */}
         <meta
@@ -191,7 +191,7 @@ const ClientLoyaltyPage = () => {
         {/* Canonical URL */}
         <link
           rel="canonical"
-          href="https://hulltattoostudio.com/loyalty-program"
+          href="https://hulltattoostudio.com/loyalty"
         />
       </Head>
 
