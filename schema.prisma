@@ -17,21 +17,23 @@ model Review {
 }
 
 model Client {
-  id         Int      @id @default(autoincrement())
+  id         Int       @id @default(autoincrement())
   name       String
-  hours      Int      @default(0)
-  stamps     Int      @default(0)
-  clientId   String   @unique
+  hours      Int       @default(0)
+  stamps     Int       @default(0)
+  clientId   String    @unique
   email      String?   @unique
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
-  signUpDate DateTime @default(now())
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  signUpDate DateTime  @default(now())
+  googleId   String?   @unique  // <-- new field for Google OAuth
+  appleId    String?   @unique  // <-- new field for Apple OAuth
 }
 
 model File {
   id        Int      @id @default(autoincrement())
   name      String
   mimetype  String
-  content   String // Store the base64-encoded file content
+  content   String
   createdAt DateTime @default(now())
 }

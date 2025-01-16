@@ -154,7 +154,7 @@ const ClientLoyaltyPage = () => {
         <meta property="og:url" content="https://hulltattoostudio.com/loyalty-program" />
         <meta
           property="og:image"
-          content="https://hulltattoostudio.com/og-image.jpg"
+          content="https://hulltattoostudio.com/loyalty.png"
         />
         <meta property="og:type" content="website" />
 
