@@ -66,10 +66,10 @@ const HarleyPage: React.FC = () => {
           property="og:description"
           content="Meet Harley, our dedicated apprentice at Hull Tattoo Studio. Specializing in dotwork and pointillism, Harley offers affordable tattoos and is always improving her craft."
         />
-        <meta property="og:image" content="/images/harley.png" />
+        <meta property="og:image" content="/images/harley.webp" />
         <meta property="og:url" content="https://www.hulltattoostudio.com/harley" />
         <meta property="og:type" content="profile" />
-        <link rel="preload" href="/images/harley.png" as="image" />
+        <link rel="preload" href="/images/harley.webp" as="image" />
       </Head>
 
       <Box
@@ -122,7 +122,7 @@ const HarleyPage: React.FC = () => {
 
             <Box mb={8} textAlign="center">
               <Image
-                src="/images/harley.png"
+                src="/images/harley.webp"
                 alt="Portrait of Harley"
                 width={200}
                 height={200}

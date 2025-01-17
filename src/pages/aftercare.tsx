@@ -97,7 +97,7 @@ const AfterCarePage: React.FC = () => {
           property="og:description"
           content="Detailed aftercare instructions to help your tattoo heal properly. Use Apollo Aftercare products for the best results."
         />
-        <meta property="og:image" content="/images/aftercare.png" />
+        <meta property="og:image" content="/images/aftercare.webp" />
         <meta
           property="og:url"
           content="https://www.hulltattoostudio.com/aftercare"
@@ -116,7 +116,7 @@ const AfterCarePage: React.FC = () => {
           name="twitter:description"
           content="Learn how to care for your tattoo with Apollo Aftercare products and expert advice from Hull Tattoo Studio."
         />
-        <meta name="twitter:image" content="/images/aftercare.png" />
+        <meta name="twitter:image" content="/images/aftercare.webp" />
 
         {/* Canonical URL */}
         <link
@@ -215,7 +215,7 @@ const AfterCarePage: React.FC = () => {
                 overflow="hidden"
               >
                 <NextImage
-                  src="/images/aftercare.png"
+                  src="/images/aftercare.webp"
                   alt="Apollo Aftercare Product"
                   // Provide width & height or use fill/layout="responsive"
                   width={500}

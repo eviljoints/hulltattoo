@@ -41,24 +41,24 @@ const galleries = {
       Mike specializes in bringing portraits, landscapes, and objects to life on skin, creating tattoos that
       are almost indistinguishable from photographs.`,
     images: [
-      "realism1.jpg",
-      "realism2.jpg",
-      "realism3.jpg",
-      "realism4.jpg",
-      "realism5.jpg",
-      "realism6.jpg",
+      "realism1.webp",
+      "realism2.webp",
+      "realism3.webp",
+      "realism4.webp",
+      "realism5.webp",
+      "realism6.webp",
     ],
   },
   bespokeRealism: {
     description: `Bespoke realism combines the precision of realism with personalized elements to create unique tattoos.
       Mike works closely with clients to incorporate individual stories and symbolism into hyper-realistic designs.`,
     images: [
-      "bespoke1.jpg",
-      "bespoke2.jpg",
-      "bespoke3.jpg",
-      "bespoke4.jpg",
-      "bespoke5.jpg",
-      "bespoke6.jpg",
+      "bespoke1.webp",
+      "bespoke2.webp",
+      "bespoke3.webp",
+      "bespoke4.webp",
+      "bespoke5.webp",
+      "bespoke6.webp",
     ],
   },
   neotrad: {
@@ -66,24 +66,24 @@ const galleries = {
       with modern artistic elements. Mike's neotrad work is known for its vibrant colors and detailed designs, breathing
       new life into classic motifs.`,
     images: [
-      "neotrad1.jpg",
-      "neotrad2.jpg",
-      "neotrad3.jpg",
-      "neotrad4.jpg",
-      "neotrad5.jpg",
-      "neotrad6.jpg",
+      "neotrad1.webp",
+      "neotrad2.webp",
+      "neotrad3.webp",
+      "neotrad4.webp",
+      "neotrad5.webp",
+      "neotrad6.webp",
     ],
   },
   coverUp: {
     description: `Cover-up tattoos are designed to transform and conceal existing tattoos with new designs.
       Mike specializes in creatively reimagining unwanted tattoos, turning them into stunning new pieces that clients can proudly display.`,
     images: [
-      "coverup1.jpg",
-      "coverup2.jpg",
-      "coverup3.jpg",
-      "coverup4.jpg",
-      "coverup5.jpg",
-      "coverup6.jpg",
+      "coverup1.webp",
+      "coverup2.webp",
+      "coverup3.webp",
+      "coverup4.webp",
+      "coverup5.webp",
+      "coverup6.webp",
     ],
   },
 };
@@ -102,7 +102,7 @@ const MikePage: React.FC = () => {
       name: "Hull Tattoo Studio",
       url: "https://www.hulltattoostudio.com",
     },
-    image: "https://www.hulltattoostudio.com/images/mike.png",
+    image: "https://www.hulltattoostudio.com/images/mike.webp",
     url: "https://www.hulltattoostudio.com/artists/mike",
     description:
       "Mike is a friendly, down-to-earth tattoo artist at Hull Tattoo Studio with over 10 years of experience. He specializes in realism, bespoke realism, neotrad, and cover-up tattoos.",
@@ -135,7 +135,7 @@ const MikePage: React.FC = () => {
           property="og:description"
           content="Meet Mike, a friendly and talented tattoo artist at Hull Tattoo Studio with 10+ years of experience in realism, bespoke realism, neotrad, and cover-up tattoos."
         />
-        <meta property="og:image" content="/images/mike.png" />
+        <meta property="og:image" content="/images/mike.webp" />
         <meta
           property="og:url"
           content="https://www.hulltattoostudio.com/artists/mike"
@@ -213,7 +213,7 @@ const MikePage: React.FC = () => {
 
             <Box mb={8} textAlign="center">
               <Image
-                src="/images/mike.png"
+                src="/images/mike.webp"
                 alt="Portrait of Mike"
                 width={200}
                 height={200}

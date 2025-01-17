@@ -66,7 +66,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           <Link href="/" passHref>
             <a aria-label="Go to home">
               <Image
-                src="/images/logo.png"
+                src="/images/logo.webp"
                 alt="Tattoo Studio Logo"
                 width={300}
                 height={120}

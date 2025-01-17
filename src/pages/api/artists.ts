@@ -33,8 +33,8 @@ const artists: Artist[] = [
   {
     name: "Mike",
     role: "Sponsored Realism Tattoo Artist",
-    image: "/images/mike.png",
-    gallery: "/images/mike-gallery.png",
+    image: "/images/mike.webp",
+    gallery: "/images/mike-gallery.webp",
     facebook: "https://facebook.com/Hulltattoostudio",
     instagram: "https://instagram.com/egg_tattooer",
     artsPage: "/mike",
@@ -43,8 +43,8 @@ const artists: Artist[] = [
   {
     name: "Poppy",
     role: "Apprentice Tattoo Artist",
-    image: "/images/poppy.png",
-    gallery: "/images/poppy-gallery.png",
+    image: "/images/poppy.webp",
+    gallery: "/images/poppy-gallery.webp",
     instagram: "https://instagram.com/macabre_tattooz",
     artsPage: "/poppy",
     stripes: generateStripes(),
@@ -52,8 +52,8 @@ const artists: Artist[] = [
   {
     name: "Harley",
     role: "Apprentice Tattoo Artist",
-    image: "/images/harley.png",
-    gallery: "/images/harley-gallery.png",
+    image: "/images/harley.webp",
+    gallery: "/images/harley-gallery.webp",
     instagram: "https://www.instagram.com/harleybovilltattoos/",
     artsPage: "/harley",
     stripes: generateStripes(),

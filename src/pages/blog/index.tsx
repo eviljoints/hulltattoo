@@ -30,7 +30,7 @@ export default function BlogIndex({ posts }: { posts: PostMeta[] }) {
   const seoTitle = "Blog | Hull Tattoo Studio";
   const seoDescription =
     "Discover the latest updates, insights, and tattoo advice from Hull Tattoo Studio. Explore our blog to learn about our artists, booking tips, aftercare, and more.";
-  const seoImage = "/images/og-image.png"; 
+  const seoImage = "/images/og-image.webp"; 
   const siteUrl = "https://www.hulltattoostudio.com/blog"; 
 
   return (

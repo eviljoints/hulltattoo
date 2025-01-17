@@ -60,7 +60,7 @@ const structuredData = {
     name: "Hull Tattoo Studio",
     url: "https://www.hulltattoostudio.com",
   },
-  image: "https://www.hulltattoostudio.com/images/poppy.png",
+  image: "https://www.hulltattoostudio.com/images/poppy.webp",
   url: "https://www.hulltattoostudio.com/poppy",
   description:
     "Poppy is an apprentice tattoo artist at Hull Tattoo Studio, specializing in black ink and exploring color pieces. She offers high-quality tattoos at an apprentice rate.",
@@ -107,7 +107,7 @@ const PoppyPage: React.FC = () => {
           property="og:description"
           content="Meet Poppy, our dedicated apprentice at Hull Tattoo Studio. She works mainly in black ink but is branching out into color pieces."
         />
-        <meta property="og:image" content="/images/poppy.png" />
+        <meta property="og:image" content="/images/poppy.webp" />
         <meta
           property="og:url"
           content="https://www.hulltattoostudio.com/poppy"
@@ -118,7 +118,7 @@ const PoppyPage: React.FC = () => {
         <link rel="canonical" href="https://www.hulltattoostudio.com/poppy" />
 
         {/* Preload Poppy's portrait for faster display */}
-        <link rel="preload" href="/images/poppy.png" as="image" />
+        <link rel="preload" href="/images/poppy.webp" as="image" />
       </Head>
 
       {/* 5. Structured Data via Next.js <Script> */}
@@ -178,7 +178,7 @@ const PoppyPage: React.FC = () => {
 
             <Box mb={8} textAlign="center">
               <Image
-                src="/images/poppy.png"
+                src="/images/poppy.webp"
                 alt="Portrait of Poppy"
                 width={200}
                 height={200}

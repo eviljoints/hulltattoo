@@ -35,7 +35,7 @@ const RafflePage: React.FC = () => {
           property="og:description"
           content="Grab your chance to win big in our neon-inspired Christmas Raffle! £10 per number, only 40 spots available."
         />
-        <meta property="og:image" content="/images/og-image.png" />
+        <meta property="og:image" content="/images/og-image.webp" />
         <meta property="og:url" content="https://www.hulltattoostudio.com/raffle" />
         <meta property="og:type" content="website" />
         <meta property="og:locale" content="en_GB" />

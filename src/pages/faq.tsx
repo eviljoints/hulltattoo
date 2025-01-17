@@ -74,7 +74,7 @@ const FAQPage: React.FC = () => {
           property="og:description"
           content="Got questions? Our FAQ page provides answers about booking, sessions, payment methods, tattoo preparation, and more at Hull Tattoo Studio."
         />
-        <meta property="og:image" content="/images/og-image.png" />
+        <meta property="og:image" content="/images/og-image.webp" />
         <meta property="og:image:alt" content="Hull Tattoo Studio's FAQ page cover" />
         <meta property="og:url" content="https://www.hulltattoostudio.com/faq" />
         <meta property="og:type" content="website" />
@@ -90,7 +90,7 @@ const FAQPage: React.FC = () => {
           name="twitter:description"
           content="Answers to your questions about tattoo booking, aftercare, payment options, and more at Hull Tattoo Studio."
         />
-        <meta name="twitter:image" content="/images/og-image.png" />
+        <meta name="twitter:image" content="/images/og-image.webp" />
         <meta name="twitter:image:alt" content="Hull Tattoo Studio FAQ Cover" />
 
         {/* Canonical URL */}

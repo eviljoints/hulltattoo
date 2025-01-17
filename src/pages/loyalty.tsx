@@ -232,7 +232,7 @@ const ClientLoyaltyPage = () => {
         {/* Make sure this URL is correct and publicly accessible */}
         <meta
           property="og:image"
-          content="https://hulltattoostudio.com/images/loyalty.png"
+          content="https://hulltattoostudio.com/images/loyalty.webp"
         />
         <meta property="og:type" content="website" />
 
@@ -249,7 +249,7 @@ const ClientLoyaltyPage = () => {
         {/* Make sure this URL is correct and publicly accessible */}
         <meta
           name="twitter:image"
-          content="https://hulltattoostudio.com/images/loyalty.png"
+          content="https://hulltattoostudio.com/images/loyalty.webp"
         />
 
         {/* Misc/Google */}
