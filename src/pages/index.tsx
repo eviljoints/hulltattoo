@@ -1,12 +1,10 @@
 // ./src/pages/index.tsx
 
 import React from "react";
-import { Box, Grid, Spinner, Center, Flex } from "@chakra-ui/react";
+import { Box, Grid, Spinner, Center, Flex, Button } from "@chakra-ui/react";
 import dynamic from "next/dynamic";
 import Head from "next/head";
-
 import axios from "axios";
-
 import MotionSection from "../components/MotionSection";
 import ArtistCard from "../components/ArtistCard";
 import TextCard from "../components/TextCard";
@@ -27,10 +25,11 @@ interface Stripe {
   color: string;
 }
 interface Artist {
+  slug: number;
   name: string;
   role: string;
-  image: string;
-  gallery: string;
+  image: string; // path to .webp
+  gallery: string; // path to .webp
   facebook?: string;
   instagram?: string;
   artsPage: string;
@@ -46,7 +45,9 @@ const HomePage: React.FC<HomePageProps> = ({ artists, error }) => {
   if (error) {
     return (
       <Center minH="100vh">
-        <Box color="red.500">{error}</Box>
+        <Box color="red.500" fontSize="xl">
+          {error}
+        </Box>
       </Center>
     );
   }
@@ -133,26 +134,28 @@ const HomePage: React.FC<HomePageProps> = ({ artists, error }) => {
       </Head>
 
       {/* 4. OPTIONAL: Defer 3rd-party scripts to reduce blocking */}
-      {/* <Script 
-        src="https://example-third-party.js" 
-        strategy="lazyOnload" 
-      /> */}
+      {/* Example of deferring a script:
+          <Script 
+            src="https://example-third-party.js" 
+            strategy="lazyOnload" 
+          />
+      */}
 
       {/* 5. PAGE CONTENT */}
       <Box
         as="main"
         position="relative"
-        color="white"
-        w="100%"
-        p={8}
-        px={{ base: 4, md: 8 }}
-        minH="100vh"
+        color="pink"
+        width="100%"
+        padding={8}
+        paddingX={{ base: 4, md: 8 }}
+        minHeight="100vh"
         bg="transparent"
       >
         <Box
           bgGradient="radial(rgba(54, 39, 255, 0.6), rgba(128, 0, 128, 0.6), rgba(0, 0, 0, 0.6))"
           borderRadius="md"
-          p={8}
+          padding={8}
           boxShadow="0 0 20px #9b5de5, 0 0 30px #f15bb5"
         >
           {/* Intro Section */}
@@ -161,7 +164,7 @@ const HomePage: React.FC<HomePageProps> = ({ artists, error }) => {
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.3 }}
             viewport={{ once: true }}
-            mb={16}
+            marginBottom={16}
           >
             <TextCard
               title="WELCOME TO HULL TATTOO STUDIO"
@@ -189,11 +192,17 @@ const HomePage: React.FC<HomePageProps> = ({ artists, error }) => {
           </MotionSection>
 
           {/* Buttons side by side */}
-          <Center mb={10}>
-            <Flex gap={4} flexWrap="wrap" justify="center">
+          <Center marginBottom={10}>
+            <Flex
+              gap={4}
+              flexWrap="wrap"
+              justifyContent="center"
+              width="100%"
+              maxWidth="500px"
+            >
               <ReviewsModal
                 buttonProps={{
-                  w: "200px",
+                  width: "200px",
                   colorScheme: "blue",
                   boxShadow: "0 0 10px #00d4ff",
                   _hover: {
@@ -205,7 +214,7 @@ const HomePage: React.FC<HomePageProps> = ({ artists, error }) => {
               />
               <ContactUsModal
                 buttonProps={{
-                  w: "200px",
+                  width: "200px",
                   colorScheme: "pink",
                   boxShadow: "0 0 10px #ff007f",
                   _hover: {
@@ -224,7 +233,7 @@ const HomePage: React.FC<HomePageProps> = ({ artists, error }) => {
             whileInView={{ opacity: 1 }}
             transition={{ duration: 0.8, delay: 0.3 }}
             viewport={{ once: true }}
-            mb={16}
+            marginBottom={16}
           >
             <TextCard
               title="ARTISTS"
@@ -269,19 +278,20 @@ const HomePage: React.FC<HomePageProps> = ({ artists, error }) => {
             <Grid
               templateColumns={{
                 base: "1fr",
+                sm: "repeat(2, 1fr)",
                 md: "repeat(auto-fit, minmax(250px, 1fr))",
               }}
               gap={10}
-              mt={8}
+              marginTop={8}
             >
               {artists.map((artist, index) => (
                 <ArtistCard
-                  key={index}
+                  key={artist.slug || index}
                   name={artist.name}
                   role={artist.role}
-                  image={artist.image}
+                  image={artist.image} // Ensure this is a .webp path
                   alt={`Image of ${artist.name}, a tattoo artist at Hull Tattoo Studio`}
-                  gallery={artist.gallery}
+                  gallery={artist.gallery} // Ensure this is a .webp path
                   facebook={artist.facebook}
                   instagram={artist.instagram}
                   artsPage={artist.artsPage}
@@ -293,7 +303,7 @@ const HomePage: React.FC<HomePageProps> = ({ artists, error }) => {
         </Box>
 
         {/* 7. FIND US SECTION */}
-        <Box mt={16}>
+        <Box marginTop={16}>
           <FindUs />
         </Box>
       </Box>

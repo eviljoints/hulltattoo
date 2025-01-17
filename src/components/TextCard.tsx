@@ -57,7 +57,7 @@ const TextCard: React.FC<TextCardProps> = ({
       ))}
 
       {/* Title */}
-      <Box className={styles.neonLines}></Box>
+      
       <Text
         fontSize={{ base: "3xl", md: "4xl" }}
         fontWeight="bold"
