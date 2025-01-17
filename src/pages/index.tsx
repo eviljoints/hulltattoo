@@ -1,23 +1,31 @@
-// ./pages/index.tsx
+// ./src/pages/index.tsx
 
 import React from "react";
 import { Box, Grid, Spinner, Center, Flex } from "@chakra-ui/react";
-import MotionSection from "../components/MotionSection";
+import dynamic from "next/dynamic";
 import Head from "next/head";
+
+import axios from "axios";
+
+import MotionSection from "../components/MotionSection";
 import ArtistCard from "../components/ArtistCard";
 import TextCard from "../components/TextCard";
 import FindUs from "../components/FindUS";
-import dynamic from "next/dynamic";
-import Script from "next/script";
-import axios from "axios";
-import Image from "next/image"; // Next.js optimized image
 
+// Next.js dynamic imports to reduce initial bundle size
+const ReviewsModal = dynamic(() => import("~/components/ReviewsModal"), {
+  ssr: false,
+});
+const ContactUsModal = dynamic(() => import("~/components/ContactUsModal"), {
+  ssr: false,
+});
+
+// Artist interface
 interface Stripe {
   left: string;
   width: string;
   color: string;
 }
-
 interface Artist {
   name: string;
   role: string;
@@ -28,18 +36,13 @@ interface Artist {
   artsPage: string;
   stripes: Stripe[];
 }
-
 interface HomePageProps {
   artists: Artist[] | null;
   error?: string;
 }
 
-// Dynamically import modal components to reduce initial bundle size
-const ReviewsModal = dynamic(() => import("~/components/ReviewsModal"), { ssr: false });
-const ContactUsModal = dynamic(() => import("~/components/ContactUsModal"), { ssr: false });
-const LeaveReviewButton = dynamic(() => import("~/components/ClientReviewModal"), { ssr: false });
-
 const HomePage: React.FC<HomePageProps> = ({ artists, error }) => {
+  // 1. Handle Error or Loading
   if (error) {
     return (
       <Center minH="100vh">
@@ -47,7 +50,6 @@ const HomePage: React.FC<HomePageProps> = ({ artists, error }) => {
       </Center>
     );
   }
-
   if (!artists) {
     return (
       <Center minH="100vh">
@@ -56,27 +58,29 @@ const HomePage: React.FC<HomePageProps> = ({ artists, error }) => {
     );
   }
 
+  // 2. Structured Data for SEO
   const structuredData = {
     "@context": "http://schema.org",
     "@type": "TattooStudio",
-    "name": "Hull Tattoo Studio",
-    "description":
+    name: "Hull Tattoo Studio",
+    description:
       "Professional tattoo studio in Hull offering various styles including realism, blackwork, anime, and apprentice work.",
-    "image": "https://www.hulltattoostudio.com/images/og-image.png",
-    "url": "https://www.hulltattoostudio.com",
-    "address": {
+    image: "https://www.hulltattoostudio.com/images/og-image.png",
+    url: "https://www.hulltattoostudio.com",
+    address: {
       "@type": "PostalAddress",
-      "streetAddress": "652 Anlaby Road",
-      "addressLocality": "Hull",
-      "postalCode": "HU3 6UU",
-      "addressCountry": "UK",
+      streetAddress: "652 Anlaby Road",
+      addressLocality: "Hull",
+      postalCode: "HU3 6UU",
+      addressCountry: "UK",
     },
-    "openingHours": "Tu-F 09:30-15:00, Sa 11:30-18:00",
-    "telephone": "07940080790",
+    openingHours: "Tu-F 09:30-15:00, Sa 11:30-18:00",
+    telephone: "07940080790",
   };
 
   return (
     <>
+      {/* 3. HEAD TAGS & SEO */}
       <Head>
         <title>Hull Tattoo Studio | Professional Tattoo Artists in Hull</title>
         <meta
@@ -89,28 +93,37 @@ const HomePage: React.FC<HomePageProps> = ({ artists, error }) => {
         />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-        {/* Open Graph Metadata */}
-        <meta property="og:title" content="Hull Tattoo Studio | Professional Tattoo Artists in Hull" />
+        {/* Open Graph */}
+        <meta
+          property="og:title"
+          content="Hull Tattoo Studio | Professional Tattoo Artists in Hull"
+        />
         <meta
           property="og:description"
           content="Hull Tattoo Studio offers stunning tattoos in Hull. Specializing in realism, blackwork, and anime tattoos. Book your appointment today!"
         />
-        <meta property="og:image" content="https://www.hulltattoostudio.com/images/og-image.png" />
+        <meta
+          property="og:image"
+          content="https://www.hulltattoostudio.com/images/og-image.png"
+        />
         <meta property="og:url" content="https://www.hulltattoostudio.com" />
         <meta property="og:type" content="website" />
 
-        {/* Twitter Card Metadata */}
+        {/* Twitter Card */}
         <meta name="twitter:card" content="summary_large_image" />
         <meta
           name="twitter:description"
           content="Expert tattoo artists in Hull creating stunning realism, blackwork, and anime tattoos. Visit Hull Tattoo Studio for your next piece!"
         />
-        <meta name="twitter:image" content="https://www.hulltattoostudio.com/images/og-image.png" />
+        <meta
+          name="twitter:image"
+          content="https://www.hulltattoostudio.com/images/og-image.png"
+        />
 
         {/* Canonical URL */}
         <link rel="canonical" href="https://www.hulltattoostudio.com" />
 
-        {/* Inject JSON-LD structured data */}
+        {/* JSON-LD Structured Data */}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
@@ -119,6 +132,13 @@ const HomePage: React.FC<HomePageProps> = ({ artists, error }) => {
         />
       </Head>
 
+      {/* 4. OPTIONAL: Defer 3rd-party scripts to reduce blocking */}
+      {/* <Script 
+        src="https://example-third-party.js" 
+        strategy="lazyOnload" 
+      /> */}
+
+      {/* 5. PAGE CONTENT */}
       <Box
         as="main"
         position="relative"
@@ -135,6 +155,7 @@ const HomePage: React.FC<HomePageProps> = ({ artists, error }) => {
           p={8}
           boxShadow="0 0 20px #9b5de5, 0 0 30px #f15bb5"
         >
+          {/* Intro Section */}
           <MotionSection
             initial={{ opacity: 0, y: 50 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -166,7 +187,8 @@ const HomePage: React.FC<HomePageProps> = ({ artists, error }) => {
               ]}
             />
           </MotionSection>
-           {/* Buttons side by side */}
+
+          {/* Buttons side by side */}
           <Center mb={10}>
             <Flex gap={4} flexWrap="wrap" justify="center">
               <ReviewsModal
@@ -178,6 +200,7 @@ const HomePage: React.FC<HomePageProps> = ({ artists, error }) => {
                     boxShadow: "0 0 20px #00d4ff, 0 0 40px #ff007f",
                     transform: "scale(1.05)",
                   },
+                  "aria-label": "Read Reviews", // Improve accessibility
                 }}
               />
               <ContactUsModal
@@ -189,9 +212,9 @@ const HomePage: React.FC<HomePageProps> = ({ artists, error }) => {
                     boxShadow: "0 0 20px #ff007f, 0 0 40px #00d4ff",
                     transform: "scale(1.05)",
                   },
+                  "aria-label": "Contact Us",
                 }}
               />
-              
             </Flex>
           </Center>
 
@@ -203,7 +226,7 @@ const HomePage: React.FC<HomePageProps> = ({ artists, error }) => {
             viewport={{ once: true }}
             mb={16}
           >
-             <TextCard
+            <TextCard
               title="ARTISTS"
               description={`
                 <p>
@@ -211,7 +234,6 @@ const HomePage: React.FC<HomePageProps> = ({ artists, error }) => {
                   for tattoos in Hull.
                 </p>
                 </br>
-
                 <p>
                   <strong>Eggtattooer (Mike)</strong>, specializes in
                   black and gray and color realism tattoos, backed by roughly 8 years of
@@ -222,7 +244,6 @@ const HomePage: React.FC<HomePageProps> = ({ artists, error }) => {
                   </a>.
                 </p>
                 </br>
-
                 <p>
                   <strong>Poppy</strong>, focuses on simple black
                   and gray, blackwork, and limited color pieces. She’s easy to talk with
@@ -230,14 +251,11 @@ const HomePage: React.FC<HomePageProps> = ({ artists, error }) => {
                   her <a href="/poppy" style="color:#00d4ff;">Poppy Page</a>.
                 </p>
                 </br>
-
                 <p>
                   <strong>Harley</strong>, our latest addition, is diligently practicing
                   on fake skin with a goal to specialize in blackwork and pointillism.
                   Stay tuned for updates on her
-                  <a href="/harley" style="color:#00d4ff;">
-                    Harleys page
-                  </a>
+                  <a href="/harley" style="color:#00d4ff;">Harley’s page</a>
                   as she refines her skills.
                 </p>
               `}
@@ -246,6 +264,8 @@ const HomePage: React.FC<HomePageProps> = ({ artists, error }) => {
                 { left: "30%", width: "15px", color: "#00d4ff" },
               ]}
             />
+
+            {/* 6. Artist Cards */}
             <Grid
               templateColumns={{
                 base: "1fr",
@@ -272,6 +292,7 @@ const HomePage: React.FC<HomePageProps> = ({ artists, error }) => {
           </MotionSection>
         </Box>
 
+        {/* 7. FIND US SECTION */}
         <Box mt={16}>
           <FindUs />
         </Box>
@@ -280,9 +301,12 @@ const HomePage: React.FC<HomePageProps> = ({ artists, error }) => {
   );
 };
 
+// 8. SSG: fetch data at build time
 export const getStaticProps = async () => {
   try {
-    const response = await axios.get("https://www.hulltattoostudio.com/api/artists");
+    const response = await axios.get(
+      "https://www.hulltattoostudio.com/api/artists"
+    );
     return {
       props: {
         artists: response.data.artists,
