@@ -15,6 +15,7 @@ interface ArtistCardProps {
   name: string;
   role: string;
   image: string;
+  alt: string;
   gallery: string;
   facebook?: string;
   instagram?: string;

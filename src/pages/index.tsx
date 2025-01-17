@@ -10,6 +10,7 @@ import FindUs from "../components/FindUS";
 import dynamic from "next/dynamic";
 import Script from "next/script";
 import axios from "axios";
+import Image from "next/image"; // Next.js optimized image
 
 interface Stripe {
   left: string;
@@ -59,12 +60,13 @@ const HomePage: React.FC<HomePageProps> = ({ artists, error }) => {
     "@context": "http://schema.org",
     "@type": "TattooStudio",
     "name": "Hull Tattoo Studio",
-    "description": "Professional tattoo studio in Hull offering various styles including realism, blackwork, anime, and apprentice work.",
+    "description":
+      "Professional tattoo studio in Hull offering various styles including realism, blackwork, anime, and apprentice work.",
     "image": "https://www.hulltattoostudio.com/images/og-image.png",
     "url": "https://www.hulltattoostudio.com",
     "address": {
       "@type": "PostalAddress",
-      "streetAddress": "652 Anlaby road",
+      "streetAddress": "652 Anlaby Road",
       "addressLocality": "Hull",
       "postalCode": "HU3 6UU",
       "addressCountry": "UK",
@@ -81,7 +83,6 @@ const HomePage: React.FC<HomePageProps> = ({ artists, error }) => {
           name="description"
           content="Hull Tattoo Studio offers exceptional tattoos crafted by expert artists in a welcoming environment. Specializing in realism, blackwork, and anime tattoos. Book now!"
         />
-        <meta name="google-adsense-account" content="ca-pub-6959045179650835"></meta>
         <meta
           name="keywords"
           content="Hull Tattoo Studio, Tattoo Artists, Realism Tattoo, Blackwork Tattoo, Anime Tattoo, Professional Tattoo Studio, Hull, Custom Tattoos"
@@ -94,27 +95,17 @@ const HomePage: React.FC<HomePageProps> = ({ artists, error }) => {
           property="og:description"
           content="Hull Tattoo Studio offers stunning tattoos in Hull. Specializing in realism, blackwork, and anime tattoos. Book your appointment today!"
         />
-        <meta
-          property="og:image"
-          content="https://www.hulltattoostudio.com/images/og-image.png"
-        />
-        <meta property="og:image:alt" content="A sample tattoo design from Hull Tattoo Studio" />
+        <meta property="og:image" content="https://www.hulltattoostudio.com/images/og-image.png" />
         <meta property="og:url" content="https://www.hulltattoostudio.com" />
         <meta property="og:type" content="website" />
-        <meta property="og:site_name" content="Hull Tattoo Studio" />
 
         {/* Twitter Card Metadata */}
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="Hull Tattoo Studio | Professional Tattoo Artists in Hull" />
         <meta
           name="twitter:description"
           content="Expert tattoo artists in Hull creating stunning realism, blackwork, and anime tattoos. Visit Hull Tattoo Studio for your next piece!"
         />
-        <meta
-          name="twitter:image"
-          content="https://www.hulltattoostudio.com/images/og-image.png"
-        />
-        <meta name="twitter:image:alt" content="A sample tattoo design from Hull Tattoo Studio" />
+        <meta name="twitter:image" content="https://www.hulltattoostudio.com/images/og-image.png" />
 
         {/* Canonical URL */}
         <link rel="canonical" href="https://www.hulltattoostudio.com" />
@@ -126,8 +117,6 @@ const HomePage: React.FC<HomePageProps> = ({ artists, error }) => {
             __html: JSON.stringify(structuredData),
           }}
         />
-
-        
       </Head>
 
       <Box
@@ -145,8 +134,6 @@ const HomePage: React.FC<HomePageProps> = ({ artists, error }) => {
           borderRadius="md"
           p={8}
           boxShadow="0 0 20px #9b5de5, 0 0 30px #f15bb5"
-          position="relative"
-          zIndex="1"
         >
           <MotionSection
             initial={{ opacity: 0, y: 50 }}
@@ -179,8 +166,7 @@ const HomePage: React.FC<HomePageProps> = ({ artists, error }) => {
               ]}
             />
           </MotionSection>
-
-          {/* Buttons side by side */}
+           {/* Buttons side by side */}
           <Center mb={10}>
             <Flex gap={4} flexWrap="wrap" justify="center">
               <ReviewsModal
@@ -217,7 +203,7 @@ const HomePage: React.FC<HomePageProps> = ({ artists, error }) => {
             viewport={{ once: true }}
             mb={16}
           >
-            <TextCard
+             <TextCard
               title="ARTISTS"
               description={`
                 <p>
@@ -260,7 +246,6 @@ const HomePage: React.FC<HomePageProps> = ({ artists, error }) => {
                 { left: "30%", width: "15px", color: "#00d4ff" },
               ]}
             />
-
             <Grid
               templateColumns={{
                 base: "1fr",
@@ -274,7 +259,8 @@ const HomePage: React.FC<HomePageProps> = ({ artists, error }) => {
                   key={index}
                   name={artist.name}
                   role={artist.role}
-                  image={artist.image} // Pass image as string
+                  image={artist.image}
+                  alt={`Image of ${artist.name}, a tattoo artist at Hull Tattoo Studio`}
                   gallery={artist.gallery}
                   facebook={artist.facebook}
                   instagram={artist.instagram}
@@ -301,7 +287,6 @@ export const getStaticProps = async () => {
       props: {
         artists: response.data.artists,
       },
-      revalidate: 60, // Optional: Revalidate every 60 seconds if data changes
     };
   } catch (err) {
     console.error(err);

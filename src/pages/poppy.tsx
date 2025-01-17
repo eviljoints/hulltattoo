@@ -17,20 +17,24 @@ import {
   HStack,
 } from "@chakra-ui/react";
 import { FaFacebook, FaInstagram } from "react-icons/fa";
-import MotionBox from "../components/MotionBox"; // Import the shared MotionBox
+import dynamic from "next/dynamic";
 import Image from "next/image";
 import Head from "next/head";
-import styles from "./artists/MikePage.module.css"; // Import the CSS module for background lines
-import TextCard from "~/components/TextCard";
-import dynamic from "next/dynamic"; // For dynamic imports
+import Script from "next/script";
 
-// Dynamically load the AcuityEmbed component
+// Styles & Components
+import styles from "./artists/MikePage.module.css"; // Reuse neon lines background
+import MotionBox from "../components/MotionBox";
+import TextCard from "~/components/TextCard"; // If path is correct in your project
+import { fill } from "lodash";
+
+// 1. Dynamically load AcuityEmbed to reduce initial bundle size
 const AcuityEmbed = dynamic(() => import("../components/AcuityEmbed"), {
   ssr: false,
   loading: () => <p>Loading scheduler...</p>,
 });
 
-// Define the gallery for Poppy
+// 2. Define Poppy’s gallery
 const gallery = {
   apprenticeTattoos: {
     description: `Poppy is our dedicated apprentice, working mainly in black ink but branching out into color pieces. She is hardworking and always progressing her craft. Poppy works at an apprentice rate, making her work both exceptional and affordable.`,
@@ -45,15 +49,43 @@ const gallery = {
   },
 };
 
+// 3. Structured data (JSON-LD) for Poppy
+const structuredData = {
+  "@context": "http://schema.org",
+  "@type": "Person",
+  name: "Poppy",
+  jobTitle: "Apprentice Tattoo Artist",
+  worksFor: {
+    "@type": "Organization",
+    name: "Hull Tattoo Studio",
+    url: "https://www.hulltattoostudio.com",
+  },
+  image: "https://www.hulltattoostudio.com/images/poppy.png",
+  url: "https://www.hulltattoostudio.com/poppy",
+  description:
+    "Poppy is an apprentice tattoo artist at Hull Tattoo Studio, specializing in black ink and exploring color pieces. She offers high-quality tattoos at an apprentice rate.",
+};
+
 const PoppyPage: React.FC = () => {
+  // Media Query for animations
   const [isLargerThan768] = useMediaQuery("(min-width: 768px)");
 
+  // Motion animation settings
   const motionProps = isLargerThan768
-    ? { initial: { opacity: 0, y: 50 }, animate: { opacity: 1, y: 0 }, transition: { duration: 0.8 } }
-    : { initial: { opacity: 0 }, animate: { opacity: 1 }, transition: { duration: 0.5 } };
+    ? {
+        initial: { opacity: 0, y: 50 },
+        animate: { opacity: 1, y: 0 },
+        transition: { duration: 0.8 },
+      }
+    : {
+        initial: { opacity: 0 },
+        animate: { opacity: 1 },
+        transition: { duration: 0.5 },
+      };
 
   return (
     <>
+      {/* 4. Head & SEO Meta Tags */}
       <Head>
         <title>Poppy - Apprentice Tattoo Artist | Hull Tattoo Studio</title>
         <meta
@@ -65,6 +97,8 @@ const PoppyPage: React.FC = () => {
           content="Poppy, Apprentice Tattoo Artist, Hull Tattoo Studio, Black Ink Tattoos, Color Tattoos, Professional Tattoo Artist, Affordable Tattoos"
         />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+        {/* Open Graph */}
         <meta
           property="og:title"
           content="Poppy - Apprentice Tattoo Artist | Hull Tattoo Studio"
@@ -74,11 +108,25 @@ const PoppyPage: React.FC = () => {
           content="Meet Poppy, our dedicated apprentice at Hull Tattoo Studio. She works mainly in black ink but is branching out into color pieces."
         />
         <meta property="og:image" content="/images/poppy.png" />
-        <meta property="og:url" content="https://www.hulltattoostudio.com/poppy" />
+        <meta
+          property="og:url"
+          content="https://www.hulltattoostudio.com/poppy"
+        />
         <meta property="og:type" content="profile" />
+
+        {/* Canonical URL */}
+        <link rel="canonical" href="https://www.hulltattoostudio.com/poppy" />
+
+        {/* Preload Poppy's portrait for faster display */}
         <link rel="preload" href="/images/poppy.png" as="image" />
       </Head>
 
+      {/* 5. Structured Data via Next.js <Script> */}
+      <Script id="poppy-structured-data" type="application/ld+json">
+        {JSON.stringify(structuredData)}
+      </Script>
+
+      {/* 6. Page Content */}
       <Box
         position="relative"
         bg="transparent"
@@ -94,7 +142,7 @@ const PoppyPage: React.FC = () => {
         {/* Neon Diagonal Lines Background */}
         <Box className={styles.backgroundLines} />
 
-        {/* Main Content Box */}
+        {/* Main Container with gradient */}
         <Box
           bgGradient="radial(rgba(54, 39, 255, 0.6), rgba(128, 0, 128, 0.6), rgba(0,0,0,0.6))"
           borderRadius="md"
@@ -103,6 +151,7 @@ const PoppyPage: React.FC = () => {
           position="relative"
           zIndex="1"
         >
+          {/* Poppy's Intro Section */}
           <MotionBox {...motionProps} mb={16} as="section">
             <Text
               fontSize={{ base: "3xl", md: "5xl" }}
@@ -139,12 +188,13 @@ const PoppyPage: React.FC = () => {
                   boxShadow: "0 0 15px #ff007f, 0 0 25px #00d4ff",
                   border: "4px solid #ff007f",
                 }}
+                priority
               />
             </Box>
 
             <TextCard
               title="About Poppy"
-              subtitle="Poppy is Hull Tattoo Studios quirky apprentice."
+              subtitle="Poppy is Hull Tattoo Studio's quirky apprentice."
               description={`Poppy specializes in bold black ink but has been diving headfirst into the vibrant world of color tattoos. Known for her quirky personality and infectious energy, Poppy brings a fresh, creative approach to every piece she creates. Hardworking, passionate, and always honing her craft, she’s on a mission to become an exceptional tattoo artist.
 
 As an apprentice, Poppy offers unique and affordable tattoos at an apprentice rate, making her the perfect choice for clients looking for high-quality work without breaking the bank. Whether it’s a custom design or a collaboration to bring your ideas to life, Poppy is excited to make your tattoo vision a reality!
@@ -157,6 +207,7 @@ Come say hi, share your ideas, and let Poppy’s enthusiasm and artistry shine t
             />
           </MotionBox>
 
+          {/* Apprentice Tattoos Section */}
           <MotionBox {...motionProps} mb={16} as="section">
             <Tabs variant="soft-rounded" colorScheme="pink">
               <TabList justifyContent="center" mb={8}>
@@ -198,14 +249,15 @@ Come say hi, share your ideas, and let Poppy’s enthusiasm and artistry shine t
                           whileHover={{ scale: 1.05 }}
                           transition={{ duration: 0.3 }}
                           _hover={{
-                            boxShadow: "0 0 15px #ff007f, 0 0 20px #00d4ff",
+                            boxShadow:
+                              "0 0 15px #ff007f, 0 0 20px #00d4ff",
                           }}
                         >
                           <Image
                             src={`/images/poppy/${img}`}
                             alt={`Apprentice tattoo ${index + 1}`}
                             layout="fill"
-                            objectFit="cover"
+                            style={{ objectFit: "cover" }}
                             loading="lazy"
                           />
                         </MotionBox>
@@ -217,8 +269,10 @@ Come say hi, share your ideas, and let Poppy’s enthusiasm and artistry shine t
             </Tabs>
           </MotionBox>
 
+          {/* Acuity Scheduling Embed */}
           <AcuityEmbed link="https://app.acuityscheduling.com/schedule.php?owner=34239595&calendarID=11234698" />
 
+          {/* Social Media Links */}
           <MotionBox {...motionProps} mb={16} as="section">
             <Text
               fontSize={{ base: "2xl", md: "3xl" }}
@@ -231,7 +285,6 @@ Come say hi, share your ideas, and let Poppy’s enthusiasm and artistry shine t
             >
               Connect with Poppy
             </Text>
-
             <HStack spacing={6} justify="center">
               <ChakraLink
                 href="https://www.facebook.com/poppy.lee.7503"
@@ -257,6 +310,13 @@ Come say hi, share your ideas, and let Poppy’s enthusiasm and artistry shine t
       </Box>
     </>
   );
+};
+
+// 7. SSG for better performance & SEO
+export const getStaticProps = () => {
+  return {
+    props: {},
+  };
 };
 
 export default PoppyPage;

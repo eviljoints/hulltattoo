@@ -1,3 +1,5 @@
+// ./src/pages/loyalty.tsx
+
 import React, { useState } from "react";
 import Head from "next/head";
 import {
@@ -13,6 +15,22 @@ import {
 } from "@chakra-ui/react";
 import { motion } from "framer-motion";
 
+// If you want SSR with query params, you can uncomment and use getServerSideProps below.
+// export const getServerSideProps = async (context) => {
+//   const { name, clientId } = context.query;
+//   // 1. If name/clientId exist, you could fetch data from DB here
+//   // 2. Return the data as props, then handle it in the component
+//   // 3. For SSR optimization, ensure your DB has an index on name + clientId
+
+//   return {
+//     props: {
+//       initialName: name || "",
+//       initialClientId: clientId || "",
+//       // potential data if you want to SSR directly
+//     },
+//   };
+// };
+
 interface ClientData {
   name: string;
   clientId: string;
@@ -22,15 +40,18 @@ interface ClientData {
 }
 
 const ClientLoyaltyPage = () => {
-  // ----------------------
-  // SIGN-UP form state
-  // ----------------------
+  // --------------------------------------------
+  //  If you used SSR above, you could initialize
+  //  local state with those props instead:
+  //   const [name, setName] = useState(initialName || "");
+  //   const [clientId, setClientId] = useState(initialClientId || "");
+  // --------------------------------------------
+
+  // 1. SIGN-UP form state
   const [signupName, setSignupName] = useState("");
   const [signupEmail, setSignupEmail] = useState("");
 
-  // -----------------------
-  // LOOKUP form state
-  // -----------------------
+  // 2. LOOKUP form state
   const [name, setName] = useState("");
   const [clientId, setClientId] = useState("");
   const [clientData, setClientData] = useState<ClientData | null>(null);
@@ -40,10 +61,22 @@ const ClientLoyaltyPage = () => {
   const toast = useToast();
 
   // ---------------------------------
-  // 1. Handle SIGN-UP
+  // SIGN-UP Handler
   // ---------------------------------
   const signUp = async () => {
     try {
+      // Make sure we don't send empty data
+      if (!signupName.trim() || !signupEmail.trim()) {
+        toast({
+          title: "Missing Info",
+          description: "Please enter both name and email.",
+          status: "error",
+          duration: 4000,
+          isClosable: true,
+        });
+        return;
+      }
+
       const res = await fetch("/api/clients/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -55,7 +88,13 @@ const ClientLoyaltyPage = () => {
 
       const data = await res.json();
       if (!res.ok) {
-        alert(data.error || "Failed to register. Please try again.");
+        toast({
+          title: "Registration Error",
+          description: data.error || "Failed to register. Please try again.",
+          status: "error",
+          duration: 4000,
+          isClosable: true,
+        });
         return;
       }
 
@@ -75,27 +114,52 @@ const ClientLoyaltyPage = () => {
       setSignupEmail("");
     } catch (error) {
       console.error("Error signing up:", error);
-      alert("An unexpected error occurred. Please try again later.");
+      toast({
+        title: "Error",
+        description: "An unexpected error occurred. Please try again later.",
+        status: "error",
+        duration: 4000,
+        isClosable: true,
+      });
     }
   };
 
   // ---------------------------------
-  // 2. Handle existing client LOOKUP
+  // LOOKUP Handler
   // ---------------------------------
   const fetchClientData = async () => {
     try {
+      if (!name.trim() || !clientId.trim()) {
+        toast({
+          title: "Missing Info",
+          description: "Please enter both name and Client ID.",
+          status: "error",
+          duration: 4000,
+          isClosable: true,
+        });
+        return;
+      }
+
+      // Possibly add caching or indexing on DB side for (name + clientId)
       const res = await fetch(`/api/clients?name=${name}&clientId=${clientId}`);
       if (!res.ok) {
         setClientData(null);
-        alert("Client not found or server error");
+        toast({
+          title: "Lookup Error",
+          description: "Client not found or server error.",
+          status: "error",
+          duration: 4000,
+          isClosable: true,
+        });
         return;
       }
 
       const data: ClientData = await res.json();
       setClientData(data);
 
+      // Stamps
       const stamps = Math.min(data.stamps, 6);
-      // If new stamps have been earned since last check, show toast notifications
+      // Show toast notifications for newly earned stamps
       if (stamps > prevStamps) {
         for (let s = prevStamps + 1; s <= stamps; s++) {
           toast({
@@ -107,8 +171,9 @@ const ClientLoyaltyPage = () => {
           });
         }
       }
-
       setPrevStamps(stamps);
+
+      // Update stamp slots
       setStampSlots(
         Array(6)
           .fill(false)
@@ -116,7 +181,13 @@ const ClientLoyaltyPage = () => {
       );
     } catch (error) {
       console.error("Error fetching client data:", error);
-      alert("Failed to fetch client data. Please try again later.");
+      toast({
+        title: "Error",
+        description: "Failed to fetch client data. Please try again later.",
+        status: "error",
+        duration: 4000,
+        isClosable: true,
+      });
     }
   };
 
@@ -124,16 +195,15 @@ const ClientLoyaltyPage = () => {
   const hoursUntilNextStamp = () => {
     if (!clientData) return 0;
     if (clientData.stamps >= 6) return 0;
-    const threshold = (clientData.stamps + 1) * 4;
+    const threshold = (clientData.stamps + 1) * 4; // 4 hours per stamp
     const remaining = threshold - clientData.hours;
     return remaining > 0 ? remaining : 0;
   };
 
   return (
     <>
-      {/* SEO & Social Sharing Meta Tags */}
+      {/* 1. Head & Meta Tags */}
       <Head>
-        {/* Primary Meta Tags */}
         <title>HTS Loyalty Program | Hull Tattoo Studio</title>
         <meta
           name="description"
@@ -146,7 +216,7 @@ const ClientLoyaltyPage = () => {
         <meta name="author" content="Hull Tattoo Studio" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-        {/* Open Graph Meta Tags */}
+        {/* Open Graph Meta */}
         <meta
           property="og:title"
           content="HTS Loyalty Program | Hull Tattoo Studio"
@@ -166,7 +236,7 @@ const ClientLoyaltyPage = () => {
         />
         <meta property="og:type" content="website" />
 
-        {/* Twitter Card Meta Tags */}
+        {/* Twitter Card Meta */}
         <meta name="twitter:card" content="summary_large_image" />
         <meta
           name="twitter:title"
@@ -195,6 +265,7 @@ const ClientLoyaltyPage = () => {
         />
       </Head>
 
+      {/* 2. Page Layout */}
       <Box
         as="main"
         position="relative"
@@ -360,7 +431,7 @@ const ClientLoyaltyPage = () => {
             </Box>
           )}
 
-          {/* Loyalty Card Display */}
+          {/* LOYALTY CARD DISPLAY */}
           <Box
             border="2px solid pink"
             borderRadius="md"

@@ -1,6 +1,9 @@
+// ./components/Layout.tsx
+
 import React, { ReactNode } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import Head from "next/head"; // <-- Added to include global SEO tags
 
 // If FaTiktok does not exist in your version of react-icons,
 // you can use `SiTiktok` from `react-icons/si` instead.
@@ -44,6 +47,19 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       position="relative"
       bg="transparent"
     >
+      {/* Global SEO Head Tags */}
+      <Head>
+        {/* 
+          Adjust as necessary for your site. 
+          These tags are site-wide; per-page SEO is handled in individual pages.
+        */}
+        <meta name="robots" content="index, follow" />
+        {/* If you have a sitemap at /sitemap.xml, link to it here: */}
+        <link rel="sitemap" type="application/xml" href="/sitemap.xml" />
+        {/* If you have a preferred canonical URL for the whole site (homepage), add here: */}
+        <link rel="canonical" href="https://www.hulltattoostudio.com" />
+      </Head>
+
       {/* Header with Logo */}
       <header className="header">
         <div className="logo-container">
@@ -140,7 +156,6 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
               _hover={{ color: "#ff007f", bg: "transparent" }}
               _focus={{ boxShadow: "none" }}
             >
-              
               Artists
             </MenuButton>
             <MenuList
@@ -282,7 +297,6 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             _hover={{ color: "#ff007f" }}
           >
             <FaUserFriends style={{ marginRight: "6px" }} />
-            
           </MenuButton>
           <MenuList
             bg="black"

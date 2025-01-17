@@ -1,3 +1,5 @@
+// ./src/pages/faq.tsx
+
 import React from "react";
 import { Box, VStack, Text, Heading } from "@chakra-ui/react";
 import MotionSection from "../components/MotionSection";
@@ -5,7 +7,7 @@ import Head from "next/head";
 import Script from "next/script";
 import styles from "../components/TextCard.module.css";
 
-// Updated FAQ list
+// 1. Define FAQ data
 const faqs = [
   {
     question: "How do I book an appointment?",
@@ -14,7 +16,8 @@ const faqs = [
   },
   {
     question: "Do you accept walk-ins?",
-    answer: "We do accept walk-ins when artists are available, but booking is encouraged.",
+    answer:
+      "We do accept walk-ins when artists are available, but booking is encouraged.",
   },
   {
     question: "What payment methods do you accept?",
@@ -32,7 +35,7 @@ const faqs = [
   },
 ];
 
-// FAQ Schema for SEO
+// 2. FAQ Schema for SEO (JSON-LD)
 const faqStructuredData = {
   "@context": "http://schema.org",
   "@type": "FAQPage",
@@ -49,73 +52,61 @@ const faqStructuredData = {
 const FAQPage: React.FC = () => {
   return (
     <>
+      {/* 3. Head & Meta Tags */}
       <Head>
-      
-  <title>Frequently Asked Questions | Hull Tattoo Studio</title>
-  <meta
-    name="description"
-    content="Find answers to common questions about booking, preparation, aftercare, payment methods, and more at Hull Tattoo Studio."
-  />
-  <meta
-    name="keywords"
-    content="Tattoo FAQ, Booking Questions, Tattoo Aftercare, Hull Tattoo Studio, Tattoo Preparation, Payment Methods, Walk-Ins"
-  />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>Frequently Asked Questions | Hull Tattoo Studio</title>
+        <meta
+          name="description"
+          content="Find answers to common questions about booking, preparation, aftercare, payment methods, and more at Hull Tattoo Studio."
+        />
+        <meta
+          name="keywords"
+          content="Tattoo FAQ, Booking Questions, Tattoo Aftercare, Hull Tattoo Studio, Tattoo Preparation, Payment Methods, Walk-Ins"
+        />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  {/* Open Graph Metadata */}
-  <meta property="og:title" content="Frequently Asked Questions | Hull Tattoo Studio" />
-  <meta
-    property="og:description"
-    content="Got questions? Our FAQ page provides answers about booking, sessions, payment methods, tattoo preparation, and more at Hull Tattoo Studio."
-  />
-  <meta property="og:image" content="/images/og-image.png" />
-  <meta property="og:image:alt" content="Hull Tattoo Studio's FAQ page cover" />
-  <meta property="og:url" content="https://www.hulltattoostudio.com/faq" />
-  <meta property="og:type" content="website" />
-  <meta property="og:site_name" content="Hull Tattoo Studio" />
+        {/* Open Graph Metadata */}
+        <meta
+          property="og:title"
+          content="Frequently Asked Questions | Hull Tattoo Studio"
+        />
+        <meta
+          property="og:description"
+          content="Got questions? Our FAQ page provides answers about booking, sessions, payment methods, tattoo preparation, and more at Hull Tattoo Studio."
+        />
+        <meta property="og:image" content="/images/og-image.png" />
+        <meta property="og:image:alt" content="Hull Tattoo Studio's FAQ page cover" />
+        <meta property="og:url" content="https://www.hulltattoostudio.com/faq" />
+        <meta property="og:type" content="website" />
+        <meta property="og:site_name" content="Hull Tattoo Studio" />
 
-  {/* Twitter Card Metadata */}
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="Frequently Asked Questions | Hull Tattoo Studio" />
-  <meta
-    name="twitter:description"
-    content="Answers to your questions about tattoo booking, aftercare, payment options, and more at Hull Tattoo Studio."
-  />
-  <meta name="twitter:image" content="/images/og-image.png" />
-  <meta name="twitter:image:alt" content="Hull Tattoo Studio FAQ Cover" />
+        {/* Twitter Card Metadata */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta
+          name="twitter:title"
+          content="Frequently Asked Questions | Hull Tattoo Studio"
+        />
+        <meta
+          name="twitter:description"
+          content="Answers to your questions about tattoo booking, aftercare, payment options, and more at Hull Tattoo Studio."
+        />
+        <meta name="twitter:image" content="/images/og-image.png" />
+        <meta name="twitter:image:alt" content="Hull Tattoo Studio FAQ Cover" />
 
-  {/* Canonical URL */}
-  <link rel="canonical" href="https://www.hulltattoostudio.com/faq" />
+        {/* Canonical URL */}
+        <link rel="canonical" href="https://www.hulltattoostudio.com/faq" />
+      </Head>
 
-  {/* Inject JSON-LD structured data */}
-  <script
-    type="application/ld+json"
-    dangerouslySetInnerHTML={{
-      __html: JSON.stringify({
-        "@context": "http://schema.org",
-        "@type": "FAQPage",
-        "mainEntity": faqs.map((faq) => ({
-          "@type": "Question",
-          "name": faq.question,
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": faq.answer,
-          },
-        })),
-      }),
-    }}
-  />
-</Head>
-
-
-      {/* Structured Data for SEO */}
-      <Script id="faq-structured-data" type="application/ld+json" strategy="beforeInteractive">
+      {/* 4. Structured Data Injection via Next.js <Script> */}
+      <Script
+        id="faq-structured-data"
+        type="application/ld+json"
+        strategy="beforeInteractive"
+      >
         {JSON.stringify(faqStructuredData)}
       </Script>
 
-      {/* Neon background effects */}
-     
-
+      {/* 5. Page Content */}
       <Box
         as="main"
         position="relative"
@@ -128,6 +119,7 @@ const FAQPage: React.FC = () => {
         overflowX="hidden"
         boxShadow="0 0 20px #ff007f, 0 0 30px #00d4ff"
       >
+        {/* Neon background lines (CSS in TextCard.module.css) */}
         <Box className={styles.backgroundLines} />
 
         <Box
@@ -138,7 +130,7 @@ const FAQPage: React.FC = () => {
           position="relative"
           zIndex="1"
         >
-          {/* FAQ Section */}
+          {/* FAQ Section with Motion */}
           <MotionSection
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
@@ -155,6 +147,7 @@ const FAQPage: React.FC = () => {
             >
               Frequently Asked Questions
             </Heading>
+
             <VStack spacing={6} align="stretch" maxW="800px" mx="auto">
               {faqs.map((faq, i) => (
                 <Box
@@ -178,6 +171,15 @@ const FAQPage: React.FC = () => {
       </Box>
     </>
   );
+};
+
+// 6. SSG for Better Performance & SEO
+export const getStaticProps = async () => {
+  // If these FAQs came from a CMS or database, you could fetch them here.
+  // For now, we just return an empty props object to statically render the page.
+  return {
+    props: {},
+  };
 };
 
 export default FAQPage;

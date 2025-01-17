@@ -1,75 +1,83 @@
 // ./src/pages/aftercare.tsx
 
 import React from "react";
-import { Box, Center, Image, VStack } from "@chakra-ui/react";
+import { Box, Center, VStack } from "@chakra-ui/react"; // Removed Image here
 import MotionSection from "../components/MotionSection";
 import Head from "next/head";
 import Script from "next/script";
 import TextCard from "../components/TextCard";
 import styles from "../components/TextCard.module.css";
+// 1. Import Next.js Image
+import NextImage from "next/image";
 
+// 2. Structured Data (JSON-LD)
 const structuredData = {
   "@context": "http://schema.org",
   "@type": "HowTo",
   "name": "Tattoo Aftercare Instructions",
-  "description": "Step-by-step instructions to properly care for a new tattoo to ensure correct healing.",
+  "description":
+    "Step-by-step instructions to properly care for a new tattoo to ensure correct healing.",
   "estimatedCost": {
     "@type": "MonetaryAmount",
     "currency": "GBP",
-    "value": "Varies"
+    "value": "Varies",
   },
   "supply": [
     {
       "@type": "HowToSupply",
-      "name": "Aftercare ointment (recommended: Apollo Aftercare)"
+      "name": "Aftercare ointment (recommended: Apollo Aftercare)",
     },
     {
       "@type": "HowToSupply",
-      "name": "Clean towel or paper towel"
-    }
+      "name": "Clean towel or paper towel",
+    },
   ],
   "step": [
     {
       "@type": "HowToStep",
       "name": "Clean Your Tattoo",
-      "text": "Clean your tattoo with warm clean water using just your hand in a massaging motion."
+      "text":
+        "Clean your tattoo with warm clean water using just your hand in a massaging motion.",
     },
     {
       "@type": "HowToStep",
       "name": "Pat Dry",
-      "text": "Pat your tattoo dry with either a clean towel or a paper towel (do not rub it)."
+      "text":
+        "Pat your tattoo dry with either a clean towel or a paper towel (do not rub it).",
     },
     {
       "@type": "HowToStep",
       "name": "Air Dry",
-      "text": "Allow it to air dry for 10 minutes before applying aftercare ointment."
+      "text":
+        "Allow it to air dry for 10 minutes before applying aftercare ointment.",
     },
     {
       "@type": "HowToStep",
       "name": "Apply Aftercare Ointment",
-      "text": "Apply a small amount of aftercare ointment and gently massage it into the skin."
+      "text":
+        "Apply a small amount of aftercare ointment and gently massage it into the skin.",
     },
     {
       "@type": "HowToStep",
       "name": "Repeat Twice Daily",
-      "text": "Repeat this process once in the morning and once at night."
-    }
+      "text":
+        "Repeat this process once in the morning and once at night.",
+    },
   ],
   "tool": [
     {
       "@type": "HowToTool",
-      "name": "Warm water"
-    }
+      "name": "Warm water",
+    },
   ],
-  "totalTime": "P7D"
+  "totalTime": "P7D",
 };
 
 const AfterCarePage: React.FC = () => {
   return (
     <>
+      {/* 3. Meta Tags & Head */}
       <Head>
-      
-        
         <title>Aftercare Instructions for Your New Tattoo | Hull Tattoo Studio</title>
         <meta
           name="description"
@@ -79,28 +87,45 @@ const AfterCarePage: React.FC = () => {
           name="keywords"
           content="Tattoo Aftercare, Hull Tattoo Studio, Apollo Aftercare, Tattoo Healing, Tattoo Maintenance, How to care for new tattoo, Hull"
         />
-        <meta property="og:title" content="Aftercare Instructions | Hull Tattoo Studio" />
+
+        {/* Open Graph Meta */}
+        <meta
+          property="og:title"
+          content="Aftercare Instructions | Hull Tattoo Studio"
+        />
         <meta
           property="og:description"
           content="Detailed aftercare instructions to help your tattoo heal properly. Use Apollo Aftercare products for the best results."
         />
-        <meta property="og:image" content="/images/og-image.png" />
-        <meta property="og:url" content="https://www.hulltattoostudio.com/aftercare" />
+        <meta property="og:image" content="/images/aftercare.png" />
+        <meta
+          property="og:url"
+          content="https://www.hulltattoostudio.com/aftercare"
+        />
         <meta property="og:type" content="website" />
         <meta property="og:locale" content="en_GB" />
         <meta property="og:site_name" content="Hull Tattoo Studio" />
+
+        {/* Twitter Card Meta */}
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="Aftercare Instructions | Hull Tattoo Studio" />
+        <meta
+          name="twitter:title"
+          content="Aftercare Instructions | Hull Tattoo Studio"
+        />
         <meta
           name="twitter:description"
           content="Learn how to care for your tattoo with Apollo Aftercare products and expert advice from Hull Tattoo Studio."
         />
-        <meta name="twitter:image" content="/images/og-image.png" />
-        <link rel="canonical" href="https://www.hulltattoostudio.com/aftercare" />
-        
+        <meta name="twitter:image" content="/images/aftercare.png" />
+
+        {/* Canonical URL */}
+        <link
+          rel="canonical"
+          href="https://www.hulltattoostudio.com/aftercare"
+        />
       </Head>
 
-      {/* JSON-LD injected via next/script */}
+      {/* 4. Structured Data injected via next/script */}
       <Script
         id="aftercare-structured-data"
         type="application/ld+json"
@@ -108,8 +133,8 @@ const AfterCarePage: React.FC = () => {
       >
         {JSON.stringify(structuredData)}
       </Script>
-      
 
+      {/* Page Content */}
       <Box
         as="main"
         position="relative"
@@ -120,7 +145,7 @@ const AfterCarePage: React.FC = () => {
         minH="100vh"
         bg="transparent"
       >
-        {/* Neon Diagonal Lines Background */}
+        {/* Example neon/diagonal background (CSS in TextCard.module.css) */}
         <Box className={styles.backgroundLines} />
 
         <Box
@@ -131,6 +156,7 @@ const AfterCarePage: React.FC = () => {
           position="relative"
           zIndex="1"
         >
+          {/* Introduction Section */}
           <MotionSection
             initial={{ opacity: 0, y: 50 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -139,7 +165,6 @@ const AfterCarePage: React.FC = () => {
             mb={16}
           >
             <TextCard
-              // Keeping the title as a string to reduce complexity
               title="AFTERCARE INSTRUCTIONS"
               description={`<p>Please follow the aftercare advice given to you by the artist to ensure correct healing of your tattoo. If you have any questions, feel free to reach out to any member of the Hull Tattoo Studio staff.</p>
 
@@ -172,6 +197,7 @@ const AfterCarePage: React.FC = () => {
             />
           </MotionSection>
 
+          {/* Apollo Aftercare Section */}
           <MotionSection
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
@@ -179,17 +205,27 @@ const AfterCarePage: React.FC = () => {
             viewport={{ once: true }}
           >
             <VStack spacing={8} align="center">
-              <Box textAlign="center">
-                <Image
-                  src="/images/apollo-aftercare.svg"
+              {/* 5. Using Next.js Image for better optimization */}
+              <Box
+                position="relative"
+                width={{ base: "100%", md: "500px" }}
+                margin="0 auto"
+                boxShadow="0 0 10px #ff007f, 0 0 15px #00d4ff"
+                borderRadius="md"
+                overflow="hidden"
+              >
+                <NextImage
+                  src="/images/aftercare.png"
                   alt="Apollo Aftercare Product"
-                  borderRadius="md"
-                  boxShadow="0 0 10px #ff007f, 0 0 15px #00d4ff"
-                  maxW={{ base: "100%", md: "500px" }}
+                  // Provide width & height or use fill/layout="responsive"
+                  width={500}
+                  height={500}
+                  style={{ borderRadius: "0.375rem" }} // Chakra's md = 6px radius
+                  // layout="responsive" (if needed, in Next.js 12 or older)
+                  priority
                 />
               </Box>
               <TextCard
-                // Using a string for the title here to ensure it's SSR-safe
                 title="Apollo Aftercare"
                 description={`Apollo Aftercare products are designed to help your tattoo heal quickly and effectively. They are gentle on the skin, free from harsh chemicals, and highly recommended by our artists. Available for purchase in-store.`}
                 stripes={[
@@ -203,6 +239,16 @@ const AfterCarePage: React.FC = () => {
       </Box>
     </>
   );
+};
+
+/**
+ * Optional: SSG with Next.js
+ * Since this page is truly static, no revalidation needed.
+ */
+export const getStaticProps = async () => {
+  return {
+    props: {},
+  };
 };
 
 export default AfterCarePage;

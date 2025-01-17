@@ -17,12 +17,13 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import { FaFacebook, FaInstagram } from "react-icons/fa";
-import dynamic from "next/dynamic"; // Import dynamic for code splitting
+import dynamic from "next/dynamic";
 import Image from "next/image";
 import Head from "next/head";
+import Script from "next/script";
 import styles from "./artists/MikePage.module.css";
 
-// Dynamically load components that might be large or not immediately needed
+// Dynamically load components to reduce initial bundle size
 const MotionBox = dynamic(() => import("../components/MotionBox"), {
   ssr: false,
 });
@@ -90,25 +91,31 @@ const galleries = {
 const MikePage: React.FC = () => {
   const [isLargerThan768] = useMediaQuery("(min-width: 768px)");
 
+  // JSON-LD structured data
   const structuredData = {
     "@context": "http://schema.org",
     "@type": "Person",
-    "name": "Mike (Eggtattooer)",
-    "jobTitle": "Tattoo Artist",
-    "worksFor": {
+    name: "Mike (Eggtattooer)",
+    jobTitle: "Tattoo Artist",
+    worksFor: {
       "@type": "Organization",
-      "name": "Hull Tattoo Studio",
-      "url": "https://www.hulltattoostudio.com"
+      name: "Hull Tattoo Studio",
+      url: "https://www.hulltattoostudio.com",
     },
-    "image": "https://www.hulltattoostudio.com/images/mike.png",
-    "url": "https://www.hulltattoostudio.com/artists/mike",
-    "description": "Mike is a friendly, down-to-earth tattoo artist at Hull Tattoo Studio with over 10 years of experience. He specializes in realism, bespoke realism, neotrad, and cover-up tattoos."
+    image: "https://www.hulltattoostudio.com/images/mike.png",
+    url: "https://www.hulltattoostudio.com/artists/mike",
+    description:
+      "Mike is a friendly, down-to-earth tattoo artist at Hull Tattoo Studio with over 10 years of experience. He specializes in realism, bespoke realism, neotrad, and cover-up tattoos.",
   };
 
   return (
     <>
+      {/* 1. Head Metadata */}
       <Head>
-        <title>Mike (Eggtattooer) - Professional Tattoo Artist in Hull | Hull Tattoo Studio</title>
+        <title>
+          Mike (Eggtattooer) - Professional Tattoo Artist in Hull | Hull Tattoo
+          Studio
+        </title>
         <meta
           name="description"
           content="Meet Mike (Eggtattooer), a friendly and approachable tattoo artist at Hull Tattoo Studio with over 10 years of experience. Specializing in realism, bespoke realism, neotrad, and cover-up tattoos, Mike creates one-of-a-kind artworks for every client."
@@ -118,6 +125,8 @@ const MikePage: React.FC = () => {
           content="Mike, Eggtattooer, Tattoo Artist, Hull Tattoo Studio, Realism Tattoos, Bespoke Realism, Neotrad Tattoos, Cover-up Tattoos, Professional Tattoo Artist, Hull Tattoos"
         />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+        {/* Open Graph Meta */}
         <meta
           property="og:title"
           content="Mike (Eggtattooer) - Professional Tattoo Artist in Hull | Hull Tattoo Studio"
@@ -135,18 +144,19 @@ const MikePage: React.FC = () => {
         <meta property="og:locale" content="en_GB" />
         <meta property="og:site_name" content="Hull Tattoo Studio" />
 
+        {/* Canonical URL */}
         <link
           rel="canonical"
           href="https://www.hulltattoostudio.com/artists/mike"
         />
-
-        {/* JSON-LD structured data */}
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
-        />
       </Head>
 
+      {/* 2. Structured Data via Next.js <Script> */}
+      <Script id="mike-structured-data" type="application/ld+json">
+        {JSON.stringify(structuredData)}
+      </Script>
+
+      {/* 3. Page Content */}
       <Box
         position="relative"
         bg="transparent"
@@ -159,7 +169,7 @@ const MikePage: React.FC = () => {
         {/* Neon Diagonal Lines Background */}
         <Box className={styles.backgroundLines} />
 
-        {/* Main Content Box with Purple and Black Faded Background */}
+        {/* Main Container w/ Radial Gradient */}
         <Box
           bgGradient="radial(rgba(54, 39, 255, 0.6), rgba(128, 0, 128, 0.6), rgba(0,0,0,0.6))"
           borderRadius="md"
@@ -207,7 +217,7 @@ const MikePage: React.FC = () => {
                 alt="Portrait of Mike"
                 width={200}
                 height={200}
-                priority={true} // Ensure hero image loads first
+                priority={true}
                 style={{
                   borderRadius: "50%",
                   boxShadow: "0 0 15px #ff007f, 0 0 25px #00d4ff",
@@ -227,7 +237,7 @@ const MikePage: React.FC = () => {
             />
           </MotionBox>
 
-          {/* Mike's Work Gallery with Tabs */}
+          {/* Tattoo Galleries */}
           <MotionBox
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -283,7 +293,8 @@ const MikePage: React.FC = () => {
                             whileHover={{ scale: 1.05 }}
                             transition={{ duration: 0.3 }}
                             _hover={{
-                              boxShadow: "0 0 15px #ff007f, 0 0 20px #00d4ff",
+                              boxShadow:
+                                "0 0 15px #ff007f, 0 0 20px #00d4ff",
                             }}
                           >
                             <Image
@@ -303,10 +314,10 @@ const MikePage: React.FC = () => {
             </Tabs>
           </MotionBox>
 
-          {/* Embed Acuity Scheduling Inline Widget with the new link */}
+          {/* Acuity Scheduling Embed */}
           <AcuityEmbed link="https://app.acuityscheduling.com/schedule.php?owner=34239595&calendarID=11220578" />
 
-          {/* Mike's Social Media Links */}
+          {/* Social Media Links */}
           <MotionBox
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -353,7 +364,7 @@ const MikePage: React.FC = () => {
   );
 };
 
-// Use getStaticProps to pre-build the page at build time.
+// 4. SSG for better performance & SEO
 export function getStaticProps() {
   return {
     props: {},
