@@ -1,9 +1,7 @@
-// src/pages/blog/index.tsx
-
 import fs from "fs";
 import path from "path";
 import matter from "gray-matter";
-import React from "react";
+import React, { useState } from "react";
 import NextLink from "next/link";
 import Head from "next/head";
 import {
@@ -12,8 +10,8 @@ import {
   Text,
   Image,
   Link as ChakraLink,
+  Select,
 } from "@chakra-ui/react";
-import Ad from '../../components/Ad'; // Adjust the path accordingly
 
 interface PostMeta {
   slug: string;
@@ -21,12 +19,25 @@ interface PostMeta {
   date: string;
   excerpt?: string;
   coverImage?: string;
+  views: number;
 }
 
-// Define your Ad slot ID here
-const adSlot = "9465374206"; // Replace with your actual Ad slot ID
-
 export default function BlogIndex({ posts }: { posts: PostMeta[] }) {
+  const [sortedPosts, setSortedPosts] = useState(posts);
+  const [sortOption, setSortOption] = useState("date");
+
+  const handleSortChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const option = e.target.value;
+    setSortOption(option);
+    const sorted = [...posts].sort((a, b) => {
+      if (option === "title") {
+        return a.title.localeCompare(b.title);
+      }
+      return new Date(b.date).getTime() - new Date(a.date).getTime();
+    });
+    setSortedPosts(sorted);
+  };
+
   const seoTitle = "Blog | Hull Tattoo Studio";
   const seoDescription =
     "Discover the latest updates, insights, and tattoo advice from Hull Tattoo Studio. Explore our blog to learn about our artists, booking tips, aftercare, and more.";
@@ -38,11 +49,9 @@ export default function BlogIndex({ posts }: { posts: PostMeta[] }) {
       <Head>
         <title>{seoTitle}</title>
         <meta name="description" content={seoDescription} />
-        <meta name="google-adsense-account" content="ca-pub-6959045179650835" />
         <meta name="keywords" content="Tattoo Blog, Hull Tattoo Studio Blog, Tattoo Tips, Aftercare Advice, Artist Stories, Booking Tips, Tattoo Insights" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-        {/* Open Graph / Facebook Metadata */}
         <meta property="og:title" content={seoTitle} />
         <meta property="og:description" content="Discover the latest updates, insights, and tattoo advice from Hull Tattoo Studio. Stay informed and inspired." />
         <meta property="og:image" content={seoImage} />
@@ -52,14 +61,12 @@ export default function BlogIndex({ posts }: { posts: PostMeta[] }) {
         <meta property="og:site_name" content="Hull Tattoo Studio" />
         <meta property="og:locale" content="en_GB" />
 
-        {/* Twitter Metadata */}
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content={seoTitle} />
         <meta name="twitter:description" content="Discover tattoo tips, artist insights, and the latest updates from Hull Tattoo Studio. Explore our blog today!" />
         <meta name="twitter:image" content={seoImage} />
         <meta name="twitter:image:alt" content="Hull Tattoo Studio Blog Banner" />
 
-        {/* Canonical Link */}
         <link rel="canonical" href={siteUrl} />
       </Head>
 
@@ -82,24 +89,45 @@ export default function BlogIndex({ posts }: { posts: PostMeta[] }) {
           </Heading>
 
           <Text
-  color="gray.300"
-  mb={8}
-  fontSize="lg"
-  textAlign="center"
->
-  Welcome to Hull Tattoo Studio&rsquo;s blog! Where we&rsquo;ll cover lots of different
-  tattoo topics and answer the questions you&rsquo;ve been wanting to ask.
-</Text>
+            color="gray.300"
+            mb={8}
+            fontSize="lg"
+            textAlign="center"
+          >
+            Welcome to Hull Tattoo Studio&rsquo;s blog! Where we&rsquo;ll cover lots of different
+            tattoo topics and answer the questions you&rsquo;ve been wanting to ask.
+          </Text>
 
+          <Box mb={6} textAlign="center">
+            <Select
+              value={sortOption}
+              onChange={handleSortChange}
+              width={{ base: "100%", md: "50%" }}
+              mx="auto"
+              bg="white"
+              borderColor="gray.400"
+              placeholder="Sort by"
+            >
+              <option value="date">Sort by Date</option>
+              <option value="title">Sort by Title</option>
+            </Select>
+          </Box>
 
-          {posts.map((post, index) => (
-            <React.Fragment key={post.slug}>
+          {sortedPosts.map((post) => (
+            <ChakraLink
+              as={NextLink}
+              href={`/blog/${post.slug}`}
+              key={post.slug}
+              _hover={{ textDecoration: "none" }}
+            >
               <Box
                 mb={8}
                 p={4}
                 bg="rgba(0,0,0,0.6)"
                 borderRadius="md"
                 boxShadow="0 0 10px #ff007f, 0 0 20px #00d4ff"
+                transition="transform 0.2s"
+                _hover={{ transform: "scale(1.02)" }}
               >
                 {post.coverImage && (
                   <Box display="flex" justifyContent="center" mb={4}>
@@ -128,30 +156,16 @@ export default function BlogIndex({ posts }: { posts: PostMeta[] }) {
                 </Text>
 
                 {post.excerpt && (
-                  <Text color="white" fontSize="md" mb={4}>
+                  <Text color="white" fontSize="md" mb={2}>
                     {post.excerpt}
                   </Text>
                 )}
 
-                <ChakraLink
-                  as={NextLink}
-                  href={`/blog/${post.slug}`}
-                  color="#ff007f"
-                  fontWeight="bold"
-                  _hover={{
-                    textDecoration: "underline",
-                    color: "#00d4ff",
-                  }}
-                >
-                  Read More
-                </ChakraLink>
+                <Text color="gray.400" fontSize="sm">
+                  Views: {post.views}
+                </Text>
               </Box>
-
-              {/* Insert Ad after the second post */}
-              {index === 1 && (
-                <Ad slot={adSlot} />
-              )}
-            </React.Fragment>
+            </ChakraLink>
           ))}
         </Box>
       </Box>
@@ -159,7 +173,6 @@ export default function BlogIndex({ posts }: { posts: PostMeta[] }) {
   );
 }
 
-// Read frontmatter from each file in /posts
 export async function getStaticProps() {
   const postsDir = path.join(process.cwd(), "posts");
   const filenames = fs.readdirSync(postsDir);
@@ -169,7 +182,6 @@ export async function getStaticProps() {
     const fileContents = fs.readFileSync(filePath, "utf8");
     const { data } = matter(fileContents);
 
-    // The slug is the filename without .mdx
     const slug = filename.replace(/\.mdx?$/, "");
 
     return {
@@ -178,10 +190,10 @@ export async function getStaticProps() {
       date: data.date || "",
       excerpt: data.excerpt || "",
       coverImage: data.coverImage || "",
+      views: data.views || 0,
     };
   });
 
-  // Sort posts by date descending
   posts.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 
   return {
