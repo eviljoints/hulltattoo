@@ -3,6 +3,8 @@ import { useEffect } from 'react';
 import Layout from '../components/Layout';
 import { ChakraProvider, ColorModeScript, extendTheme } from '@chakra-ui/react';
 import '../styles/globals.css';
+import { SpeedInsights } from '@vercel/speed-insights/react';
+import { Analytics } from '@vercel/analytics/react';
 
 // Force dark mode globally
 const theme = extendTheme({
@@ -19,6 +21,8 @@ function MyApp({ Component, pageProps }: AppProps) {
     <ChakraProvider theme={theme}>
       <ColorModeScript initialColorMode={theme.config.initialColorMode} />
       <Layout>
+      <SpeedInsights />
+      <Analytics />
         <Component {...pageProps} />
       </Layout>
     </ChakraProvider>

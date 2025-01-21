@@ -1,11 +1,11 @@
 // pages/api/update-views.ts
 
 import { NextApiRequest, NextApiResponse } from "next";
-import fs from "fs";
-import path from "path";
-import matter from "gray-matter";
+import { PrismaClient } from "@prisma/client";
 
-export default function handler(req: NextApiRequest, res: NextApiResponse) {
+const prisma = new PrismaClient();
+
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === "POST") {
     const { slug } = req.body;
 
@@ -13,30 +13,22 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
       return res.status(400).json({ error: "Invalid or missing 'slug' in request body." });
     }
 
-    const filePath = path.join(process.cwd(), "posts", `${slug}.mdx`);
+    try {
+      // Upsert the PostView record: create if it doesn't exist, otherwise increment views
+      const postView = await prisma.postView.upsert({
+        where: { slug },
+        update: { views: { increment: 1 } },
+        create: { slug, views: 1 },
+      });
 
-    if (fs.existsSync(filePath)) {
-      try {
-        const fileContents = fs.readFileSync(filePath, "utf8");
-        const { data, content } = matter(fileContents);
+      console.log(`Views updated for '${slug}': ${postView.views}`);
 
-        // Increment the view count
-        data.views = (data.views || 0) + 1;
-
-        // Reconstruct the file with updated front matter
-        const updatedContent = matter.stringify(content, data);
-        fs.writeFileSync(filePath, updatedContent, "utf8");
-
-        console.log(`Views updated for '${slug}': ${data.views}`);
-
-        return res.status(200).json({ message: "Views updated successfully", views: data.views });
-      } catch (error) {
-        console.error(`Error updating views for '${slug}':`, error);
-        return res.status(500).json({ error: "Internal Server Error" });
-      }
-    } else {
-      console.error(`Post not found: '${slug}'`);
-      return res.status(404).json({ error: "Post not found" });
+      return res.status(200).json({ message: "Views updated successfully", views: postView.views });
+    } catch (error) {
+      console.error(`Error updating views for '${slug}':`, error);
+      return res.status(500).json({ error: "Internal Server Error" });
+    } finally {
+      await prisma.$disconnect();
     }
   } else {
     // Method Not Allowed

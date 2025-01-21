@@ -2,7 +2,7 @@
 
 module.exports = {
   siteUrl: 'https://hulltattoostudio.com', // Replace with your website's URL
-  generateRobotsTxt: true, // Automatically generate robots.txt
+  
   robotsTxtOptions: {
     additionalSitemaps: [
       'https://hulltattoostudio.com/sitemap.xml', // Primary sitemap

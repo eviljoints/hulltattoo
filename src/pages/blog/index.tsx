@@ -3,7 +3,7 @@
 import fs from "fs";
 import path from "path";
 import matter from "gray-matter";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import NextLink from "next/link";
 import Head from "next/head";
 import {
@@ -14,6 +14,9 @@ import {
   Link as ChakraLink,
   Select,
 } from "@chakra-ui/react";
+import { PrismaClient } from "@prisma/client";
+
+const prisma = new PrismaClient();
 
 interface PostMeta {
   slug: string;
@@ -36,7 +39,7 @@ const BlogIndex: React.FC<BlogIndexProps> = ({ posts }) => {
     const option = e.target.value;
     setSortOption(option);
 
-    const sorted = [...posts].sort((a, b) => {
+    const sorted = [...sortedPosts].sort((a, b) => {
       if (option.includes("title")) {
         return option === "title-asc"
           ? a.title.localeCompare(b.title)
@@ -80,9 +83,15 @@ const BlogIndex: React.FC<BlogIndexProps> = ({ posts }) => {
         <title>{seoTitle}</title>
         <meta name="description" content={seoDescription} />
         {/* Additional meta tags */}
-        <meta name="keywords" content="Tattoo Blog, Hull Tattoo Studio Blog, Tattoo Tips, Aftercare Advice, Artist Stories, Booking Tips, Tattoo Insights" />
+        <meta
+          name="keywords"
+          content="Tattoo Blog, Hull Tattoo Studio Blog, Tattoo Tips, Aftercare Advice, Artist Stories, Booking Tips, Tattoo Insights"
+        />
         <meta property="og:title" content={seoTitle} />
-        <meta property="og:description" content="Discover the latest updates, insights, and tattoo advice from Hull Tattoo Studio. Stay informed and inspired." />
+        <meta
+          property="og:description"
+          content="Discover the latest updates, insights, and tattoo advice from Hull Tattoo Studio. Stay informed and inspired."
+        />
         <meta property="og:image" content={seoImage} />
         <meta property="og:image:alt" content="Hull Tattoo Studio Blog Banner" />
         <meta property="og:url" content={siteUrl} />
@@ -91,7 +100,10 @@ const BlogIndex: React.FC<BlogIndexProps> = ({ posts }) => {
         <meta property="og:locale" content="en_GB" />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content={seoTitle} />
-        <meta name="twitter:description" content="Discover tattoo tips, artist insights, and the latest updates from Hull Tattoo Studio. Explore our blog today!" />
+        <meta
+          name="twitter:description"
+          content="Discover tattoo tips, artist insights, and the latest updates from Hull Tattoo Studio. Explore our blog today!"
+        />
         <meta name="twitter:image" content={seoImage} />
         <meta name="twitter:image:alt" content="Hull Tattoo Studio Blog Banner" />
         <link rel="canonical" href={siteUrl} />
@@ -202,8 +214,9 @@ const BlogIndex: React.FC<BlogIndexProps> = ({ posts }) => {
 export default BlogIndex;
 
 export async function getServerSideProps() {
+  const prisma = new PrismaClient();
   const postsDir = path.join(process.cwd(), "posts");
-  
+
   // Ensure the 'posts' directory exists
   if (!fs.existsSync(postsDir)) {
     console.error(`Posts directory not found at ${postsDir}`);
@@ -211,6 +224,13 @@ export async function getServerSideProps() {
   }
 
   const filenames = fs.readdirSync(postsDir);
+
+  // Fetch view counts from the database
+  const postViews = await prisma.postView.findMany();
+  const viewMap: Record<string, number> = {};
+  postViews.forEach((pv) => {
+    viewMap[pv.slug] = pv.views;
+  });
 
   const posts: PostMeta[] = filenames.map((filename) => {
     const filePath = path.join(postsDir, filename);
@@ -225,9 +245,11 @@ export async function getServerSideProps() {
       date: data.date || "",
       excerpt: data.excerpt || "",
       coverImage: data.coverImage || "",
-      views: data.views || 0,
+      views: viewMap[slug] || 0, // Use views from the database
     };
   });
+
+  await prisma.$disconnect();
 
   // Optionally, sort posts here if you want default sorting
   return {
