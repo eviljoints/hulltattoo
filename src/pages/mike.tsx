@@ -23,15 +23,15 @@ import Head from "next/head";
 import Script from "next/script";
 import styles from "./artists/MikePage.module.css";
 
-// Dynamically load components to reduce initial bundle size
+// Dynamically load non-critical components to reduce initial bundle size
 const MotionBox = dynamic(() => import("../components/MotionBox"), {
-  ssr: false,
+  ssr: true, // Enable SSR for critical content
 });
 const AcuityEmbed = dynamic(() => import("../components/AcuityEmbed"), {
-  ssr: false,
+  ssr: false, // Non-critical or interactive component
 });
 const TextCard = dynamic(() => import("../components/TextCard"), {
-  ssr: false,
+  ssr: true, // Enable SSR if it contains critical content
 });
 
 // Define the galleries
@@ -106,6 +106,11 @@ const MikePage: React.FC = () => {
     url: "https://www.hulltattoostudio.com/artists/mike",
     description:
       "Mike is a friendly, down-to-earth tattoo artist at Hull Tattoo Studio with over 10 years of experience. He specializes in realism, bespoke realism, neotrad, and cover-up tattoos.",
+    sameAs: [
+      "https://facebook.com/Hulltattoostudio",
+      "https://instagram.com/egg_tattooer",
+      // Add other social profiles if available
+    ],
   };
 
   return (
@@ -138,7 +143,7 @@ const MikePage: React.FC = () => {
         <meta property="og:image" content="/images/mike.webp" />
         <meta
           property="og:url"
-          content="https://www.hulltattoostudio.com/artists/mike"
+          content="https://www.hulltattoostudio.com/mike"
         />
         <meta property="og:type" content="profile" />
         <meta property="og:locale" content="en_GB" />
@@ -147,7 +152,7 @@ const MikePage: React.FC = () => {
         {/* Canonical URL */}
         <link
           rel="canonical"
-          href="https://www.hulltattoostudio.com/artists/mike"
+          href="https://www.hulltattoostudio.com/mike"
         />
       </Head>
 
@@ -214,7 +219,7 @@ const MikePage: React.FC = () => {
             <Box mb={8} textAlign="center">
               <Image
                 src="/images/mike.webp"
-                alt="Portrait of Mike"
+                alt="Portrait of Mike, a professional tattoo artist at Hull Tattoo Studio"
                 width={200}
                 height={200}
                 priority={true}
@@ -303,6 +308,7 @@ const MikePage: React.FC = () => {
                               width={300}
                               height={300}
                               style={{ objectFit: "cover" }}
+                              loading="lazy" // Enables lazy loading
                             />
                           </MotionBox>
                         </AspectRatio>
@@ -341,7 +347,7 @@ const MikePage: React.FC = () => {
               <ChakraLink
                 href="https://facebook.com/Hulltattoostudio"
                 isExternal
-                aria-label="Mike's Facebook"
+                aria-label="Mike's Facebook Profile"
                 _hover={{ transform: "scale(1.1)", color: "#ff007f" }}
                 transition="all 0.3s ease"
               >
@@ -350,7 +356,7 @@ const MikePage: React.FC = () => {
               <ChakraLink
                 href="https://instagram.com/egg_tattooer"
                 isExternal
-                aria-label="Mike's Instagram"
+                aria-label="Mike's Instagram Profile"
                 _hover={{ transform: "scale(1.1)", color: "#ff007f" }}
                 transition="all 0.3s ease"
               >

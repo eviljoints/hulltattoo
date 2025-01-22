@@ -1,16 +1,15 @@
 // ./src/pages/aftercare.tsx
 
 import React from "react";
-import { Box, Center, VStack } from "@chakra-ui/react"; // Removed Image here
+import { Box, VStack } from "@chakra-ui/react";
 import MotionSection from "../components/MotionSection";
 import Head from "next/head";
 import Script from "next/script";
 import TextCard from "../components/TextCard";
 import styles from "../components/TextCard.module.css";
-// 1. Import Next.js Image
 import NextImage from "next/image";
 
-// 2. Structured Data (JSON-LD)
+// Structured Data (JSON-LD)
 const structuredData = {
   "@context": "http://schema.org",
   "@type": "HowTo",
@@ -76,7 +75,7 @@ const structuredData = {
 const AfterCarePage: React.FC = () => {
   return (
     <>
-      {/* 3. Meta Tags & Head */}
+      {/* Meta Tags & Head */}
       <Head>
         <title>Aftercare Instructions for Your New Tattoo | Hull Tattoo Studio</title>
         <meta
@@ -102,7 +101,7 @@ const AfterCarePage: React.FC = () => {
           property="og:url"
           content="https://www.hulltattoostudio.com/aftercare"
         />
-        <meta property="og:type" content="website" />
+        <meta property="og:type" content="article" />
         <meta property="og:locale" content="en_GB" />
         <meta property="og:site_name" content="Hull Tattoo Studio" />
 
@@ -125,7 +124,7 @@ const AfterCarePage: React.FC = () => {
         />
       </Head>
 
-      {/* 4. Structured Data injected via next/script */}
+      {/* Structured Data */}
       <Script
         id="aftercare-structured-data"
         type="application/ld+json"
@@ -145,7 +144,7 @@ const AfterCarePage: React.FC = () => {
         minH="100vh"
         bg="transparent"
       >
-        {/* Example neon/diagonal background (CSS in TextCard.module.css) */}
+        {/* Neon/Diagonal Background (CSS in TextCard.module.css) */}
         <Box className={styles.backgroundLines} />
 
         <Box
@@ -205,7 +204,7 @@ const AfterCarePage: React.FC = () => {
             viewport={{ once: true }}
           >
             <VStack spacing={8} align="center">
-              {/* 5. Using Next.js Image for better optimization */}
+              {/* Optimized Image with Next.js Image */}
               <Box
                 position="relative"
                 width={{ base: "100%", md: "500px" }}
@@ -217,11 +216,9 @@ const AfterCarePage: React.FC = () => {
                 <NextImage
                   src="/images/aftercare.webp"
                   alt="Apollo Aftercare Product"
-                  // Provide width & height or use fill/layout="responsive"
                   width={500}
                   height={500}
                   style={{ borderRadius: "0.375rem" }} // Chakra's md = 6px radius
-                  // layout="responsive" (if needed, in Next.js 12 or older)
                   priority
                 />
               </Box>
@@ -242,7 +239,7 @@ const AfterCarePage: React.FC = () => {
 };
 
 /**
- * Optional: SSG with Next.js
+ * SSG with Next.js
  * Since this page is truly static, no revalidation needed.
  */
 export const getStaticProps = async () => {

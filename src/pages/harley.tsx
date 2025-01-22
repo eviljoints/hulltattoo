@@ -70,6 +70,10 @@ const HarleyPage: React.FC = () => {
         <meta property="og:url" content="https://www.hulltattoostudio.com/harley" />
         <meta property="og:type" content="profile" />
         <link rel="preload" href="/images/harley.webp" as="image" />
+        <link
+          rel="canonical"
+          href="https://www.hulltattoostudio.com/harley"
+        />
       </Head>
 
       <Box

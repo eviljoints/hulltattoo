@@ -3,10 +3,8 @@
 import React, { ReactNode } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import Head from "next/head"; // <-- Added to include global SEO tags
+import Head from "next/head"; // Included for global SEO tags
 
-// If FaTiktok does not exist in your version of react-icons,
-// you can use `SiTiktok` from `react-icons/si` instead.
 import {
   FaFacebook,
   FaInstagram,
@@ -17,7 +15,7 @@ import {
   FaNewspaper,
   FaYoutube,
   FaTiktok,
-  FaUserFriends, // <-- Use this icon for Artists
+  FaUserFriends, // Use this icon for Artists
 } from "react-icons/fa";
 
 import {
@@ -32,10 +30,10 @@ import { ChevronDownIcon } from "@chakra-ui/icons";
 
 interface LayoutProps {
   children: ReactNode;
-  title?: string;
+  canonicalUrl?: string; // Optional prop for per-page canonical URLs
 }
 
-const Layout: React.FC<LayoutProps> = ({ children }) => {
+const Layout: React.FC<LayoutProps> = ({ children, canonicalUrl }) => {
   const currentYear = new Date().getFullYear();
 
   return (
@@ -50,14 +48,13 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       {/* Global SEO Head Tags */}
       <Head>
         {/* 
-          Adjust as necessary for your site. 
-          These tags are site-wide; per-page SEO is handled in individual pages.
+          General site-wide meta tags can be included here.
+          Avoid adding a global canonical URL to prevent overriding per-page canonical URLs.
         */}
         <meta name="robots" content="index, follow" />
-        {/* If you have a sitemap at /sitemap.xml, link to it here: */}
         <link rel="sitemap" type="application/xml" href="/sitemap.xml" />
-        {/* If you have a preferred canonical URL for the whole site (homepage), add here: */}
-        <link rel="canonical" href="https://www.hulltattoostudio.com" />
+        {/* Remove the global canonical URL to allow per-page canonical URLs */}
+        {/* <link rel="canonical" href="https://www.hulltattoostudio.com" /> */}
       </Head>
 
       {/* Header with Logo */}
@@ -76,10 +73,10 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           </Link>
         </div>
 
-        {/* Icons under logo (same classes as the footer) */}
+        {/* Social Media Icons */}
         <div className="footer-socials">
           <a
-            href="hhttps://www.instagram.com/hull_tattoo_studio/"
+            href="https://www.instagram.com/hull_tattoo_studio/"
             target="_blank"
             rel="noopener noreferrer"
             className="footer-icon"
@@ -169,7 +166,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                 _hover={{ bg: "rgba(255, 7, 131, 0.86)" }}
                 color="white"
               >
-                <Link href="/mike" passHref>
+                <Link href="/artists/mike" passHref>
                   <a style={{ textDecoration: "none", color: "inherit" }}>
                     Mike
                   </a>
@@ -180,7 +177,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                 _hover={{ bg: "rgba(255, 7, 131, 0.86)" }}
                 color="white"
               >
-                <Link href="/poppy" passHref>
+                <Link href="/artists/poppy" passHref>
                   <a style={{ textDecoration: "none", color: "inherit" }}>
                     Poppy
                   </a>
@@ -191,7 +188,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                 _hover={{ bg: "rgba(255, 7, 131, 0.86)" }}
                 color="white"
               >
-                <Link href="/harley" passHref>
+                <Link href="/artists/harley" passHref>
                   <a style={{ textDecoration: "none", color: "inherit" }}>
                     Harley
                   </a>
@@ -246,7 +243,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           </a>
         </div>
         <p className="footer-text">
-          © {currentYear} Tattoo Studio. All rights reserved.
+          © {currentYear} Hull Tattoo Studio. All rights reserved.
           <br />
           652 Anlaby Road, Hull, HU3 6UU.
         </p>
@@ -296,7 +293,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             alignItems="center"
             _hover={{ color: "#ff007f" }}
           >
-            <FaUserFriends style={{ marginRight: "6px" }} />
+            <FaUserFriends style={{ marginRight: "6px" }} aria-label="Artists" />
           </MenuButton>
           <MenuList
             bg="black"
@@ -309,7 +306,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
               _hover={{ bg: "rgba(255, 0, 127, 0.2)" }}
               color="white"
             >
-              <Link href="/mike" passHref>
+              <Link href="/artists/mike" passHref>
                 <a style={{ textDecoration: "none", color: "inherit" }}>Mike</a>
               </Link>
             </MenuItem>
@@ -318,7 +315,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
               _hover={{ bg: "rgba(255, 0, 127, 0.2)" }}
               color="white"
             >
-              <Link href="/poppy" passHref>
+              <Link href="/artists/poppy" passHref>
                 <a style={{ textDecoration: "none", color: "inherit" }}>
                   Poppy
                 </a>
@@ -329,7 +326,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
               _hover={{ bg: "rgba(255, 0, 127, 0.2)" }}
               color="white"
             >
-              <Link href="/harley" passHref>
+              <Link href="/artists/harley" passHref>
                 <a style={{ textDecoration: "none", color: "inherit" }}>
                   Harley
                 </a>
