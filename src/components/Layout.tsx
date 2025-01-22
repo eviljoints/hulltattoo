@@ -79,7 +79,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         {/* Icons under logo (same classes as the footer) */}
         <div className="footer-socials">
           <a
-            href="https://www.instagram.com"
+            href="hhttps://www.instagram.com/hull_tattoo_studio/"
             target="_blank"
             rel="noopener noreferrer"
             className="footer-icon"
@@ -88,7 +88,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             <FaInstagram />
           </a>
           <a
-            href="https://www.facebook.com"
+            href="https://www.facebook.com/Hulltattoostudio"
             target="_blank"
             rel="noopener noreferrer"
             className="footer-icon"
@@ -97,7 +97,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             <FaFacebook />
           </a>
           <a
-            href="https://www.youtube.com/@HTSpodcast"
+            href="https://www.youtube.com/@Hulltattoostudio"
             target="_blank"
             rel="noopener noreferrer"
             className="footer-icon"
@@ -209,7 +209,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       <footer className="footer">
         <div className="footer-socials">
           <a
-            href="https://www.instagram.com"
+            href="https://www.instagram.com/hull_tattoo_studio/"
             target="_blank"
             rel="noopener noreferrer"
             className="footer-icon"
@@ -218,7 +218,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             <FaInstagram />
           </a>
           <a
-            href="https://www.facebook.com"
+            href="https://www.facebook.com/Hulltattoostudio"
             target="_blank"
             rel="noopener noreferrer"
             className="footer-icon"
@@ -227,7 +227,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             <FaFacebook />
           </a>
           <a
-            href="https://www.youtube.com/@HTSpodcast"
+            href="https://www.youtube.com/@Hulltattoostudio"
             target="_blank"
             rel="noopener noreferrer"
             className="footer-icon"
