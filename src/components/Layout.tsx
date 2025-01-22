@@ -166,7 +166,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                 _hover={{ bg: "rgba(255, 7, 131, 0.86)" }}
                 color="white"
               >
-                <Link href="/artists/mike" passHref>
+                <Link href="/mike" passHref>
                   <a style={{ textDecoration: "none", color: "inherit" }}>
                     Mike
                   </a>
@@ -177,7 +177,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                 _hover={{ bg: "rgba(255, 7, 131, 0.86)" }}
                 color="white"
               >
-                <Link href="/artists/poppy" passHref>
+                <Link href="/poppy" passHref>
                   <a style={{ textDecoration: "none", color: "inherit" }}>
                     Poppy
                   </a>
@@ -188,7 +188,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                 _hover={{ bg: "rgba(255, 7, 131, 0.86)" }}
                 color="white"
               >
-                <Link href="/artists/harley" passHref>
+                <Link href="/harley" passHref>
                   <a style={{ textDecoration: "none", color: "inherit" }}>
                     Harley
                   </a>
@@ -306,7 +306,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
               _hover={{ bg: "rgba(255, 0, 127, 0.2)" }}
               color="white"
             >
-              <Link href="/artists/mike" passHref>
+              <Link href="/mike" passHref>
                 <a style={{ textDecoration: "none", color: "inherit" }}>Mike</a>
               </Link>
             </MenuItem>
@@ -315,7 +315,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
               _hover={{ bg: "rgba(255, 0, 127, 0.2)" }}
               color="white"
             >
-              <Link href="/artists/poppy" passHref>
+              <Link href="/poppy" passHref>
                 <a style={{ textDecoration: "none", color: "inherit" }}>
                   Poppy
                 </a>
@@ -326,7 +326,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
               _hover={{ bg: "rgba(255, 0, 127, 0.2)" }}
               color="white"
             >
-              <Link href="/artists/harley" passHref>
+              <Link href="/harley" passHref>
                 <a style={{ textDecoration: "none", color: "inherit" }}>
                   Harley
                 </a>
