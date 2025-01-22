@@ -1,38 +1,41 @@
 // pages/api/update-views.ts
 
-import { NextApiRequest, NextApiResponse } from "next";
-import { PrismaClient } from "@prisma/client";
+import type { NextApiRequest, NextApiResponse } from "next";
+import prisma from "../../../lib/prisma";
 
-const prisma = new PrismaClient();
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
+  if (req.method !== "POST") {
+    return res.status(405).json({ message: "Method not allowed" });
+  }
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  if (req.method === "POST") {
-    const { slug } = req.body;
+  const { slug } = req.body;
 
-    if (!slug || typeof slug !== "string") {
-      return res.status(400).json({ error: "Invalid or missing 'slug' in request body." });
-    }
+  if (!slug) {
+    return res.status(400).json({ message: "Slug is required" });
+  }
 
-    try {
-      // Upsert the PostView record: create if it doesn't exist, otherwise increment views
-      const postView = await prisma.postView.upsert({
+  try {
+    const existing = await prisma.postView.findUnique({
+      where: { slug },
+    });
+
+    if (existing) {
+      await prisma.postView.update({
         where: { slug },
-        update: { views: { increment: 1 } },
-        create: { slug, views: 1 },
+        data: { views: existing.views + 1 },
       });
-
-      console.log(`Views updated for '${slug}': ${postView.views}`);
-
-      return res.status(200).json({ message: "Views updated successfully", views: postView.views });
-    } catch (error) {
-      console.error(`Error updating views for '${slug}':`, error);
-      return res.status(500).json({ error: "Internal Server Error" });
-    } finally {
-      await prisma.$disconnect();
+    } else {
+      await prisma.postView.create({
+        data: { slug, views: 1 },
+      });
     }
-  } else {
-    // Method Not Allowed
-    res.setHeader("Allow", ["POST"]);
-    return res.status(405).json({ error: `Method ${req.method} not allowed.` });
+
+    res.status(200).json({ message: "Views updated" });
+  } catch (error) {
+    console.error("Error updating views:", error);
+    res.status(500).json({ message: "Internal server error" });
   }
 }

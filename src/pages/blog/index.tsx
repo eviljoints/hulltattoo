@@ -1,6 +1,6 @@
 // pages/blog/index.tsx
 
-import fs from "fs";
+import fs from "fs/promises";
 import path from "path";
 import matter from "gray-matter";
 import React, { useState, useEffect } from "react";
@@ -13,10 +13,9 @@ import {
   Image,
   Link as ChakraLink,
   Select,
+  Spinner,
 } from "@chakra-ui/react";
-import { PrismaClient } from "@prisma/client";
-
-const prisma = new PrismaClient();
+import prisma from "../../../lib/prisma";
 
 interface PostMeta {
   slug: string;
@@ -34,6 +33,28 @@ interface BlogIndexProps {
 const BlogIndex: React.FC<BlogIndexProps> = ({ posts }) => {
   const [sortedPosts, setSortedPosts] = useState<PostMeta[]>(posts);
   const [sortOption, setSortOption] = useState<string>("date-desc");
+  const [views, setViews] = useState<Record<string, number>>({});
+  const [loadingViews, setLoadingViews] = useState<boolean>(true);
+
+  useEffect(() => {
+    const fetchViews = async () => {
+      try {
+        const response = await fetch("/api/get-views");
+        if (response.ok) {
+          const data = await response.json();
+          setViews(data);
+        } else {
+          console.error("Failed to fetch views:", await response.text());
+        }
+      } catch (error) {
+        console.error("Error fetching views:", error);
+      } finally {
+        setLoadingViews(false);
+      }
+    };
+
+    fetchViews();
+  }, []);
 
   const handleSortChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const option = e.target.value;
@@ -65,6 +86,11 @@ const BlogIndex: React.FC<BlogIndexProps> = ({ posts }) => {
 
       if (!response.ok) {
         console.error(`Failed to update views for ${slug}:`, await response.json());
+      } else {
+        setViews((prev) => ({
+          ...prev,
+          [slug]: (prev[slug] || 0) + 1,
+        }));
       }
     } catch (error) {
       console.error("Error updating views:", error);
@@ -199,7 +225,11 @@ const BlogIndex: React.FC<BlogIndexProps> = ({ posts }) => {
                   )}
 
                   <Text color="gray.400" fontSize="sm">
-                    Views: {post.views}
+                    {loadingViews ? (
+                      <Spinner size="xs" />
+                    ) : (
+                      `Views: ${views[post.slug] || post.views}`
+                    )}
                   </Text>
                 </Box>
               </ChakraLink>
@@ -213,48 +243,55 @@ const BlogIndex: React.FC<BlogIndexProps> = ({ posts }) => {
 
 export default BlogIndex;
 
-export async function getServerSideProps() {
-  const prisma = new PrismaClient();
+export async function getStaticProps() {
   const postsDir = path.join(process.cwd(), "posts");
 
-  // Ensure the 'posts' directory exists
-  if (!fs.existsSync(postsDir)) {
-    console.error(`Posts directory not found at ${postsDir}`);
-    return { props: { posts: [] } };
-  }
+  try {
+    const filenames = await fs.readdir(postsDir);
 
-  const filenames = fs.readdirSync(postsDir);
+    const posts: PostMeta[] = await Promise.all(
+      filenames.map(async (filename) => {
+        const filePath = path.join(postsDir, filename);
+        const fileContents = await fs.readFile(filePath, "utf8");
+        const { data } = matter(fileContents);
 
-  // Fetch view counts from the database
-  const postViews = await prisma.postView.findMany();
-  const viewMap: Record<string, number> = {};
-  postViews.forEach((pv) => {
-    viewMap[pv.slug] = pv.views;
-  });
+        const slug = filename.replace(/\.mdx?$/, "");
 
-  const posts: PostMeta[] = filenames.map((filename) => {
-    const filePath = path.join(postsDir, filename);
-    const fileContents = fs.readFileSync(filePath, "utf8");
-    const { data } = matter(fileContents);
+        // Fetch view counts for each post
+        const postView = await prisma.postView.findUnique({
+          where: { slug },
+          select: { views: true },
+        });
 
-    const slug = filename.replace(/\.mdx?$/, "");
+        return {
+          slug,
+          title: data.title || "Untitled",
+          date: data.date || "",
+          excerpt: data.excerpt || "",
+          coverImage: data.coverImage || "",
+          views: postView?.views || 0,
+        };
+      })
+    );
+
+    // Sort posts by date descending by default
+    posts.sort(
+      (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+    );
 
     return {
-      slug,
-      title: data.title || "Untitled",
-      date: data.date || "",
-      excerpt: data.excerpt || "",
-      coverImage: data.coverImage || "",
-      views: viewMap[slug] || 0, // Use views from the database
+      props: {
+        posts,
+      },
+      revalidate: 60, // Revalidate every 60 seconds
     };
-  });
-
-  await prisma.$disconnect();
-
-  // Optionally, sort posts here if you want default sorting
-  return {
-    props: {
-      posts,
-    },
-  };
+  } catch (error) {
+    console.error("Error reading posts:", error);
+    return {
+      props: {
+        posts: [],
+      },
+      revalidate: 60,
+    };
+  }
 }
