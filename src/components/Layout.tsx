@@ -30,10 +30,10 @@ import { ChevronDownIcon } from "@chakra-ui/icons";
 
 interface LayoutProps {
   children: ReactNode;
-  canonicalUrl?: string; // Optional prop for per-page canonical URLs
+  // Optional prop for per-page canonical URLs
 }
 
-const Layout: React.FC<LayoutProps> = ({ children, canonicalUrl }) => {
+const Layout: React.FC<LayoutProps> = ({ children }) => {
   const currentYear = new Date().getFullYear();
 
   return (
