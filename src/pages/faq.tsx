@@ -1,41 +1,201 @@
 // ./src/pages/faq.tsx
 
 import React from "react";
-import { Box, VStack, Text, Heading } from "@chakra-ui/react";
+import { Box, VStack, Text, Heading, Link, OrderedList, ListItem } from "@chakra-ui/react";
 import MotionSection from "../components/MotionSection";
 import Head from "next/head";
 import Script from "next/script";
 import styles from "../components/TextCard.module.css";
+import NextLink from "next/link";
 
-// 1. Define FAQ data
+// 1. Define Enhanced FAQ Data
 const faqs = [
   {
-    question: "How do I book an appointment?",
-    answer:
-      "You can book online via the online booking system, come in store and discuss it with ourselves (we recommend this for cover-ups), or via our social media platforms.",
+    question: "How do I book an appointment at Hull Tattoo Studio?",
+    answer: (
+      <>
+        You can book your tattoo appointment through multiple convenient methods:
+        <OrderedList styleType="decimal" mt={2} mb={2}>
+          <ListItem>
+            <strong>Book in Person:</strong> Visit our studio at <strong>652 Anlaby Road, HU3 6UU</strong> during our opening hours to discuss your tattoo idea and receive personalized advice.
+          </ListItem>
+          <ListItem>
+            <strong>Message Us on Social Media:</strong> Reach out via our <strong>Facebook</strong> or <strong>Instagram</strong> pages with a detailed description, reference images, and your preferred tattoo size and placement.
+          </ListItem>
+          <ListItem>
+            <strong>Use Our Online Booking Form:</strong> Fill out the form available on each artist’s page to select your preferred date, time, and appointment length. Payments can be made via card, PayPal, or Klarna.
+          </ListItem>
+        </OrderedList>
+        For more detailed information, please refer to our{" "}
+        <NextLink href="/blog/how-to-book-an-appointment-at-hull-tattoo-studio" passHref>
+          <Link color="teal.500">blog post on booking appointments</Link>
+        </NextLink>.
+      </>
+    ),
   },
   {
-    question: "Do you accept walk-ins?",
-    answer:
-      "We do accept walk-ins when artists are available, but booking is encouraged.",
+    question: "What are the requirements to become a tattoo apprentice at Hull Tattoo Studio?",
+    answer: (
+      <>
+        Aspiring tattoo artists must meet the following criteria to apply for an apprenticeship:
+        <OrderedList styleType="decimal" mt={2} mb={2}>
+          <ListItem>
+            <strong>Portfolio:</strong> Submit at least 10 fully finished pieces of artwork demonstrating your drawing skills, understanding of tattoo fundamentals, and variety in styles.
+          </ListItem>
+          <ListItem>
+            <strong>Expectations:</strong> Be prepared to work full-time without pay for the duration of the apprenticeship, typically one to two years.
+          </ListItem>
+          <ListItem>
+            <strong>Research:</strong> Ensure you’ve researched Hull Tattoo Studio’s reputation and artistic standards.
+          </ListItem>
+          <ListItem>
+            <strong>Approach:</strong> Contact us via email at{" "}
+            <Link href="mailto:admin@hulltattoostudio.com" color="teal.500">
+              admin@hulltattoostudio.com
+            </Link>{" "}
+            with your portfolio and express your interest.
+          </ListItem>
+        </OrderedList>
+        Learn more in our detailed guide:{" "}
+        <NextLink href="/blog/interested-in-becoming-a-tattoo-apprentice" passHref>
+          <Link color="teal.500">How to Become a Tattoo Apprentice</Link>
+        </NextLink>.
+      </>
+    ),
   },
   {
-    question: "What payment methods do you accept?",
-    answer: "We accept cash, bank transfer, card payments, PayPal, and Klarna.",
+    question: "Can I cover up an existing tattoo at Hull Tattoo Studio?",
+    answer: (
+      <>
+        Yes, we specialize in tattoo cover-ups. Our approach ensures that your new tattoo effectively conceals the old one while reflecting your desired design and style. Factors we consider include the darkness and distinctiveness of the original tattoo, its location, and the design of the new tattoo.
+        <br />
+        For more insights, check out our{" "}
+        <NextLink href="/blog/cover-up-tattoos-by-hull-tattoo-studio" passHref>
+          <Link color="teal.500">blog post on tattoo cover-ups</Link>
+        </NextLink>.
+      </>
+    ),
   },
   {
-    question: "What should I do to prepare for my appointment?",
-    answer:
-      "Get a good night’s sleep, stay hydrated, and eat a meal beforehand. Avoid alcohol and drugs before your session.",
+    question: "What is the aftercare process for a new tattoo?",
+    answer: (
+      <>
+        Proper aftercare is essential for optimal healing and longevity of your tattoo. Follow these steps:
+        <OrderedList styleType="decimal" mt={2} mb={2}>
+          <ListItem>
+            <strong>Initial Cleaning:</strong> After getting your tattoo, we clean it with Apollo Aftercare Cleansing Wash and wrap it in clingfilm for at least an hour.
+          </ListItem>
+          <ListItem>
+            <strong>Washing:</strong> Gently wash the tattoo with lukewarm water and unscented antibacterial soap using your hands.
+          </ListItem>
+          <ListItem>
+            <strong>Drying:</strong> Pat the tattoo dry with a clean towel and allow it to air dry for about 15 minutes.
+          </ListItem>
+          <ListItem>
+            <strong>Applying Cream:</strong> Apply a thin layer of Apollo Aftercare Butter once a day until fully healed.
+          </ListItem>
+        </OrderedList>
+        Avoid activities such as swimming, excessive sweating, and direct sunlight during the healing process. For comprehensive aftercare instructions, visit our{" "}
+        <NextLink href="/aftercare" passHref>
+          <Link color="teal.500">Tattoo Aftercare page</Link>
+        </NextLink> or read our{" "}
+        <NextLink href="/blog/tattoo-aftercare-healing" passHref>
+          <Link color="teal.500">Tattoo Aftercare & Healing</Link>
+        </NextLink> blog post.
+      </>
+    ),
   },
   {
-    question: "How do I care for my new tattoo?",
+    question: "Do you accept walk-ins at Hull Tattoo Studio?",
     answer:
-      "Follow our aftercare instructions, keep it clean, moisturized, and protected from direct sunlight.",
+      "Yes, we accept walk-ins when our artists are available. However, we highly recommend booking an appointment in advance to ensure you secure your preferred time and artist.",
   },
+  {
+    question: "What payment methods are accepted at Hull Tattoo Studio?",
+    answer: (
+      <>
+        We accept a variety of payment methods including cash, bank transfers, card payments, PayPal, and Klarna. Klarna payments are available both in-store and through our social media platforms, with plans to integrate it into our online booking system soon.
+      </>
+    ),
+  },
+  {
+    question: "How should I prepare for my tattoo appointment?",
+    answer: (
+      <>
+        To ensure the best experience, follow these preparation tips:
+        <OrderedList styleType="decimal" mt={2} mb={2}>
+          <ListItem>Get a good night’s sleep before your session.</ListItem>
+          <ListItem>Stay hydrated and have a meal beforehand.</ListItem>
+          <ListItem>Avoid alcohol and drugs prior to getting tattooed.</ListItem>
+          <ListItem>Dress comfortably to provide easy access to the tattoo area.</ListItem>
+        </OrderedList>
+        For more detailed preparation advice, refer to our{" "}
+        <NextLink href="/blog/how-to-book-an-appointment-at-hull-tattoo-studio" passHref>
+          <Link color="teal.500">booking appointments blog post</Link>
+        </NextLink>.
+      </>
+    ),
+  },
+  {
+    question: "What are the steps to become a tattoo apprentice?",
+    answer: (
+      <>
+        Becoming a tattoo apprentice at Hull Tattoo Studio involves several key steps:
+        <OrderedList styleType="decimal" mt={2} mb={2}>
+          <ListItem>
+            <strong>Have the Right Designs in Your Portfolio:</strong> Submit at least 10 fully finished pieces demonstrating your drawing skills and understanding of tattoo fundamentals.
+          </ListItem>
+          <ListItem>
+            <strong>Have the Right Expectations:</strong> Be prepared to work full-time without pay for one to two years.
+          </ListItem>
+          <ListItem>
+            <strong>Research the Right Studios/Mentors:</strong> Ensure Hull Tattoo Studio aligns with your artistic goals.
+          </ListItem>
+          <ListItem>
+            <strong>Approach the Tattoo Shops:</strong> Contact us with your portfolio and express your interest.
+          </ListItem>
+          <ListItem>
+            <strong>During the Apprenticeship:</strong> Engage actively in learning and contribute to the studio's operations.
+          </ListItem>
+        </OrderedList>
+        For an in-depth guide, read our{" "}
+        <NextLink href="/blog/interested-in-becoming-a-tattoo-apprentice" passHref>
+          <Link color="teal.500">How to Become a Tattoo Apprentice</Link>
+        </NextLink> blog post.
+      </>
+    ),
+  },
+  {
+    question: "Who is Mike at Hull Tattoo Studio?",
+    answer: (
+      <>
+        Mike is one of our lead artists at Hull Tattoo Studio, renowned for his expertise in [specific styles, e.g., black and grey realism, neo-traditional, etc.]. With years of experience and a passion for tattoo artistry, Mike plays a pivotal role in mentoring apprentices and ensuring each tattoo meets our high standards of quality.
+        <br />
+        Learn more about Mike on our{" "}
+        <NextLink href="/mike" passHref>
+          <Link color="teal.500">Mike's profile page</Link>
+        </NextLink>.
+      </>
+    ),
+  },
+  {
+    question: "Where can I find detailed aftercare instructions?",
+    answer: (
+      <>
+        Comprehensive aftercare instructions are available on our{" "}
+        <NextLink href="/aftercare" passHref>
+          <Link color="teal.500">Tattoo Aftercare page</Link>
+        </NextLink>. Additionally, our{" "}
+        <NextLink href="/blog/tattoo-aftercare-healing" passHref>
+          <Link color="teal.500">Tattoo Aftercare & Healing</Link>
+        </NextLink> blog post provides an in-depth guide to ensure your tattoo heals beautifully.
+      </>
+    ),
+  },
+  // Add more FAQs as needed from additional blog posts or internal content
 ];
 
-// 2. FAQ Schema for SEO (JSON-LD)
+// 2. Updated FAQ Schema for SEO (JSON-LD)
 const faqStructuredData = {
   "@context": "http://schema.org",
   "@type": "FAQPage",
@@ -44,7 +204,17 @@ const faqStructuredData = {
     name: faq.question,
     acceptedAnswer: {
       "@type": "Answer",
-      text: faq.answer,
+      text:
+        typeof faq.answer === "string"
+          ? faq.answer
+          : faq.answer
+              .toString()
+              .replace(/<[^>]+>/g, "") // Strip HTML tags for structured data
+              .replace(/&amp;/g, "&") // Decode HTML entities
+              .replace(/&lt;/g, "<")
+              .replace(/&gt;/g, ">")
+              .replace(/&quot;/g, '"')
+              .replace(/&#39;/g, "'"),
     },
   })),
 };
@@ -57,11 +227,11 @@ const FAQPage: React.FC = () => {
         <title>Frequently Asked Questions | Hull Tattoo Studio</title>
         <meta
           name="description"
-          content="Find answers to common questions about booking, preparation, aftercare, payment methods, and more at Hull Tattoo Studio."
+          content="Find comprehensive answers to common questions about booking, apprenticeships, cover-ups, aftercare, payment methods, and more at Hull Tattoo Studio."
         />
         <meta
           name="keywords"
-          content="Tattoo FAQ, Booking Questions, Tattoo Aftercare, Hull Tattoo Studio, Tattoo Preparation, Payment Methods, Walk-Ins"
+          content="Tattoo FAQ, Booking Questions, Tattoo Apprenticeship, Tattoo Aftercare, Hull Tattoo Studio, Tattoo Cover-Ups, Payment Methods, Walk-Ins, Mike Tattoo Artist"
         />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
 
@@ -72,7 +242,7 @@ const FAQPage: React.FC = () => {
         />
         <meta
           property="og:description"
-          content="Got questions? Our FAQ page provides answers about booking, sessions, payment methods, tattoo preparation, and more at Hull Tattoo Studio."
+          content="Got questions? Our FAQ page provides detailed answers about booking, apprenticeships, payment methods, tattoo preparation, cover-ups, and more at Hull Tattoo Studio."
         />
         <meta property="og:image" content="/images/og-image.webp" />
         <meta property="og:image:alt" content="Hull Tattoo Studio's FAQ page cover" />
@@ -88,7 +258,7 @@ const FAQPage: React.FC = () => {
         />
         <meta
           name="twitter:description"
-          content="Answers to your questions about tattoo booking, aftercare, payment options, and more at Hull Tattoo Studio."
+          content="Answers to your questions about tattoo booking, apprenticeships, aftercare, payment options, cover-ups, and more at Hull Tattoo Studio."
         />
         <meta name="twitter:image" content="/images/og-image.webp" />
         <meta name="twitter:image:alt" content="Hull Tattoo Studio FAQ Cover" />
@@ -161,7 +331,7 @@ const FAQPage: React.FC = () => {
                     Q: {faq.question}
                   </Text>
                   <Text fontSize="md" lineHeight="1.8">
-                    A: {faq.answer}
+                    {faq.answer}
                   </Text>
                 </Box>
               ))}
