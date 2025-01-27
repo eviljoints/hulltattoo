@@ -124,7 +124,7 @@ const faqs = [
       <>
         To ensure the best experience, follow these preparation tips:
         <OrderedList styleType="decimal" mt={2} mb={2}>
-          <ListItem>Get a good night’s sleep before your session.</ListItem>
+          <ListItem>Get a good night&apos;s sleep before your session.</ListItem>
           <ListItem>Stay hydrated and have a meal beforehand.</ListItem>
           <ListItem>Avoid alcohol and drugs prior to getting tattooed.</ListItem>
           <ListItem>Dress comfortably to provide easy access to the tattoo area.</ListItem>
@@ -155,7 +155,7 @@ const faqs = [
             <strong>Approach the Tattoo Shops:</strong> Contact us with your portfolio and express your interest.
           </ListItem>
           <ListItem>
-            <strong>During the Apprenticeship:</strong> Engage actively in learning and contribute to the studio's operations.
+            <strong>During the Apprenticeship:</strong> Engage actively in learning and contribute to the studio&apos;s operations.
           </ListItem>
         </OrderedList>
         For an in-depth guide, read our{" "}
@@ -173,7 +173,7 @@ const faqs = [
         <br />
         Learn more about Mike on our{" "}
         <NextLink href="/mike" passHref>
-          <Link color="teal.500">Mike's profile page</Link>
+          <Link color="teal.500">Mike&apos;s profile page</Link>
         </NextLink>.
       </>
     ),
@@ -214,6 +214,7 @@ const faqStructuredData = {
               .replace(/&lt;/g, "<")
               .replace(/&gt;/g, ">")
               .replace(/&quot;/g, '"')
+              .replace(/&apos;/g, "'")
               .replace(/&#39;/g, "'"),
     },
   })),
