@@ -2,7 +2,7 @@ import React from "react";
 import { Box, Text, Button } from "@chakra-ui/react";
 import { FaFacebook, FaInstagram } from "react-icons/fa";
 import Link from "next/link";
-import Image from "next/image"; // <= Next.js < v13 import
+import Image from "next/image"; // <= For Next.js < v13
 
 interface Stripe {
   left: string;
@@ -13,18 +13,51 @@ interface Stripe {
 interface ArtistCardProps {
   name: string;
   role: string;
-  image: string;    // e.g. "/images/mike.webp"
-  alt: string;
-  gallery: string;  // e.g. "/images/mike-gallery.webp"
+  /**
+   * Artist biography or additional details.
+   * Displayed under the role in the card.
+   */
+  description: string; 
+  /**
+   * URL or path to the artist's profile image.
+   * Example: "/images/mike.webp"
+   */
+  image: string;
+  /**
+   * Alternative text for the profile image.
+   * Falls back to the artist's name if not provided.
+   */
+  alt: string; 
+  /**
+   * URL or path to a gallery image showcasing the artist's work.
+   * Example: "/images/mike-gallery.webp"
+   */
+  gallery: string;  
+  /**
+   * Optional link to the artist's Facebook page.
+   * If not provided, the Facebook icon won't appear.
+   */
   facebook?: string;
+  /**
+   * Optional link to the artist's Instagram page.
+   * If not provided, the Instagram icon won't appear.
+   */
   instagram?: string;
+  /**
+   * URL path to the artist's dedicated profile page.
+   * Example: "/mike"
+   */
   artsPage: string;
+  /**
+   * Array of stripes used for decorative elements behind the card.
+   */
   stripes: Stripe[];
 }
 
 const ArtistCard: React.FC<ArtistCardProps> = ({
   name,
   role,
+  description,
   image,
   alt,
   gallery,
@@ -45,6 +78,7 @@ const ArtistCard: React.FC<ArtistCardProps> = ({
       transition="transform 0.3s ease"
       _hover={{ transform: "scale(1.05)" }}
     >
+      {/* Render decorative stripes behind the card */}
       {stripes.map((stripe, idx) => (
         <Box
           key={idx}
@@ -82,6 +116,7 @@ const ArtistCard: React.FC<ArtistCardProps> = ({
           </Box>
         </Box>
 
+        {/* NAME */}
         <Text
           fontSize="xl"
           fontWeight="bold"
@@ -92,8 +127,20 @@ const ArtistCard: React.FC<ArtistCardProps> = ({
           {name}
         </Text>
 
-        <Text fontSize="md" textAlign="center" mb={4}>
+        {/* ROLE */}
+        <Text fontSize="md" textAlign="center" mb={2} color="white">
           {role}
+        </Text>
+
+        {/* DESCRIPTION */}
+        <Text
+          fontSize="sm"
+          textAlign="center"
+          mb={4}
+          color="gray.200"
+          px={2}
+        >
+          {description}
         </Text>
 
         {/* SOCIAL ICONS */}
@@ -153,6 +200,7 @@ const ArtistCard: React.FC<ArtistCardProps> = ({
           </Box>
         </Box>
 
+        {/* LINK TO FULL PROFILE */}
         <Link href={artsPage} passHref>
           <Button
             as="a"

@@ -28,13 +28,15 @@ interface Artist {
   slug: number;
   name: string;
   role: string;
-  image: string; // path to .webp
-  gallery: string; // path to .webp
+  description: string; // Add the description field
+  image: string; // Path to .webp
+  gallery: string; // Path to .webp
   facebook?: string;
   instagram?: string;
   artsPage: string;
   stripes: Stripe[];
 }
+
 interface HomePageProps {
   artists: Artist[] | null;
   error?: string;
@@ -276,29 +278,31 @@ const HomePage: React.FC<HomePageProps> = ({ artists, error }) => {
 
             {/* 6. Artist Cards */}
             <Grid
-              templateColumns={{
-                base: "1fr",
-                sm: "repeat(2, 1fr)",
-                md: "repeat(auto-fit, minmax(250px, 1fr))",
-              }}
-              gap={10}
-              marginTop={8}
-            >
-              {artists.map((artist, index) => (
-                <ArtistCard
-                  key={artist.slug || index}
-                  name={artist.name}
-                  role={artist.role}
-                  image={artist.image} // Ensure this is a .webp path
-                  alt={`Image of ${artist.name}, a tattoo artist at Hull Tattoo Studio`}
-                  gallery={artist.gallery} // Ensure this is a .webp path
-                  facebook={artist.facebook}
-                  instagram={artist.instagram}
-                  artsPage={artist.artsPage}
-                  stripes={artist.stripes}
-                />
-              ))}
-            </Grid>
+  templateColumns={{
+    base: "1fr",
+    sm: "repeat(2, 1fr)",
+    md: "repeat(auto-fit, minmax(250px, 1fr))",
+  }}
+  gap={10}
+  marginTop={8}
+>
+  {artists.map((artist, index) => (
+    <ArtistCard
+      key={artist.slug || index}
+      name={artist.name}
+      role={artist.role}
+      description={artist.description} // Pass the description here
+      image={artist.image}
+      alt={`Image of ${artist.name}, a tattoo artist at Hull Tattoo Studio`}
+      gallery={artist.gallery}
+      facebook={artist.facebook}
+      instagram={artist.instagram}
+      artsPage={artist.artsPage}
+      stripes={artist.stripes}
+    />
+  ))}
+</Grid>
+
           </MotionSection>
         </Box>
 
