@@ -133,13 +133,7 @@ const ArtistCard: React.FC<ArtistCardProps> = ({
         </Text>
 
         {/* DESCRIPTION */}
-        <Text
-          fontSize="sm"
-          textAlign="center"
-          mb={4}
-          color="gray.200"
-          px={2}
-        >
+        <Text fontSize="md" textAlign="center" mb={2} color="white">
           {description}
         </Text>
 
