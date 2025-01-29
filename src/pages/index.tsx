@@ -8,6 +8,7 @@ import axios from "axios";
 import MotionSection from "../components/MotionSection";
 import ArtistCard from "../components/ArtistCard";
 import TextCard from "../components/TextCard";
+import HeroTextCard from "~/components/HeroTextCard";
 
 const ReviewsModal = dynamic(() => import("~/components/ReviewsModal"), {
   ssr: false,
@@ -170,17 +171,19 @@ const HomePage: React.FC<HomePageProps> = ({ artists, error }) => {
             viewport={{ once: true }}
             marginBottom={30}
           >
-            <TextCard
+             <HeroTextCard
               title="WELCOME TO HULL TATTOO STUDIO"
               description={`
+                  At Hull Tattoo Studio, our knowledgeable artists strive to create exceptional tattoos
+                  that reflect your unique style. Whether you’re seeking a vibrant custom design or a
+                  subtle black-and-grey masterpiece, we take pride in being the go-to choice for tattoos
+                  in Hull.
+                
                 
                 
               `}
               
-              stripes={[
-                { left: "10%", width: "10px", color: "#ff007f" },
-                { left: "30%", width: "15px", color: "#00d4ff" },
-              ]}
+              
             />
           </MotionSection>
           {/* second intro */}
@@ -193,12 +196,7 @@ const HomePage: React.FC<HomePageProps> = ({ artists, error }) => {
           >
             <TextCard
             title="What Hull Tattoo Studio Offers"
-            description={`<p>
-                  At Hull Tattoo Studio, our knowledgeable artists strive to create exceptional tattoos
-                  that reflect your unique style. Whether you’re seeking a vibrant custom design or a
-                  subtle black-and-grey masterpiece, we take pride in being the go-to choice for tattoos
-                  in Hull.
-                </p>
+            description={`
               </br>
               <p>
                   We offer a welcoming environment, combined with expert skill and a passion for artistry,

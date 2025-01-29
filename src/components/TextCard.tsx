@@ -1,7 +1,6 @@
 import React from "react";
 import { Box, Text } from "@chakra-ui/react";
 
-
 interface Stripe {
   left: string;
   width: string;
@@ -30,17 +29,20 @@ const TextCard: React.FC<TextCardProps> = ({
     <Box
       position="relative"
       zIndex="0"
+      // Dark background with partial transparency
       bg="rgba(0, 0, 0, 0.6)"
       borderRadius="md"
       p={6}
       overflow="hidden"
-      boxShadow="0 0 10px #ff007f, 0 0 20px #00d4ff"
+      // Reduced from 0 0 10px + 0 0 20px to lighten the shadow
+      boxShadow="0 0 8px #ff007f, 0 0 15px #00d4ff"
+      // Shorter hover scale (from 1.05 to 1.02)
       transition="transform 0.3s ease"
-      _hover={{ transform: "scale(1.05)" }}
+      _hover={{ transform: "scale(1.02)" }}
       maxW="800px"
       mx="auto"
     >
-      {/* Render stripes in the background */}
+      {/* Background Stripes */}
       {stripes.map((stripe, index) => (
         <Box
           key={index}
@@ -57,14 +59,14 @@ const TextCard: React.FC<TextCardProps> = ({
       ))}
 
       {/* Title */}
-      
       <Text
         fontSize={{ base: "3xl", md: "4xl" }}
         fontWeight="bold"
         color="white"
         textAlign="center"
         mb={4}
-        textShadow="0 0 10px #ff007f, 0 0 20px #00d4ff, 0 0 30px #00d4ff"
+        // Reduced from 0 0 10px + 0 0 20px + 0 0 30px
+        textShadow="0 0 5px #ff007f, 0 0 10px #00d4ff"
       >
         {title}
       </Text>
@@ -76,22 +78,22 @@ const TextCard: React.FC<TextCardProps> = ({
           color="#00d4ff"
           textAlign="center"
           mb={4}
-          textShadow="0 0 5px #00d4ff, 0 0 10px #ff007f"
+          // Slightly lighter textShadow
+          textShadow="0 0 4px #00d4ff, 0 0 8px #ff007f"
         >
           {subtitle}
         </Text>
       )}
 
-      {/* Description with HTML */}
+      {/* Description as HTML */}
       <Box
         fontSize={{ base: "md", md: "lg" }}
         color="white"
         textAlign={align}
         lineHeight="1.8"
-        textShadow="0 0 5px #ff007f, 0 0 10px #00d4ff"
+        textShadow="0 0 4px #ff007f, 0 0 8px #00d4ff"
         mb={4}
         className="text-card-content"
-        // Use dangerouslySetInnerHTML to render HTML strings
         dangerouslySetInnerHTML={{ __html: description }}
       />
 
@@ -102,7 +104,7 @@ const TextCard: React.FC<TextCardProps> = ({
           fontWeight="semibold"
           color="#00d4ff"
           textAlign="center"
-          textShadow="0 0 5px #00d4ff, 0 0 10px #ff007f"
+          textShadow="0 0 4px #00d4ff, 0 0 8px #ff007f"
         >
           {footer}
         </Text>
