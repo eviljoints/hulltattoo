@@ -167,7 +167,7 @@ const HomePage: React.FC<HomePageProps> = ({ artists, error }) => {
           <MotionSection
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
+            transition={{ duration: 0.1 }}
             viewport={{ once: true }}
             marginBottom={16}
           >
@@ -236,7 +236,7 @@ const HomePage: React.FC<HomePageProps> = ({ artists, error }) => {
           <MotionSection
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
-            transition={{ duration: 0.8, delay: 0.3 }}
+            transition={{ duration: 0.3 }}
             viewport={{ once: true }}
             marginBottom={16}
           >
