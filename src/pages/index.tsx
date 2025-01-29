@@ -8,8 +8,7 @@ import axios from "axios";
 import MotionSection from "../components/MotionSection";
 import ArtistCard from "../components/ArtistCard";
 import TextCard from "../components/TextCard";
-// import FindUs from "../components/FindUS"; // <-- REMOVED this direct import
-// Next.js dynamic imports to reduce initial bundle size
+
 const ReviewsModal = dynamic(() => import("~/components/ReviewsModal"), {
   ssr: false,
 });
@@ -70,7 +69,7 @@ const HomePage: React.FC<HomePageProps> = ({ artists, error }) => {
     "@type": "TattooStudio",
     name: "Hull Tattoo Studio",
     description:
-      "Professional tattoo studio in Hull offering various styles including realism, blackwork, anime, and apprentice work.",
+      "Professional tattoo studio in Hull, Hull tattoo studio offers tattoo artist specilasing in black and grey tattoo, colour tattoos and custom tattoo design.",
     image: "https://www.hulltattoostudio.com/images/og-image.webp",
     url: "https://www.hulltattoostudio.com",
     address: {
@@ -158,7 +157,7 @@ const HomePage: React.FC<HomePageProps> = ({ artists, error }) => {
         bg="transparent"
       >
         <Box
-          bgGradient="radial(rgba(54, 39, 255, 0.6), rgba(128, 0, 128, 0.6), rgba(0, 0, 0, 0.6))"
+          bgGradient="linear(rgba(54, 0, 92, 0.6), rgba(128, 0, 128, 0.6), rgba(0, 0, 0, 0.6))"
           borderRadius="md"
           padding={8}
           boxShadow="0 0 20px #9b5de5, 0 0 30px #f15bb5"
@@ -167,7 +166,7 @@ const HomePage: React.FC<HomePageProps> = ({ artists, error }) => {
           <MotionSection
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
-            transition={{ duration: 0.2 }}
+            
             viewport={{ once: true }}
             marginBottom={16}
           >
@@ -193,7 +192,7 @@ const HomePage: React.FC<HomePageProps> = ({ artists, error }) => {
           <MotionSection
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
-            transition={{ duration: 0.2 }}
+            
             viewport={{ once: true }}
             marginBottom={16}
           >
