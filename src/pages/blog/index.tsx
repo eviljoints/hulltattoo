@@ -10,11 +10,12 @@ import {
   Box,
   Heading,
   Text,
-  Image,
   Link as ChakraLink,
   Select,
   Spinner,
 } from "@chakra-ui/react";
+// REMOVE: import { Image } from "@chakra-ui/react";
+import Image from "next/image"; // <-- Add Next.js Image instead
 import prisma from "../../../lib/prisma";
 
 interface PostMeta {
@@ -192,15 +193,34 @@ const BlogIndex: React.FC<BlogIndexProps> = ({ posts }) => {
                   transition="transform 0.2s"
                   _hover={{ transform: "scale(1.02)" }}
                 >
+                  {/* Use next/image for the coverImage */}
                   {post.coverImage && (
                     <Box display="flex" justifyContent="center" mb={4}>
-                      <Image
-                        src={post.coverImage}
-                        alt={post.title}
-                        maxW="47%"
+                      {/* 
+                        1) Container with relative positioning so we can use layout="fill".
+                        2) Restrict max-width to something more reasonable
+                           so Next can serve smaller images for mobile.
+                      */}
+                      <Box
+                        position="relative"
+                        width="100%"
+                        maxWidth="500px"
+                        height="0"
+                        pb="40%" // 16:9 aspect ratio
+                        overflow="hidden"
                         borderRadius="md"
                         boxShadow="0 0 10px #ff007f, 0 0 20px #00d4ff"
-                      />
+                      >
+                        <Image
+                          src={post.coverImage}
+                          alt={post.title}
+                          layout='fill' //"layout='fill'" in older Next versions
+                          style={{ objectFit: "cover" }}
+                          sizes="(max-width: 800px) 40vw, 500px" 
+                          // or "(max-width: 800px) 80vw, 500px"
+                          // This tells Next.js to serve smaller images at smaller breakpoints
+                        />
+                      </Box>
                     </Box>
                   )}
 
