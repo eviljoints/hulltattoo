@@ -168,17 +168,12 @@ const HomePage: React.FC<HomePageProps> = ({ artists, error }) => {
             whileInView={{ opacity: 1 }}
             
             viewport={{ once: true }}
-            marginBottom={16}
+            marginBottom={30}
           >
             <TextCard
               title="WELCOME TO HULL TATTOO STUDIO"
               description={`
-                <p>
-                  At Hull Tattoo Studio, our knowledgeable artists strive to create exceptional tattoos
-                  that reflect your unique style. Whether you’re seeking a vibrant custom design or a
-                  subtle black-and-grey masterpiece, we take pride in being the go-to choice for tattoos
-                  in Hull.
-                </p>
+                
                 
               `}
               
@@ -198,7 +193,12 @@ const HomePage: React.FC<HomePageProps> = ({ artists, error }) => {
           >
             <TextCard
             title="What Hull Tattoo Studio Offers"
-            description={`
+            description={`<p>
+                  At Hull Tattoo Studio, our knowledgeable artists strive to create exceptional tattoos
+                  that reflect your unique style. Whether you’re seeking a vibrant custom design or a
+                  subtle black-and-grey masterpiece, we take pride in being the go-to choice for tattoos
+                  in Hull.
+                </p>
               </br>
               <p>
                   We offer a welcoming environment, combined with expert skill and a passion for artistry,
