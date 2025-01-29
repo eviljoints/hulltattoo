@@ -52,6 +52,12 @@ interface ArtistCardProps {
    * Array of stripes used for decorative elements behind the card.
    */
   stripes: Stripe[];
+
+  /**
+   * Marks the Next.js Image as high-priority for LCP.
+   * If `true`, Next.js will preload the image for better page performance.
+   */
+  priority?: boolean; // <<--- ADDED THIS
 }
 
 const ArtistCard: React.FC<ArtistCardProps> = ({
@@ -65,6 +71,7 @@ const ArtistCard: React.FC<ArtistCardProps> = ({
   instagram,
   artsPage,
   stripes,
+  priority, // <<--- ACCEPTING IT HERE
 }) => {
   return (
     <Box
@@ -112,6 +119,7 @@ const ArtistCard: React.FC<ArtistCardProps> = ({
               layout="fill"
               objectFit="cover"
               loading="lazy"
+               // <<--- PASSING IT HERE
             />
           </Box>
         </Box>

@@ -1,20 +1,23 @@
 // ./src/pages/index.tsx
 
 import React from "react";
-import { Box, Grid, Spinner, Center, Flex, Button } from "@chakra-ui/react";
+import { Box, Grid, Spinner, Center, Flex } from "@chakra-ui/react";
 import dynamic from "next/dynamic";
 import Head from "next/head";
 import axios from "axios";
 import MotionSection from "../components/MotionSection";
 import ArtistCard from "../components/ArtistCard";
 import TextCard from "../components/TextCard";
-import FindUs from "../components/FindUS";
-
+// import FindUs from "../components/FindUS"; // <-- REMOVED this direct import
 // Next.js dynamic imports to reduce initial bundle size
 const ReviewsModal = dynamic(() => import("~/components/ReviewsModal"), {
   ssr: false,
 });
 const ContactUsModal = dynamic(() => import("~/components/ContactUsModal"), {
+  ssr: false,
+});
+// Lazy-load FindUs
+const FindUsLazy = dynamic(() => import("../components/FindUS"), {
   ssr: false,
 });
 
@@ -160,11 +163,11 @@ const HomePage: React.FC<HomePageProps> = ({ artists, error }) => {
           padding={8}
           boxShadow="0 0 20px #9b5de5, 0 0 30px #f15bb5"
         >
-          {/* Intro Section */}
+          {/* Intro Section - reduced animation */}
           <MotionSection
-            initial={{ opacity: 0, y: 50 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.3 }}
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
             viewport={{ once: true }}
             marginBottom={16}
           >
@@ -211,7 +214,7 @@ const HomePage: React.FC<HomePageProps> = ({ artists, error }) => {
                     boxShadow: "0 0 20px #00d4ff, 0 0 40px #ff007f",
                     transform: "scale(1.05)",
                   },
-                  "aria-label": "Read Reviews", // Improve accessibility
+                  "aria-label": "Read Reviews",
                 }}
               />
               <ContactUsModal
@@ -278,44 +281,44 @@ const HomePage: React.FC<HomePageProps> = ({ artists, error }) => {
 
             {/* 6. Artist Cards */}
             <Grid
-  templateColumns={{
-    base: "1fr",
-    sm: "repeat(2, 1fr)",
-    md: "repeat(auto-fit, minmax(250px, 1fr))",
-  }}
-  gap={10}
-  marginTop={8}
->
-  {artists.map((artist, index) => (
-    <ArtistCard
-      key={artist.slug || index}
-      name={artist.name}
-      role={artist.role}
-      description={artist.description} // Pass the description here
-      image={artist.image}
-      alt={`Image of ${artist.name}, a tattoo artist at Hull Tattoo Studio`}
-      gallery={artist.gallery}
-      facebook={artist.facebook}
-      instagram={artist.instagram}
-      artsPage={artist.artsPage}
-      stripes={artist.stripes}
-    />
-  ))}
-</Grid>
-
+              templateColumns={{
+                base: "1fr",
+                sm: "repeat(2, 1fr)",
+                md: "repeat(auto-fit, minmax(250px, 1fr))",
+              }}
+              gap={10}
+              marginTop={8}
+            >
+              {artists.map((artist, index) => (
+                <ArtistCard
+                  key={artist.slug || index}
+                  name={artist.name}
+                  role={artist.role}
+                  description={artist.description} // Pass the description here
+                  image={artist.image}
+                  alt={`Image of ${artist.name}, a tattoo artist at Hull Tattoo Studio`}
+                  gallery={artist.gallery}
+                  facebook={artist.facebook}
+                  instagram={artist.instagram}
+                  artsPage={artist.artsPage}
+                  stripes={artist.stripes}
+                  priority={index === 0} // Prioritize LCP image
+                />
+              ))}
+            </Grid>
           </MotionSection>
         </Box>
 
-        {/* 7. FIND US SECTION */}
+        {/* 7. FIND US SECTION - now lazy-loaded */}
         <Box marginTop={16}>
-          <FindUs />
+          <FindUsLazy />
         </Box>
       </Box>
     </>
   );
 };
 
-// 8. SSG: fetch data at build time
+// 8. ISR: fetch data at build time + revalidate every hour
 export const getStaticProps = async () => {
   try {
     const response = await axios.get(
@@ -325,6 +328,7 @@ export const getStaticProps = async () => {
       props: {
         artists: response.data.artists,
       },
+      revalidate: 3600, // <-- ISR
     };
   } catch (err) {
     console.error(err);
@@ -333,6 +337,7 @@ export const getStaticProps = async () => {
         artists: null,
         error: "Failed to load artist data.",
       },
+      revalidate: 3600,
     };
   }
 };
