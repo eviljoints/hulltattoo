@@ -167,7 +167,7 @@ const HomePage: React.FC<HomePageProps> = ({ artists, error }) => {
           <MotionSection
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
-            transition={{ duration: 0.1 }}
+            transition={{ duration: 0.2 }}
             viewport={{ once: true }}
             marginBottom={16}
           >
@@ -180,21 +180,45 @@ const HomePage: React.FC<HomePageProps> = ({ artists, error }) => {
                   subtle black-and-grey masterpiece, we take pride in being the go-to choice for tattoos
                   in Hull.
                 </p>
-                <p>
-                  Our welcoming environment, combined with expert skill and a passion for artistry,
-                  ensures that every client feels confident in choosing Hull Tattoo Studio for their
-                  next piece. As a leading tattoo artist in Hull, we remain committed to delivering safe,
-                  innovative, and personalized services — leaving you with a tattoo you’ll be proud of
-                  for years to come.
-                </p>
+                
               `}
-              footer="OPEN TUES-FRI 9:30-15:00 | SAT 11:30-18:00"
+              
               stripes={[
                 { left: "10%", width: "10px", color: "#ff007f" },
                 { left: "30%", width: "15px", color: "#00d4ff" },
               ]}
             />
           </MotionSection>
+          {/* second intro */}
+          <MotionSection
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            transition={{ duration: 0.2 }}
+            viewport={{ once: true }}
+            marginBottom={16}
+          >
+            <TextCard
+            title="What Hull Tattoo Studio Offers"
+            description={`
+              </br>
+              <p>
+                  We offer a welcoming environment, combined with expert skill and a passion for artistry,
+                  ensures that every client feels confident in choosing Hull Tattoo Studio for their
+                  next piece. As a leading tattoo artist in Hull, we remain committed to delivering safe,
+                  innovative, and personalized services — leaving you with a tattoo you’ll be proud of
+                  for years to come.
+                </p>
+                <p>
+                </p>
+                `}
+                footer="OPEN TUES-FRI 9:30-15:00 | SAT 11:30-18:00"
+
+              stripes={[
+                { left: "10%", width: "10px", color: "#ff007f" },
+                { left: "30%", width: "15px", color: "#00d4ff" },
+              ]} 
+              /> 
+</MotionSection>
 
           {/* Buttons side by side */}
           <Center marginBottom={10}>
