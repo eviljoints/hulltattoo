@@ -175,22 +175,7 @@ const HomePage: React.FC<HomePageProps> = ({ artists, error }) => {
             />
           </MotionSection>
           {/* second intro */}
-          <Box
-        as="main"
-        position="relative"
-        color="pink"
-        width="100%"
-        padding={8}
-        paddingX={{ base: 4, md: 8 }}
-        minHeight="100vh"
-        bg="transparent"
-      >
-        <Box
-          bgGradient="linear(rgba(54, 0, 92, 0.6), rgba(128, 0, 128, 0.6), rgba(0, 0, 0, 0.6))"
-          borderRadius="md"
-          padding={8}
-          boxShadow="0 0 20px #9b5de5, 0 0 30px #f15bb5"
-        >
+        
           <MotionSection
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
@@ -256,6 +241,22 @@ const HomePage: React.FC<HomePageProps> = ({ artists, error }) => {
               />
             </Flex>
           </Center>
+          <Box
+        as="main"
+        position="relative"
+        color="pink"
+        width="100%"
+        padding={8}
+        paddingX={{ base: 4, md: 8 }}
+        minHeight="100vh"
+        bg="transparent"
+      >
+        <Box
+          bgGradient="linear(rgba(54, 0, 92, 0.6), rgba(128, 0, 128, 0.6), rgba(0, 0, 0, 0.6))"
+          borderRadius="md"
+          padding={8}
+          boxShadow="0 0 20px #9b5de5, 0 0 30px #f15bb5"
+        >
 
           {/* Artists Section */}
           <MotionSection
