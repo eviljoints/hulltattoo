@@ -66,7 +66,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                 src="/images/logo.webp"
                 alt="Tattoo Studio Logo"
                 width={300}
-                height={120}
+                height={200}
                 priority
               />
             </a>
