@@ -16,24 +16,6 @@ export default function Document() {
           crossOrigin="anonymous"
         />
 
-        {/* Deferred Calendly CSS to avoid render blocking */}
-        <link
-          rel="stylesheet"
-          href="https://assets.calendly.com/assets/external/widget.css"
-          media="print"
-          onLoad={(e) => {
-            // Convert the event to a typed React event
-            const link = e.currentTarget;
-            link.removeAttribute("media");
-            // link.onload = null; // optional if you really want to clear the handler
-          }}
-        />
-
-        {/* Defer third-party script with Next's <Script> component */}
-        <Script
-          src="https://assets.calendly.com/assets/external/widget.js"
-          strategy="lazyOnload"
-        />
       </Head>
       <body>
         <Main />

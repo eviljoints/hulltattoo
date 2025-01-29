@@ -8,7 +8,6 @@ import axios from "axios";
 import MotionSection from "../components/MotionSection";
 import ArtistCard from "../components/ArtistCard";
 import TextCard from "../components/TextCard";
-import HeroTextCard from "~/components/HeroTextCard";
 
 const ReviewsModal = dynamic(() => import("~/components/ReviewsModal"), {
   ssr: false,
@@ -147,7 +146,36 @@ const HomePage: React.FC<HomePageProps> = ({ artists, error }) => {
       */}
 
       {/* 5. PAGE CONTENT */}
-      <Box
+    
+          {/* Intro Section - reduced animation */}
+          <MotionSection
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            
+            viewport={{ once: true }}
+            marginBottom={30}
+            marginTop={30}
+          >
+            <TextCard
+              title="WELCOME TO HULL TATTOO STUDIO"
+              description={`
+                <p>
+                  At Hull Tattoo Studio, our knowledgeable artists strive to create exceptional tattoos
+                  that reflect your unique style. Whether you’re seeking a vibrant custom design or a
+                  subtle black-and-grey masterpiece, we take pride in being the go-to choice for tattoos
+                  in Hull.
+                </p>
+                
+              `}
+              
+              stripes={[
+                { left: "10%", width: "10px", color: "#ff007f" },
+                { left: "30%", width: "15px", color: "#00d4ff" },
+              ]}
+            />
+          </MotionSection>
+          {/* second intro */}
+          <Box
         as="main"
         position="relative"
         color="pink"
@@ -163,30 +191,6 @@ const HomePage: React.FC<HomePageProps> = ({ artists, error }) => {
           padding={8}
           boxShadow="0 0 20px #9b5de5, 0 0 30px #f15bb5"
         >
-          {/* Intro Section - reduced animation */}
-          <MotionSection
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            
-            viewport={{ once: true }}
-            marginBottom={30}
-          >
-             <HeroTextCard
-              title="WELCOME TO HULL TATTOO STUDIO"
-              description={`
-                  At Hull Tattoo Studio, our knowledgeable artists strive to create exceptional tattoos
-                  that reflect your unique style. Whether you’re seeking a vibrant custom design or a
-                  subtle black-and-grey masterpiece, we take pride in being the go-to choice for tattoos
-                  in Hull.
-                
-                
-                
-              `}
-              
-              
-            />
-          </MotionSection>
-          {/* second intro */}
           <MotionSection
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
