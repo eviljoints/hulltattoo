@@ -1,6 +1,6 @@
 // ./src/pages/artists/mike.tsx
 
-import React from "react";
+import React, { useState, useRef, useEffect } from "react";
 import {
   Box,
   Text,
@@ -15,6 +15,15 @@ import {
   AspectRatio,
   HStack,
   VStack,
+  // Imports for the modal disclaimer:
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  Button,
+  Checkbox,
 } from "@chakra-ui/react";
 import { FaFacebook, FaInstagram } from "react-icons/fa";
 import dynamic from "next/dynamic";
@@ -91,6 +100,14 @@ const galleries = {
 const MikePage: React.FC = () => {
   const [isLargerThan768] = useMediaQuery("(min-width: 768px)");
 
+  // State for disclaimer modal
+  const [disclaimerAccepted, setDisclaimerAccepted] = useState(false);
+  const [showDisclaimerModal, setShowDisclaimerModal] = useState(false);
+  const [checkboxChecked, setCheckboxChecked] = useState(false);
+
+  // Create a ref for the Acuity Scheduling section
+  const acuityRef = useRef<HTMLDivElement>(null);
+
   // JSON-LD structured data
   const structuredData = {
     "@context": "http://schema.org",
@@ -113,13 +130,34 @@ const MikePage: React.FC = () => {
     ],
   };
 
+  // Use IntersectionObserver to trigger the disclaimer modal when the Acuity section comes into view
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting && !disclaimerAccepted) {
+            setShowDisclaimerModal(true);
+          }
+        });
+      },
+      { threshold: 0.5 }
+    );
+    if (acuityRef.current) {
+      observer.observe(acuityRef.current);
+    }
+    return () => {
+      if (acuityRef.current) {
+        observer.unobserve(acuityRef.current);
+      }
+    };
+  }, [disclaimerAccepted]);
+
   return (
     <>
       {/* 1. Head Metadata */}
       <Head>
         <title>
-          Mike (Eggtattooer) - Professional Tattoo Artist in Hull | Hull Tattoo
-          Studio
+          Mike (Eggtattooer) - Professional Tattoo Artist in Hull | Hull Tattoo Studio
         </title>
         <meta
           name="description"
@@ -320,8 +358,18 @@ const MikePage: React.FC = () => {
             </Tabs>
           </MotionBox>
 
-          {/* Acuity Scheduling Embed */}
-          <AcuityEmbed link="https://app.acuityscheduling.com/schedule.php?owner=34239595&calendarID=11220578" />
+          {/* Acuity Scheduling Embed with Disclaimer */}
+          <Box ref={acuityRef} mb={16} as="section">
+            {disclaimerAccepted ? (
+              <AcuityEmbed link="https://app.acuityscheduling.com/schedule.php?owner=34239595&calendarID=11220578" />
+            ) : (
+              <Box p={4} textAlign="center">
+                <Text fontSize="lg" fontWeight="medium" mb={2}>
+                  Please accept the disclaimer to access scheduling.
+                </Text>
+              </Box>
+            )}
+          </Box>
 
           {/* Social Media Links */}
           <MotionBox
@@ -366,6 +414,45 @@ const MikePage: React.FC = () => {
           </MotionBox>
         </Box>
       </Box>
+
+      {/* Disclaimer Modal */}
+      <Modal
+        isOpen={showDisclaimerModal}
+        onClose={() => {}}
+        isCentered
+        closeOnOverlayClick={false}
+        motionPreset="slideInBottom"
+      >
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Booking Disclaimer</ModalHeader>
+          <ModalBody>
+            <Text mb={4}>
+              Please note: You must contact the artist prior to booking to ensure that you are booking the correct amount of time. If you book a time slot that is too short, you may be charged extra on the day.
+            </Text>
+            <Checkbox
+              isChecked={checkboxChecked}
+              onChange={(e) => setCheckboxChecked(e.target.checked)}
+            >
+              I have contacted the artist prior to booking.
+            </Checkbox>
+          </ModalBody>
+          <ModalFooter>
+            <Button
+              colorScheme="pink"
+              onClick={() => {
+                if (checkboxChecked) {
+                  setDisclaimerAccepted(true);
+                  setShowDisclaimerModal(false);
+                }
+              }}
+              disabled={!checkboxChecked}
+            >
+              Continue to Booking
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
     </>
   );
 };

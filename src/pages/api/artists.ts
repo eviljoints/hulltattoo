@@ -34,7 +34,7 @@ const artists: Artist[] = [
   {
     name: "Mike",
     role: "Sponsored Realism Tattoo Artist",
-    description: "Mike is a highly skilled tattoo artist with over 8 years of experience specializing in black and gray realism as well as color realism. His precision and artistic eye make him one of the most sought-after tattooists in Hull. As a sponsored artist by Apollo Tattoo Aftercare, Mike ensures top-quality results with exceptional care and professionalism.",
+    description: "Mike is a highly skilled tattoo artist with over 8 years of experience specialising in black and grey realism as well as colour realism. His precision and artistic eye make him one of the most sought-after tattooists in Hull. As a sponsored artist by Apollo Tattoo Aftercare, Mike ensures top-quality results with exceptional care and professionalism.",
     image: "/images/mike.webp",
     gallery: "/images/mike-gallery.webp",
     facebook: "https://facebook.com/Hulltattoostudio",
