@@ -1,6 +1,4 @@
-// ./src/pages/poppy.tsx
-
-import React from "react";
+import React, { useState, useRef, useEffect } from "react";
 import {
   Box,
   Text,
@@ -15,26 +13,31 @@ import {
   useMediaQuery,
   AspectRatio,
   HStack,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  Button,
+  Checkbox,
 } from "@chakra-ui/react";
 import { FaFacebook, FaInstagram } from "react-icons/fa";
 import dynamic from "next/dynamic";
 import Image from "next/image";
 import Head from "next/head";
 import Script from "next/script";
-
-// Styles & Components
-import styles from "./artists/MikePage.module.css"; // Reuse neon lines background
+import styles from "./artists/MikePage.module.css"; // Reusing the neon background styles
 import MotionBox from "../components/MotionBox";
-import TextCard from "~/components/TextCard"; // If path is correct in your project
-import { fill } from "lodash";
+import TextCard from "~/components/TextCard";
 
-// 1. Dynamically load AcuityEmbed to reduce initial bundle size
+// Dynamically load AcuityEmbed to reduce bundle size
 const AcuityEmbed = dynamic(() => import("../components/AcuityEmbed"), {
   ssr: false,
   loading: () => <p>Loading scheduler...</p>,
 });
 
-// 2. Define Poppy’s gallery
+// Define Poppy’s gallery
 const gallery = {
   apprenticeTattoos: {
     description: `Poppy is our dedicated apprentice, working mainly in black ink but branching out into color pieces. She is hardworking and always progressing her craft. Poppy works at an apprentice rate, making her work both exceptional and affordable.`,
@@ -49,7 +52,7 @@ const gallery = {
   },
 };
 
-// 3. Structured data (JSON-LD) for Poppy
+// Structured data (JSON‑LD) for Poppy
 const structuredData = {
   "@context": "http://schema.org",
   "@type": "Person",
@@ -67,7 +70,6 @@ const structuredData = {
 };
 
 const PoppyPage: React.FC = () => {
-  // Media Query for animations
   const [isLargerThan768] = useMediaQuery("(min-width: 768px)");
 
   // Motion animation settings
@@ -83,9 +85,39 @@ const PoppyPage: React.FC = () => {
         transition: { duration: 0.5 },
       };
 
+  // Disclaimer state and checkbox for Poppy
+  const [disclaimerAccepted, setDisclaimerAccepted] = useState(false);
+  const [showDisclaimerModal, setShowDisclaimerModal] = useState(false);
+  const [checkboxChecked, setCheckboxChecked] = useState(false);
+
+  // Ref for the Acuity Scheduling section
+  const acuityRef = useRef<HTMLDivElement>(null);
+
+  // Use IntersectionObserver to trigger the disclaimer when the scheduler comes into view
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting && !disclaimerAccepted) {
+            setShowDisclaimerModal(true);
+          }
+        });
+      },
+      { threshold: 0.5 }
+    );
+    if (acuityRef.current) {
+      observer.observe(acuityRef.current);
+    }
+    return () => {
+      if (acuityRef.current) {
+        observer.unobserve(acuityRef.current);
+      }
+    };
+  }, [disclaimerAccepted]);
+
   return (
     <>
-      {/* 4. Head & SEO Meta Tags */}
+      {/* Head & SEO Meta Tags */}
       <Head>
         <title>Poppy - Apprentice Tattoo Artist | Hull Tattoo Studio</title>
         <meta
@@ -108,25 +140,22 @@ const PoppyPage: React.FC = () => {
           content="Meet Poppy, our dedicated apprentice at Hull Tattoo Studio. She works mainly in black ink but is branching out into color pieces."
         />
         <meta property="og:image" content="/images/poppy.webp" />
-        <meta
-          property="og:url"
-          content="https://www.hulltattoostudio.com/poppy"
-        />
+        <meta property="og:url" content="https://www.hulltattoostudio.com/poppy" />
         <meta property="og:type" content="profile" />
 
         {/* Canonical URL */}
         <link rel="canonical" href="https://www.hulltattoostudio.com/poppy" />
 
-        {/* Preload Poppy's portrait for faster display */}
+        {/* Preload Poppy's portrait */}
         <link rel="preload" href="/images/poppy.webp" as="image" />
       </Head>
 
-      {/* 5. Structured Data via Next.js <Script> */}
+      {/* Structured Data */}
       <Script id="poppy-structured-data" type="application/ld+json">
         {JSON.stringify(structuredData)}
       </Script>
 
-      {/* 6. Page Content */}
+      {/* Page Content */}
       <Box
         position="relative"
         bg="transparent"
@@ -142,7 +171,7 @@ const PoppyPage: React.FC = () => {
         {/* Neon Diagonal Lines Background */}
         <Box className={styles.backgroundLines} />
 
-        {/* Main Container with gradient */}
+        {/* Main Container with Gradient */}
         <Box
           bgGradient="radial(rgba(54, 39, 255, 0.6), rgba(128, 0, 128, 0.6), rgba(0,0,0,0.6))"
           borderRadius="md"
@@ -151,7 +180,7 @@ const PoppyPage: React.FC = () => {
           position="relative"
           zIndex="1"
         >
-          {/* Poppy's Intro Section */}
+          {/* Poppy’s Intro Section */}
           <MotionBox {...motionProps} mb={16} as="section">
             <Text
               fontSize={{ base: "3xl", md: "5xl" }}
@@ -269,8 +298,18 @@ Come say hi, share your ideas, and let Poppy’s enthusiasm and artistry shine t
             </Tabs>
           </MotionBox>
 
-          {/* Acuity Scheduling Embed */}
-          <AcuityEmbed link="https://app.acuityscheduling.com/schedule.php?owner=34239595&calendarID=11234698" />
+          {/* Acuity Scheduling Embed with Disclaimer */}
+          <Box ref={acuityRef} mb={16} as="section">
+            {disclaimerAccepted ? (
+              <AcuityEmbed link="https://app.acuityscheduling.com/schedule.php?owner=34239595&calendarID=11234698" />
+            ) : (
+              <Box p={4} textAlign="center">
+                <Text fontSize="lg" fontWeight="medium" mb={2}>
+                  Please accept the disclaimer to access scheduling.
+                </Text>
+              </Box>
+            )}
+          </Box>
 
           {/* Social Media Links */}
           <MotionBox {...motionProps} mb={16} as="section">
@@ -308,11 +347,60 @@ Come say hi, share your ideas, and let Poppy’s enthusiasm and artistry shine t
           </MotionBox>
         </Box>
       </Box>
+
+      {/* Disclaimer Modal with Neon Cyberpunk Styling */}
+      <Modal
+        isOpen={showDisclaimerModal}
+        onClose={() => {}}
+        isCentered
+        closeOnOverlayClick={false}
+        motionPreset="slideInBottom"
+      >
+        <ModalOverlay />
+        <ModalContent
+          bg="black"
+          color="white"
+          border="2px solid #ff007f"
+          boxShadow="0 0 20px #ff007f, 0 0 30px #00d4ff"
+        >
+          <ModalHeader
+            textShadow="0 0 10px #ff007f, 0 0 20px #00d4ff"
+            fontFamily="'Ryzes', sans-serif"
+          >
+            Booking Disclaimer
+          </ModalHeader>
+          <ModalBody>
+            <Text mb={4}>
+              Please note: You must contact the artist prior to booking to ensure that you are booking the correct amount of time. If you book a time slot that is too short, you may be charged extra on the day.
+            </Text>
+            <Checkbox
+              isChecked={checkboxChecked}
+              onChange={(e) => setCheckboxChecked(e.target.checked)}
+            >
+              I have contacted the artist prior to booking.
+            </Checkbox>
+          </ModalBody>
+          <ModalFooter>
+            <Button
+              colorScheme="pink"
+              onClick={() => {
+                if (checkboxChecked) {
+                  setDisclaimerAccepted(true);
+                  setShowDisclaimerModal(false);
+                }
+              }}
+              disabled={!checkboxChecked}
+            >
+              Continue to Booking
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
     </>
   );
 };
 
-// 7. SSG for better performance & SEO
+// SSG for performance & SEO
 export const getStaticProps = () => {
   return {
     props: {},

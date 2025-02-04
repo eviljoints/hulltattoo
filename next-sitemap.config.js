@@ -17,7 +17,7 @@ module.exports = {
     ],
   },
   exclude: ['/admin/**', '/hidden-page'], // Ensure patterns match your URLs
-  changefreq: 'daily', // Default change frequency
-  priority: 0.7, // Default priority
+  changefreq: 'weekly', // Default change frequency
+  priority: 0.8, // Default priority
   generateIndexSitemap: true, // Generates a sitemap index if multiple sitemaps are present
 };

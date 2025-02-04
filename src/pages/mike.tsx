@@ -1,5 +1,3 @@
-// ./src/pages/artists/mike.tsx
-
 import React, { useState, useRef, useEffect } from "react";
 import {
   Box,
@@ -15,7 +13,6 @@ import {
   AspectRatio,
   HStack,
   VStack,
-  // Imports for the modal disclaimer:
   Modal,
   ModalOverlay,
   ModalContent,
@@ -34,13 +31,13 @@ import styles from "./artists/MikePage.module.css";
 
 // Dynamically load non-critical components to reduce initial bundle size
 const MotionBox = dynamic(() => import("../components/MotionBox"), {
-  ssr: true, // Enable SSR for critical content
+  ssr: true,
 });
 const AcuityEmbed = dynamic(() => import("../components/AcuityEmbed"), {
-  ssr: false, // Non-critical or interactive component
+  ssr: false,
 });
 const TextCard = dynamic(() => import("../components/TextCard"), {
-  ssr: true, // Enable SSR if it contains critical content
+  ssr: true,
 });
 
 // Define the galleries
@@ -100,15 +97,15 @@ const galleries = {
 const MikePage: React.FC = () => {
   const [isLargerThan768] = useMediaQuery("(min-width: 768px)");
 
-  // State for disclaimer modal
+  // Disclaimer state and checkbox
   const [disclaimerAccepted, setDisclaimerAccepted] = useState(false);
   const [showDisclaimerModal, setShowDisclaimerModal] = useState(false);
   const [checkboxChecked, setCheckboxChecked] = useState(false);
 
-  // Create a ref for the Acuity Scheduling section
+  // Ref for Acuity Scheduling section
   const acuityRef = useRef<HTMLDivElement>(null);
 
-  // JSON-LD structured data
+  // JSON‑LD structured data
   const structuredData = {
     "@context": "http://schema.org",
     "@type": "Person",
@@ -126,11 +123,10 @@ const MikePage: React.FC = () => {
     sameAs: [
       "https://facebook.com/Hulltattoostudio",
       "https://instagram.com/egg_tattooer",
-      // Add other social profiles if available
     ],
   };
 
-  // Use IntersectionObserver to trigger the disclaimer modal when the Acuity section comes into view
+  // IntersectionObserver to show disclaimer when Acuity section comes into view
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
@@ -154,7 +150,7 @@ const MikePage: React.FC = () => {
 
   return (
     <>
-      {/* 1. Head Metadata */}
+      {/* Head Metadata */}
       <Head>
         <title>
           Mike (Eggtattooer) - Professional Tattoo Artist in Hull | Hull Tattoo Studio
@@ -179,27 +175,21 @@ const MikePage: React.FC = () => {
           content="Meet Mike, a friendly and talented tattoo artist at Hull Tattoo Studio with 10+ years of experience in realism, bespoke realism, neotrad, and cover-up tattoos."
         />
         <meta property="og:image" content="/images/mike.webp" />
-        <meta
-          property="og:url"
-          content="https://www.hulltattoostudio.com/mike"
-        />
+        <meta property="og:url" content="https://www.hulltattoostudio.com/mike" />
         <meta property="og:type" content="profile" />
         <meta property="og:locale" content="en_GB" />
         <meta property="og:site_name" content="Hull Tattoo Studio" />
 
         {/* Canonical URL */}
-        <link
-          rel="canonical"
-          href="https://www.hulltattoostudio.com/mike"
-        />
+        <link rel="canonical" href="https://www.hulltattoostudio.com/mike" />
       </Head>
 
-      {/* 2. Structured Data via Next.js <Script> */}
+      {/* Structured Data */}
       <Script id="mike-structured-data" type="application/ld+json">
         {JSON.stringify(structuredData)}
       </Script>
 
-      {/* 3. Page Content */}
+      {/* Page Content */}
       <Box
         position="relative"
         bg="transparent"
@@ -212,7 +202,7 @@ const MikePage: React.FC = () => {
         {/* Neon Diagonal Lines Background */}
         <Box className={styles.backgroundLines} />
 
-        {/* Main Container w/ Radial Gradient */}
+        {/* Main Container with Radial Gradient */}
         <Box
           bgGradient="radial(rgba(54, 39, 255, 0.6), rgba(128, 0, 128, 0.6), rgba(0,0,0,0.6))"
           borderRadius="md"
@@ -221,7 +211,7 @@ const MikePage: React.FC = () => {
           position="relative"
           zIndex="1"
         >
-          {/* Mike's Profile Section */}
+          {/* Mike’s Profile Section */}
           <MotionBox
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
@@ -346,7 +336,7 @@ const MikePage: React.FC = () => {
                               width={300}
                               height={300}
                               style={{ objectFit: "cover" }}
-                              loading="lazy" // Enables lazy loading
+                              loading="lazy"
                             />
                           </MotionBox>
                         </AspectRatio>
@@ -415,7 +405,7 @@ const MikePage: React.FC = () => {
         </Box>
       </Box>
 
-      {/* Disclaimer Modal */}
+      {/* Disclaimer Modal with Neon Cyberpunk Styling */}
       <Modal
         isOpen={showDisclaimerModal}
         onClose={() => {}}
@@ -424,8 +414,18 @@ const MikePage: React.FC = () => {
         motionPreset="slideInBottom"
       >
         <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>Booking Disclaimer</ModalHeader>
+        <ModalContent
+          bg="black"
+          color="white"
+          border="2px solid #ff007f"
+          boxShadow="0 0 20px #ff007f, 0 0 30px #00d4ff"
+        >
+          <ModalHeader
+            textShadow="0 0 10px #ff007f, 0 0 20px #00d4ff"
+            fontFamily="'Ryzes', sans-serif"
+          >
+            Booking Disclaimer
+          </ModalHeader>
           <ModalBody>
             <Text mb={4}>
               Please note: You must contact the artist prior to booking to ensure that you are booking the correct amount of time. If you book a time slot that is too short, you may be charged extra on the day.
@@ -457,7 +457,7 @@ const MikePage: React.FC = () => {
   );
 };
 
-// 4. SSG for better performance & SEO
+// SSG for performance & SEO
 export function getStaticProps() {
   return {
     props: {},
