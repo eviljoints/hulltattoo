@@ -2,11 +2,14 @@
 
 module.exports = {
   siteUrl: 'https://hulltattoostudio.com', // Replace with your website's URL
-  
+  changefreq: 'weekly', // Default change frequency for the entire site
+  priority: 0.6, // Default priority for pages
+  generateIndexSitemap: true, // Generates a sitemap index if multiple sitemaps are present
+
   robotsTxtOptions: {
     additionalSitemaps: [
       'https://hulltattoostudio.com/sitemap.xml', // Primary sitemap
-      // Add additional sitemap URLs if you have multiple
+      // Add additional sitemap URLs if needed
     ],
     policies: [
       {
@@ -16,8 +19,22 @@ module.exports = {
       },
     ],
   },
-  exclude: ['/admin/**', '/hidden-page'], // Ensure patterns match your URLs
-  changefreq: 'weekly', // Default change frequency
-  priority: 0.8, // Default priority
-  generateIndexSitemap: true, // Generates a sitemap index if multiple sitemaps are present
+
+  exclude: ['/admin/**', '/hidden-page'], // Patterns for excluded pages
+
+  // Add custom priority and frequency rules for specific pages
+  transform: async (config, path) => {
+    if (path.startsWith('/blog')) {
+      return {
+        loc: path,
+        changefreq: 'weekly', // Blog is updated weekly
+        priority: 1.0, // High priority for blog pages
+      };
+    }
+    return {
+      loc: path,
+      changefreq: 'monthly', // Default frequency for other pages
+      priority: 0.6, // Default priority for other pages
+    };
+  },
 };
