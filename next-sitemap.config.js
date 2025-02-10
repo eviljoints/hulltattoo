@@ -27,13 +27,13 @@ module.exports = {
     if (path.startsWith('/blog')) {
       return {
         loc: path,
-        changefreq: 'weekly', // Blog is updated weekly
+        changefreq: 'daily', // Blog is updated weekly
         priority: 1.0, // High priority for blog pages
       };
     }
     return {
       loc: path,
-      changefreq: 'monthly', // Default frequency for other pages
+      changefreq: 'weekly', // Default frequency for other pages
       priority: 0.6, // Default priority for other pages
     };
   },
