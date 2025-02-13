@@ -1,40 +1,20 @@
 // next-sitemap.js
 
+/** @type {import('next-sitemap').IConfig} */
 module.exports = {
   siteUrl: 'https://hulltattoostudio.com', // Replace with your website's URL
-  changefreq: 'weekly', // Default change frequency for the entire site
-  priority: 0.6, // Default priority for pages
-  generateIndexSitemap: true, // Generates a sitemap index if multiple sitemaps are present
-
+  generateRobotsTxt: true, // Automatically generate robots.txt
+  changefreq: 'weekly', // Default change frequency for all pages
+  priority: 0.7, // Default priority for all pages
+  generateIndexSitemap: false, // Do not generate a sitemap index
+  exclude: ['/admin*'], // Exclude all pages under /admin
   robotsTxtOptions: {
-    additionalSitemaps: [
-      'https://hulltattoostudio.com/sitemap.xml', // Primary sitemap
-      // Add additional sitemap URLs if needed
-    ],
     policies: [
       {
         userAgent: '*',
-        allow: '/',
-        disallow: ['/admin', '/hidden-page'], // Paths to exclude from crawling
+        allow: '/', // Allow all pages
+        disallow: ['/admin'], // Disallow crawling /admin pages
       },
     ],
-  },
-
-  exclude: ['/admin/**', '/hidden-page'], // Patterns for excluded pages
-
-  // Add custom priority and frequency rules for specific pages
-  transform: async (config, path) => {
-    if (path.startsWith('/blog')) {
-      return {
-        loc: path,
-        changefreq: 'daily', // Blog is updated weekly
-        priority: 1.0, // High priority for blog pages
-      };
-    }
-    return {
-      loc: path,
-      changefreq: 'weekly', // Default frequency for other pages
-      priority: 0.6, // Default priority for other pages
-    };
   },
 };
