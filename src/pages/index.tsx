@@ -9,6 +9,7 @@ import MotionSection from "../components/MotionSection";
 import ArtistCard from "../components/ArtistCard";
 import TextCard from "../components/TextCard";
 import SEOOptimizedContent from "~/components/Seo";
+import HeroTextCard from "~/components/HeroTextCard";
 
 // Dynamically import non-critical components
 const ReviewsModal = dynamic(() => import("~/components/ReviewsModal"), {
@@ -153,7 +154,7 @@ const HomePage: React.FC<HomePageProps> = ({ artists, error }) => {
         marginBottom={30}
         marginTop={30}
       >
-        <TextCard
+        <HeroTextCard
   title="WELCOME TO HULL TATTOO STUDIO"
   description={`
     <p>
