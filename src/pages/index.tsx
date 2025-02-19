@@ -176,10 +176,7 @@ const HomePage: React.FC<HomePageProps> = ({ artists, error }) => {
       </a>
     </p>
   `}
-  stripes={[
-    { left: "10%", width: "10px", color: "#ff007f" },
-    { left: "30%", width: "15px", color: "#00d4ff" },
-  ]}
+  
 />
 
       </MotionSection>
