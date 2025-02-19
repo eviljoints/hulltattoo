@@ -15,7 +15,7 @@ export default function Document() {
           type="font/otf"
           crossOrigin="anonymous"
         />
-
+         
       </Head>
       <body>
         <Main />

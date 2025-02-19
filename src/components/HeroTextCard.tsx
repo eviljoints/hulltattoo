@@ -1,44 +1,20 @@
 import React from "react";
-import { Box, Heading } from "@chakra-ui/react";
+import { Box, Heading, Text, Link, Button } from "@chakra-ui/react";
 
-/**
- * Basic interface for your hero text props.
- */
 interface HeroTextCardProps {
-  /**
-   * Main heading text (e.g., "WELCOME TO HULL TATTOO STUDIO")
-   */
   title: string;
-
-  /**
-   * Subtext or paragraph below the main title.
-   * Accepts plain text or simple HTML.
-   */
-  description: string;
-
-  /**
-   * Text alignment: "left" | "center" | "right".
-   * Default is "center".
-   */
   align?: "left" | "center" | "right";
 }
 
-/**
- * A minimal, fast-loading hero text card.
- */
-const HeroTextCard: React.FC<HeroTextCardProps> = ({
-  title,
-  description,
-  align = "center",
-}) => {
+const HeroTextCard: React.FC<HeroTextCardProps> = ({ title, align = "center" }) => {
   return (
     <Box
       maxW="800px"
       mx="auto"
-      py={{ base: 8, md: 16 }}
-      px={{ base: 4, md: 8 }}
-      bg="rgba(0,0,0,0.6)"
-      borderRadius="md"
+      py={{ base: 6, md: 12 }}
+      px={{ base: 4, md: 6 }}
+      bg="rgba(0,0,0,0.7)"
+      borderRadius="lg"
     >
       <Heading
         as="h1"
@@ -46,20 +22,41 @@ const HeroTextCard: React.FC<HeroTextCardProps> = ({
         fontWeight="bold"
         color="white"
         textAlign={align}
-        mb={4}
-        textShadow="0 0 5px rgba(0,0,0,0.5)"
+        mb={3}
       >
         {title}
       </Heading>
 
-      {/* Rendering HTML safely */}
-      <Box
-        fontSize={{ base: "md", md: "lg" }}
-        color="gray.200"
-        textAlign={align}
-        lineHeight="1.6"
-        dangerouslySetInnerHTML={{ __html: description }}
-      />
+      <Text fontSize={{ base: "md", md: "lg" }} color="gray.200" textAlign={align} lineHeight="1.5">
+        Welcome to <strong>Hull Tattoo Studio</strong>, the leading tattoo parlour in Hull where creativity meets precision.
+      </Text>
+      <Text fontSize={{ base: "md", md: "lg" }} color="gray.200" textAlign={align}>
+        Our expert tattooists specialize in <strong>black and grey realism, blackwork, fine line tattoos, anime tattoos, and custom designs</strong>.
+      </Text>
+      <Text fontSize={{ base: "md", md: "lg" }} color="gray.200" textAlign={align}>
+        Looking for the <strong>best tattoo shops in Hull</strong>? Look no further.
+      </Text>
+
+      <Box textAlign="center" mt={4}>
+  <Link href="/blog/Apprenticeship" color="#00d4ff" fontWeight="bold">
+    Learn about our tattoo apprenticeships
+  </Link>
+</Box>
+
+      <Box textAlign="center" mt={4}>
+        <Button
+          as="a"
+          href="/mike"
+          bg="#ff007f"
+          color="white"
+          _hover={{ bg: "#ff3399" }}
+          fontWeight="bold"
+          px={6}
+          py={3}
+        >
+          Book Your Consultation
+        </Button>
+      </Box>
     </Box>
   );
 };

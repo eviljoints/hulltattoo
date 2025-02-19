@@ -156,26 +156,7 @@ const HomePage: React.FC<HomePageProps> = ({ artists, error }) => {
       >
         <HeroTextCard
   title="WELCOME TO HULL TATTOO STUDIO"
-  description={`
-    <p>
-      Welcome to <strong>Hull Tattoo Studio</strong>, the leading tattoo parlour in Hull where creativity meets precision. Our expert tattooists specialize in 
-      <strong>black and grey realism, bold blackwork, fine line tattoos, anime tattoos, and custom designs</strong>.
-    </p>
-    <p>
-      Whether you're looking for a small, delicate tattoo or a full-sleeve masterpiece, we bring your vision to life with precision and passion. Our tattoo artists are highly skilled in various styles, ensuring every piece is a work of art.
-    </p>
-    <p>
-      Searching for the <strong>best tattoo shops in Hull</strong> or a <strong>tattooist near you</strong>? Look no further. We provide a professional and comfortable experience for both first-time clients and seasoned tattoo collectors. Our friendly team will guide you from concept to completion.
-    </p>
-    <p>
-      Interested in learning the craft? We also offer <a href="/blog/Apprenticeship" style="color:#00d4ff;"><strong>tattoo apprenticeships in Hull</strong></a>, training the next generation of artists in a hands-on, supportive environment.
-    </p>
-    <p style="text-align:center; margin-top: 10px;">
-      <a href="/mike" style="display:inline-block; padding:10px 20px; background-color:#ff007f; color:white; text-decoration:none; border-radius:5px; font-weight:bold;">
-        Book Your Tattoo Consultation Now
-      </a>
-    </p>
-  `}
+
   
 />
 
