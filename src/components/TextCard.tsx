@@ -8,9 +8,8 @@ interface Stripe {
 }
 
 interface TextCardProps {
-  title: React.ReactNode;  // Title can be any React node now
+  title: React.ReactNode;
   subtitle?: string;
-  // 'description' is a string, but we interpret it as HTML via dangerouslySetInnerHTML
   description: string;  
   footer?: string;
   stripes: Stripe[];
@@ -29,18 +28,15 @@ const TextCard: React.FC<TextCardProps> = ({
     <Box
       position="relative"
       zIndex="0"
-      // Dark background with partial transparency
       bg="rgba(0, 0, 0, 0.6)"
       borderRadius="md"
       p={6}
       overflow="hidden"
-      // Reduced from 0 0 10px + 0 0 20px to lighten the shadow
       boxShadow="0 0 8px #ff007f, 0 0 15px #00d4ff"
-      // Shorter hover scale (from 1.05 to 1.02)
       transition="transform 0.3s ease"
       _hover={{ transform: "scale(1.02)" }}
-      maxW="800px"
-      mx="auto"
+      maxW={{ base: "95%", sm: "90%", md: "800px" }} // Responsive width for mobile
+      mx={{ base: 6, md: "auto" }} // Margin for mobile & centered on larger screens
     >
       {/* Background Stripes */}
       {stripes.map((stripe, index) => (
@@ -60,12 +56,11 @@ const TextCard: React.FC<TextCardProps> = ({
 
       {/* Title */}
       <Text
-        fontSize={{ base: "3xl", md: "4xl" }}
+        fontSize={{ base: "2xl", md: "4xl" }} // Adjusted size for mobile
         fontWeight="bold"
         color="white"
         textAlign="center"
         mb={4}
-        // Reduced from 0 0 10px + 0 0 20px + 0 0 30px
         textShadow="0 0 5px #ff007f, 0 0 10px #00d4ff"
       >
         {title}
@@ -74,11 +69,10 @@ const TextCard: React.FC<TextCardProps> = ({
       {/* Subtitle (optional) */}
       {subtitle && (
         <Text
-          fontSize="lg"
+          fontSize={{ base: "md", md: "lg" }} // Responsive font size
           color="#00d4ff"
           textAlign="center"
           mb={4}
-          // Slightly lighter textShadow
           textShadow="0 0 4px #00d4ff, 0 0 8px #ff007f"
         >
           {subtitle}
@@ -87,12 +81,12 @@ const TextCard: React.FC<TextCardProps> = ({
 
       {/* Description as HTML */}
       <Box
-        fontSize={{ base: "md", md: "lg" }}
+        fontSize={{ base: "sm", md: "lg" }} // Smaller font for mobile
         color="white"
         textAlign={align}
         lineHeight="1.8"
         textShadow="0 0 4px #ff007f, 0 0 8px #00d4ff"
-        mb={4}
+        mb={1}
         className="text-card-content"
         dangerouslySetInnerHTML={{ __html: description }}
       />
@@ -100,7 +94,7 @@ const TextCard: React.FC<TextCardProps> = ({
       {/* Footer (optional) */}
       {footer && (
         <Text
-          fontSize="lg"
+          fontSize={{ base: "md", md: "lg" }} // Adjusted footer size for mobile
           fontWeight="semibold"
           color="#00d4ff"
           textAlign="center"

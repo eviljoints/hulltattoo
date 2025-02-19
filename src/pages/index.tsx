@@ -8,6 +8,7 @@ import axios from "axios";
 import MotionSection from "../components/MotionSection";
 import ArtistCard from "../components/ArtistCard";
 import TextCard from "../components/TextCard";
+import SEOOptimizedContent from "~/components/Seo";
 
 // Dynamically import non-critical components
 const ReviewsModal = dynamic(() => import("~/components/ReviewsModal"), {
@@ -87,57 +88,62 @@ const HomePage: React.FC<HomePageProps> = ({ artists, error }) => {
   return (
     <>
       <Head>
-        <title>
-          Hull Tattoo Studio | Professional Tattoo Artists in Hull
-        </title>
-        <meta
-          name="description"
-          content="Hull Tattoo Studio offers exceptional tattoos crafted by expert artists in a welcoming environment. Specialising in realism, blackwork, and anime tattoos. Book now!"
-        />
-        <meta
-          name="keywords"
-          content="Hull Tattoo Studio, Tattoo Artists, Realism Tattoo, Blackwork Tattoo, Anime Tattoo, Professional Tattoo Studio, Hull, Custom Tattoos"
-        />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>
+    Hull Tattoo Studio | Best Tattoo Artists & Apprenticeships in Hull
+  </title>
+  <meta
+    name="description"
+    content="Hull Tattoo Studio is a top-rated tattoo parlour in Hull, offering professional tattoos, blackwork, realism, and tattoo apprenticeships. Find the best tattooists near you today!"
+  />
+  <meta
+    name="keywords"
+    content="Hull Tattoo Studio, Tattoo Apprenticeship Hull, Tattoo Shops Hull, Tattoo Studios Hull, Tattoo Parlour Hull, Tattoos Hull, Best Tattoo Artists in Hull, Tattooist Near Me, Custom Tattoos, Blackwork Tattoo, Realism Tattoo, Traditional Tattoos, Fine Line Tattoos"
+  />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-        {/* Open Graph Meta Tags */}
-        <meta
-          property="og:title"
-          content="Hull Tattoo Studio | Professional Tattoo Artists in Hull"
-        />
-        <meta
-          property="og:description"
-          content="Hull Tattoo Studio offers stunning tattoos in Hull. Specialising in realism, blackwork, and anime tattoos. Book your appointment today!"
-        />
-        <meta
-          property="og:image"
-          content="https://www.hulltattoostudio.com/images/og-image.webp"
-        />
-        <meta property="og:url" content="https://www.hulltattoostudio.com" />
-        <meta property="og:type" content="website" />
+  {/* Open Graph Meta Tags */}
+  <meta
+    property="og:title"
+    content="Hull Tattoo Studio | Best Tattoo Artists & Apprenticeships in Hull"
+  />
+  <meta
+    property="og:description"
+    content="Looking for tattoo shops near you? Hull Tattoo Studio specializes in realism, blackwork, fine line, and anime tattoos. We also offer tattoo apprenticeships in Hull!"
+  />
+  <meta
+    property="og:image"
+    content="https://www.hulltattoostudio.com/images/og-image.webp"
+  />
+  <meta property="og:url" content="https://www.hulltattoostudio.com" />
+  <meta property="og:type" content="website" />
 
-        {/* Twitter Card Meta Tags */}
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta
-          name="twitter:description"
-          content="Expert tattoo artists in Hull creating stunning realism, blackwork, and anime tattoos. Visit Hull Tattoo Studio for your next piece!"
-        />
-        <meta
-          name="twitter:image"
-          content="https://www.hulltattoostudio.com/images/og-image.webp"
-        />
+  {/* Twitter Card Meta Tags */}
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta
+    name="twitter:title"
+    content="Hull Tattoo Studio | Professional Tattooists in Hull"
+  />
+  <meta
+    name="twitter:description"
+    content="Hull Tattoo Studio offers high-quality tattoos, realism, and tattoo apprenticeships. Visit the best tattoo parlour in Hull today!"
+  />
+  <meta
+    name="twitter:image"
+    content="https://www.hulltattoostudio.com/images/og-image.webp"
+  />
 
-        {/* Canonical URL */}
-        <link rel="canonical" href="https://www.hulltattoostudio.com" />
+  {/* Canonical URL */}
+  <link rel="canonical" href="https://www.hulltattoostudio.com" />
 
-        {/* JSON-LD Structured Data */}
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify(structuredData),
-          }}
-        />
-      </Head>
+  {/* JSON-LD Structured Data */}
+  <script
+    type="application/ld+json"
+    dangerouslySetInnerHTML={{
+      __html: JSON.stringify(structuredData),
+    }}
+  />
+</Head>
+
 
       {/* Intro Section */}
       <MotionSection
@@ -148,17 +154,33 @@ const HomePage: React.FC<HomePageProps> = ({ artists, error }) => {
         marginTop={30}
       >
         <TextCard
-          title="WELCOME TO HULL TATTOO STUDIO"
-          description={`
-            <p>
-              At Hull Tattoo Studio, our knowledgeable artists strive to create exceptional tattoos that reflect your unique style. Whether you’re seeking a vibrant custom design or a subtle black and grey masterpiece, we pride ourselves on being the preferred choice for tattoos in Hull.
-            </p>
-          `}
-          stripes={[
-            { left: "10%", width: "10px", color: "#ff007f" },
-            { left: "30%", width: "15px", color: "#00d4ff" },
-          ]}
-        />
+  title="WELCOME TO HULL TATTOO STUDIO"
+  description={`
+    <p>
+      Welcome to <strong>Hull Tattoo Studio</strong>, the leading tattoo parlour in Hull where creativity meets precision. Our expert tattooists specialize in 
+      <strong>black and grey realism, bold blackwork, fine line tattoos, anime tattoos, and custom designs</strong>.
+    </p>
+    <p>
+      Whether you're looking for a small, delicate tattoo or a full-sleeve masterpiece, we bring your vision to life with precision and passion. Our tattoo artists are highly skilled in various styles, ensuring every piece is a work of art.
+    </p>
+    <p>
+      Searching for the <strong>best tattoo shops in Hull</strong> or a <strong>tattooist near you</strong>? Look no further. We provide a professional and comfortable experience for both first-time clients and seasoned tattoo collectors. Our friendly team will guide you from concept to completion.
+    </p>
+    <p>
+      Interested in learning the craft? We also offer <a href="/blog/Apprenticeship" style="color:#00d4ff;"><strong>tattoo apprenticeships in Hull</strong></a>, training the next generation of artists in a hands-on, supportive environment.
+    </p>
+    <p style="text-align:center; margin-top: 10px;">
+      <a href="/mike" style="display:inline-block; padding:10px 20px; background-color:#ff007f; color:white; text-decoration:none; border-radius:5px; font-weight:bold;">
+        Book Your Tattoo Consultation Now
+      </a>
+    </p>
+  `}
+  stripes={[
+    { left: "10%", width: "10px", color: "#ff007f" },
+    { left: "30%", width: "15px", color: "#00d4ff" },
+  ]}
+/>
+
       </MotionSection>
 
       {/* Second Intro Section */}
@@ -169,18 +191,44 @@ const HomePage: React.FC<HomePageProps> = ({ artists, error }) => {
         marginBottom={16}
       >
         <TextCard
-          title="What Hull Tattoo Studio Offers"
-          description={`
-            <p>
-              We offer a welcoming environment combined with expert skills and a passion for artistry, ensuring that every client feels confident in choosing Hull Tattoo Studio for their next tattoo. As a leading tattoo studio in Hull, we remain committed to delivering safe, innovative, and personalised services—leaving you with a tattoo you’ll be proud of for years to come.
-            </p>
-          `}
-          footer="OPEN TUES-FRI 9:30-15:00 | SAT 11:30-18:00"
-          stripes={[
-            { left: "10%", width: "10px", color: "#ff007f" },
-            { left: "30%", width: "15px", color: "#00d4ff" },
-          ]}
-        />
+  title="What Hull Tattoo Studio Offers"
+  description={`
+    <p>
+      At <strong>Hull Tattoo Studio</strong>, we provide more than just tattoos—we create meaningful, lasting artwork that reflects your style, personality, and vision. Our talented tattoo artists specialize in a variety of techniques, ensuring that every client receives a <strong>custom, high-quality tattoo</strong>.
+    </p>
+    <p>
+      Whether you're looking for a <strong>black and grey realism tattoo</strong>, bold <strong>blackwork</strong>, detailed <strong>fine line tattoos</strong>, or vibrant <strong>anime and traditional designs</strong>, our artists bring expertise and precision to every piece.
+    </p>
+    <h3 style="color:#ff007f; margin-top: 15px;">Our Services Include:</h3>
+    <ul>
+      <li>🎨 <strong>Custom Tattoo Designs</strong> – Work with our artists to create a one-of-a-kind tattoo tailored to your vision.</li>
+      <li>🖤 <strong>Black and Grey Tattoos</strong> – Perfect for realism, shading, and intricate details.</li>
+      <li>⚡ <strong>Blackwork Tattoos</strong> – High-contrast, bold designs with deep black ink.</li>
+      <li>✨ <strong>Fine Line Tattoos</strong> – Delicate, detailed tattoos with clean precision.</li>
+      <li>🖌 <strong>Anime & Pop Culture Tattoos</strong> – Bring your favorite characters and themes to life.</li>
+      <li>🌊 <strong>Japanese & Traditional Tattoos</strong> – Iconic styles with deep cultural roots.</li>
+      <li>🛠 <strong>Cover-Up Tattoos</strong> – Transform or refresh old tattoos with innovative designs.</li>
+      <li>📚 <a href="/apprenticeships" style="color:#00d4ff;"><strong>Tattoo Apprenticeships in Hull</strong></a> – Learn from experienced tattoo artists in a professional environment.</li>
+    </ul>
+    <p>
+      As a leading <strong>tattoo studio in Hull</strong>, we are committed to safety, innovation, and a personalised approach. We use only the highest quality inks, sterilised equipment, and follow strict hygiene protocols to ensure a safe and enjoyable tattooing experience.
+    </p>
+    <p>
+      If you're searching for <strong>the best tattoo shops in Hull</strong> or a trusted <strong>tattooist near you</strong>, look no further. Whether it's your first tattoo or your tenth, our team is dedicated to delivering a piece you'll cherish for years to come.
+    </p>
+    <p style="text-align:center; margin-top: 10px;">
+      <a href="/booking" style="display:inline-block; padding:10px 20px; background-color:#ff007f; color:white; text-decoration:none; border-radius:5px; font-weight:bold;">
+        Book Your Tattoo Consultation Now
+      </a>
+    </p>
+  `}
+  footer="OPEN TUES-FRI 9:30-15:00 | SAT 11:30-18:00"
+  stripes={[
+    { left: "10%", width: "10px", color: "#ff007f" },
+    { left: "30%", width: "15px", color: "#00d4ff" },
+  ]}
+/>
+
       </MotionSection>
 
       {/* Buttons Section */}
@@ -336,6 +384,8 @@ const HomePage: React.FC<HomePageProps> = ({ artists, error }) => {
             </Grid>
           </MotionSection>
         </Box>
+        <br/>
+        <SEOOptimizedContent/>
 
         {/* FIND US SECTION - Lazy-loaded */}
         <Box marginTop={16}>
