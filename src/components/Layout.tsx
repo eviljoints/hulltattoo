@@ -59,19 +59,21 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 
       {/* Header with Logo */}
       <header className="header">
-        <div className="logo-container">
-          <Link href="/" passHref>
-            <a aria-label="Go to home">
-              <Image
-                src="/images/logo.webp"
-                alt="Tattoo Studio Logo"
-                width={250}
-                height={150}
-                priority
-              />
-            </a>
-          </Link>
-        </div>
+  <div className="logo-container">
+    <Link href="/" passHref>
+      <a aria-label="Go to home">
+        <img
+          src="/images/logo.webp"
+          alt="Tattoo Studio Logo"
+          width={250}
+          height={150}
+          loading="eager"
+        />
+      </a>
+    </Link>
+  </div>
+
+
 
         {/* Social Media Icons */}
         <div className="footer-socials">
