@@ -27,6 +27,7 @@ import {
   Box,
 } from "@chakra-ui/react";
 import { ChevronDownIcon } from "@chakra-ui/icons";
+import NeonLogo from "./NeonLogo";
 
 interface LayoutProps {
   children: ReactNode;
@@ -62,16 +63,11 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   <div className="logo-container">
     <Link href="/" passHref>
       <a aria-label="Go to home">
-        <img
-          src="/images/logo.webp"
-          alt="Tattoo Studio Logo"
-          width={250}
-          height={150}
-          loading="eager"
-        />
+        <NeonLogo />
       </a>
     </Link>
   </div>
+
 
 
 

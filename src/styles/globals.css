@@ -11,6 +11,49 @@
   font-style: normal;
   font-display: swap;
 }
+@font-face {
+  font-family: 'VanillaWhale';
+  src: url('/fonts/VanillaWhale.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+.neon-text {
+  font-family: 'VanillaWhale', sans-serif;
+  font-size: 3rem;
+  color: white;
+  text-shadow: 
+    0 0 2px white, 
+    0 0 4px white, 
+    0 0 6px #ff007f, 
+    0 0 10px #ff007f, 
+    0 0 14px rgba(255, 0, 127, 0.8), 
+    0 0 18px rgba(255, 0, 127, 0.5);
+  animation: neonGlow 1.5s ease-in-out infinite alternate;
+}
+
+@keyframes neonGlow {
+  from {
+    text-shadow: 
+      0 0 2px white, 
+      0 0 4px white, 
+      0 0 6px #ff007f, 
+      0 0 10px #ff007f, 
+      0 0 14px rgba(255, 0, 127, 0.8), 
+      0 0 18px rgba(255, 0, 127, 0.5);
+  }
+  to {
+    text-shadow: 
+      0 0 3px white, 
+      0 0 6px white, 
+      0 0 8px #ff007f, 
+      0 0 12px #ff007f, 
+      0 0 16px rgba(255, 0, 127, 1), 
+      0 0 20px rgba(255, 0, 127, 0.9);
+  }
+}
+
+
 .responsive-video {
   position: relative;
   padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
