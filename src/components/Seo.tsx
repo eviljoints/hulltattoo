@@ -11,7 +11,10 @@ const SEOOptimizedContent = () => {
           name="description"
           content="Looking for the best tattoo studio in Hull? We offer expert tattooing, tattoo apprenticeships, and high-quality custom ink at our top-rated tattoo parlour."
         />
-        <meta name="keywords" content="Hull tattoo studio, tattoo shops Hull, tattoo apprenticeship Hull, tattoos near me, tattooist near me, tattoo parlour Hull" />
+        <meta
+          name="keywords"
+          content="Hull tattoo studio, tattoo shops Hull, tattoo apprenticeship Hull, tattoos near me, tattooist near me, tattoo parlour Hull"
+        />
         <meta name="robots" content="index, follow" />
       </Head>
       <Box
@@ -28,7 +31,7 @@ const SEOOptimizedContent = () => {
             Welcome to Hull Tattoo Studio
           </Heading>
           <Text fontSize={{ base: "md", md: "lg" }}>
-            Searching for the best <strong>tattoo shops in Hull</strong>? Our experienced tattooists bring your ideas to life with stunning custom ink. Whether you're a first-timer or a seasoned collector, we ensure every piece is a masterpiece.
+            Searching for the best <strong>tattoo shops in Hull</strong>? Our experienced tattooists bring your ideas to life with stunning custom ink. Whether you&apos;re a first-timer or a seasoned collector, we ensure every piece is a masterpiece.
           </Text>
           <Text fontSize={{ base: "md", md: "lg" }}>
             Interested in a <strong>tattoo apprenticeship in Hull</strong>? Join our professional team and start your journey into the world of tattoo artistry. We provide hands-on training in a real studio environment.
