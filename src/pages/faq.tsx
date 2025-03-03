@@ -27,7 +27,7 @@ const faqs = [
           </ListItem>
         </OrderedList>
         For more detailed information, please refer to our{" "}
-        <NextLink href="/blog/how-to-book-an-appointment-at-hull-tattoo-studio" passHref>
+        <NextLink href="/blog/Booking" passHref>
           <Link color="teal.500">blog post on booking appointments</Link>
         </NextLink>.
       </>
@@ -57,7 +57,7 @@ const faqs = [
           </ListItem>
         </OrderedList>
         Learn more in our detailed guide:{" "}
-        <NextLink href="/blog/interested-in-becoming-a-tattoo-apprentice" passHref>
+        <NextLink href="/blog/Apprenticeship" passHref>
           <Link color="teal.500">How to Become a Tattoo Apprentice</Link>
         </NextLink>.
       </>
@@ -70,7 +70,7 @@ const faqs = [
         Yes, we specialize in tattoo cover-ups. Our approach ensures that your new tattoo effectively conceals the old one while reflecting your desired design and style. Factors we consider include the darkness and distinctiveness of the original tattoo, its location, and the design of the new tattoo.
         <br />
         For more insights, check out our{" "}
-        <NextLink href="/blog/cover-up-tattoos-by-hull-tattoo-studio" passHref>
+        <NextLink href="/blog/coverup" passHref>
           <Link color="teal.500">blog post on tattoo cover-ups</Link>
         </NextLink>.
       </>
@@ -99,7 +99,7 @@ const faqs = [
         <NextLink href="/aftercare" passHref>
           <Link color="teal.500">Tattoo Aftercare page</Link>
         </NextLink> or read our{" "}
-        <NextLink href="/blog/tattoo-aftercare-healing" passHref>
+        <NextLink href="/blog/TattooAftercare" passHref>
           <Link color="teal.500">Tattoo Aftercare & Healing</Link>
         </NextLink> blog post.
       </>

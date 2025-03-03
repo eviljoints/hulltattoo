@@ -11,6 +11,7 @@ import TextCard from "../components/TextCard";
 import SEOOptimizedContent from "~/components/Seo";
 import HeroTextCard from "~/components/HeroTextCard";
 
+
 // Dynamically import non-critical components
 const ReviewsModal = dynamic(() => import("~/components/ReviewsModal"), {
   ssr: false,
@@ -161,6 +162,7 @@ const HomePage: React.FC<HomePageProps> = ({ artists, error }) => {
 />
 
       </MotionSection>
+      
 
       {/* Second Intro Section */}
       <MotionSection
@@ -187,7 +189,7 @@ const HomePage: React.FC<HomePageProps> = ({ artists, error }) => {
       <li>🖌 <strong>Anime & Pop Culture Tattoos</strong> – Bring your favorite characters and themes to life.</li>
       <li>🌊 <strong>Japanese & Traditional Tattoos</strong> – Iconic styles with deep cultural roots.</li>
       <li>🛠 <strong>Cover-Up Tattoos</strong> – Transform or refresh old tattoos with innovative designs.</li>
-      <li>📚 <a href="/apprenticeships" style="color:#00d4ff;"><strong>Tattoo Apprenticeships in Hull</strong></a> – Learn from experienced tattoo artists in a professional environment.</li>
+      <li>📚 <a href="blog/Apprenticeship" style="color:#00d4ff;"><strong>Tattoo Apprenticeships in Hull</strong></a> – Learn from experienced tattoo artists in a professional environment.</li>
     </ul>
     <p>
       As a leading <strong>tattoo studio in Hull</strong>, we are committed to safety, innovation, and a personalised approach. We use only the highest quality inks, sterilised equipment, and follow strict hygiene protocols to ensure a safe and enjoyable tattooing experience.
@@ -196,7 +198,7 @@ const HomePage: React.FC<HomePageProps> = ({ artists, error }) => {
       If you're searching for <strong>the best tattoo shops in Hull</strong> or a trusted <strong>tattooist near you</strong>, look no further. Whether it's your first tattoo or your tenth, our team is dedicated to delivering a piece you'll cherish for years to come.
     </p>
     <p style="text-align:center; margin-top: 10px;">
-      <a href="/booking" style="display:inline-block; padding:10px 20px; background-color:#ff007f; color:white; text-decoration:none; border-radius:5px; font-weight:bold;">
+      <a href="/mike" style="display:inline-block; padding:10px 20px; background-color:#ff007f; color:white; text-decoration:none; border-radius:5px; font-weight:bold;">
         Book Your Tattoo Consultation Now
       </a>
     </p>
