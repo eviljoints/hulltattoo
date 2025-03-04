@@ -1,23 +1,23 @@
 /* ./src/components/AcuityEmbed.module.css */
 
 .iframeContainer {
-    width: 100%;
-    height: 90%; /* Set height to 85% of the viewport height */
-    max-height: 1750px; /* Optional: Set a maximum height */
-    overflow: hidden; /* Hide overflow to prevent scrollbars */
-    position: relative;
+  width: 100%;
+  height: 90vh; /* 90% of viewport height for responsiveness */
+  max-height: 1750px; /* Optional max height to prevent excessive growth */
+  overflow: auto; /* Scrollbars appear only when content overflows */
+  position: relative;
+  background: rgba(0, 0, 0, 0.6); /* Matches page background for seamless integration */
+}
+
+/* Adjust height for smaller screens */
+@media (max-width: 768px) {
+  .iframeContainer {
+    height: 80vh; /* Reduced height for mobile devices */
   }
-  
-  .iframeContainer iframe {
-    width: 100%;
-    height: 100%;
-    border: none; /* Remove default border */
-    overflow: hidden; /* Hide overflow within the iframe */
-    scrollbar-width: none; /* Firefox */
-  }
-  
-  /* Hide scrollbar for WebKit browsers (Chrome, Safari) */
-  .iframeContainer iframe::-webkit-scrollbar {
-    display: none;
-  }
-  
+}
+
+.iframeContainer iframe {
+  width: 100%;
+  height: 100%;
+  border: none; /* Remove any borders for a clean look */
+}

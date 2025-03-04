@@ -10,7 +10,7 @@ interface AcuityEmbedProps {
 }
 
 const AcuityEmbed: React.FC<AcuityEmbedProps> = ({ link }) => {
-  // If no link is provided, fallback to a default link
+  // Fallback to a default link if none is provided
   const iframeSrc = link || "https://app.acuityscheduling.com/schedule.php?owner=34239595&ref=embedded_csp";
 
   return (
@@ -19,7 +19,6 @@ const AcuityEmbed: React.FC<AcuityEmbedProps> = ({ link }) => {
         src={iframeSrc}
         title="Schedule Appointment"
         frameBorder="0"
-        scrolling="no"
         allowTransparency
       ></iframe>
       <Script
