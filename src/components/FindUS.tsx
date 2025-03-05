@@ -1,4 +1,3 @@
-// src\components\FindUS.tsx
 import React from "react";
 import { Box, Text, VStack } from "@chakra-ui/react";
 
@@ -11,10 +10,12 @@ const FindUs: React.FC = () => {
       bg="rgba(0, 0, 0, 0.6)" // Semi-transparent background
       boxShadow="0 0 20px #9b5de5, 0 0 30px #f15bb5"
       color="white"
+      id="find-us" // SEO: Unique ID for linking
     >
       <VStack spacing={6} align="center" textAlign="center">
         {/* Section Title */}
         <Text
+          as="h2" // SEO: Semantic heading
           fontSize={{ base: "3xl", md: "4xl" }}
           fontWeight="bold"
           textShadow="0 0 10px #ff007f, 0 0 20px #00d4ff"
@@ -24,6 +25,7 @@ const FindUs: React.FC = () => {
 
         {/* Address */}
         <Text
+          as="address" // SEO: Semantic tag for address
           fontSize={{ base: "md", md: "lg" }}
           lineHeight="1.6"
           textShadow="0 0 5px #ff007f, 0 0 10px #00d4ff"
@@ -42,9 +44,10 @@ const FindUs: React.FC = () => {
           height="450px"
           border="0"
           borderRadius="md"
-          loading="lazy"
+          loading="lazy" // SEO: Lazy loading for performance
           boxShadow="0 0 10px #ff007f, 0 0 20px #00d4ff"
           allowFullScreen
+          title="Hull Tattoo Studio Location" // SEO: Descriptive title
         />
       </VStack>
     </Box>
