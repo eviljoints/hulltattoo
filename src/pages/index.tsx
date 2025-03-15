@@ -11,7 +11,6 @@ import TextCard from "../components/TextCard";
 import SEOOptimizedContent from "~/components/Seo";
 import HeroTextCard from "~/components/HeroTextCard";
 
-
 // Dynamically import non-critical components
 const ReviewsModal = dynamic(() => import("~/components/ReviewsModal"), {
   ssr: false,
@@ -49,13 +48,10 @@ interface HomePageProps {
 }
 
 const HomePage: React.FC<HomePageProps> = ({ artists, error }) => {
-  // Handle error or loading states
   if (error) {
     return (
       <Center minH="100vh">
-        <Box color="red.500" fontSize="xl">
-          {error}
-        </Box>
+        <Box color="red.500" fontSize="xl">{error}</Box>
       </Center>
     );
   }
@@ -67,169 +63,122 @@ const HomePage: React.FC<HomePageProps> = ({ artists, error }) => {
     );
   }
 
-  // Structured Data for SEO (JSON-LD)
-  const structuredData = {
-    "@context": "http://schema.org",
-    "@type": "TattooStudio",
-    name: "Hull Tattoo Studio",
-    description:
-      "Professional tattoo studio in Hull. Hull Tattoo Studio offers tattoo artists specialising in black and grey tattoos, colour tattoos, and custom tattoo designs.",
-    image: "https://www.hulltattoostudio.com/images/og-image.webp",
-    url: "https://www.hulltattoostudio.com",
-    address: {
-      "@type": "PostalAddress",
-      streetAddress: "652 Anlaby Road",
-      addressLocality: "Hull",
-      postalCode: "HU3 6UU",
-      addressCountry: "UK",
+  // Enhanced JSON‑LD Structured Data including full service offerings
+  const structuredData = [
+    {
+      "@context": "http://schema.org",
+      "@type": "TattooStudio",
+      "name": "Hull Tattoo Studio",
+      "description":
+        "Professional tattoo studio in Hull. Hull Tattoo Studio offers tattoo artists specializing in black and grey tattoos, color tattoos, custom tattoo designs, tattoo apprenticeships, tattoo coverups, and more.",
+      "image": "https://www.hulltattoostudio.com/images/og-image.webp",
+      "url": "https://www.hulltattoostudio.com",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "652 Anlaby Road",
+        "addressLocality": "Hull",
+        "postalCode": "HU3 6UU",
+        "addressCountry": "UK"
+      },
+      "openingHours": "Tu-F 09:30-15:00, Sa 11:30-18:00",
+      "telephone": "07940080790"
     },
-    openingHours: "Tu-F 09:30-15:00, Sa 11:30-18:00",
-    telephone: "07940080790",
-  };
+    {
+      "@context": "http://schema.org",
+      "@type": "Service",
+      "serviceType": "Tattoo Coverup",
+      "provider": {
+        "@type": "Organization",
+        "name": "Hull Tattoo Studio",
+        "url": "https://www.hulltattoostudio.com"
+      },
+      "description": "Expert tattoo coverup services that transform old or unwanted tattoos into stunning new designs at Hull Tattoo Studio."
+    },
+    {
+      "@context": "http://schema.org",
+      "@type": "Service",
+      "serviceType": "Tattoo Apprenticeship",
+      "provider": {
+        "@type": "Organization",
+        "name": "Hull Tattoo Studio",
+        "url": "https://www.hulltattoostudio.com"
+      },
+      "description": "Comprehensive tattoo apprenticeship programs in Hull for aspiring tattoo artists, offered by Hull Tattoo Studio."
+    }
+  ];
 
   return (
     <>
       <Head>
-  <title>
-    Hull Tattoo Studio | Best Tattoo Artists & Apprenticeships in Hull
-  </title>
-  <meta
-    name="description"
-    content="Hull Tattoo Studio is a top-rated tattoo parlour in Hull, offering professional tattoos, blackwork, realism, and tattoo apprenticeships. Find the best tattooists near you today!"
-  />
-  <meta
-    name="keywords"
-    content="Hull Tattoo Studio, Tattoo Apprenticeship Hull, Tattoo Shops Hull, Tattoo Studios Hull, Tattoo Parlour Hull, Tattoos Hull, Best Tattoo Artists in Hull, Tattooist Near Me, Custom Tattoos, Blackwork Tattoo, Realism Tattoo, Traditional Tattoos, Fine Line Tattoos"
-  />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>
+          Hull Tattoo Studio | Tattoo Apprenticeships, Tattoo Coverups &amp; Tattoo Shops Near Me
+        </title>
+        <meta name="description" content="Hull Tattoo Studio is a premier tattoo parlour in Hull specializing in tattoo apprenticeships, tattoo coverups, and professional tattoo services. Discover tattoo shops near you and get inked by the best." />
+        <meta name="keywords" content="Hull Tattoo Studio, Tattoo Apprenticeship Hull, Tattoo Shops Near Me, Tattoo Shops Hull, Tattoo Studios Hull, Tattoo Parlour Hull, Tattoos Hull, Tattoo Coverups, Best Tattoo Artists in Hull, Custom Tattoos, Blackwork Tattoo, Realism Tattoo, Traditional Tattoos, Fine Line Tattoos" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta property="og:title" content="Hull Tattoo Studio | Tattoo Apprenthips, Tattoo Coverups &amp; Tattoo Shops Near Me" />
+        <meta property="og:description" content="Experience professional tattoo services at Hull Tattoo Studio. Specializing in tattoo apprenticeships, tattoo coverups, and top-rated tattoo shops near you." />
+        <meta property="og:image" content="https://www.hulltattoostudio.com/images/og-image.webp" />
+        <meta property="og:url" content="https://www.hulltattoostudio.com" />
+        <meta property="og:type" content="website" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="Hull Tattoo Studio | Tattoo Apprenthips, Tattoo Coverups &amp; Tattoo Shops Near Me" />
+        <meta name="twitter:description" content="Discover Hull Tattoo Studio, your destination for tattoo apprenticeships, tattoo coverups, and the best tattoo shops near you." />
+        <meta name="twitter:image" content="https://www.hulltattoostudio.com/images/og-image.webp" />
+        <link rel="canonical" href="https://www.hulltattoostudio.com" />
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }} />
+      </Head>
 
-  {/* Open Graph Meta Tags */}
-  <meta
-    property="og:title"
-    content="Hull Tattoo Studio | Best Tattoo Artists & Apprenticeships in Hull"
-  />
-  <meta
-    property="og:description"
-    content="Looking for tattoo shops near you? Hull Tattoo Studio specializes in realism, blackwork, fine line, and anime tattoos. We also offer tattoo apprenticeships in Hull!"
-  />
-  <meta
-    property="og:image"
-    content="https://www.hulltattoostudio.com/images/og-image.webp"
-  />
-  <meta property="og:url" content="https://www.hulltattoostudio.com" />
-  <meta property="og:type" content="website" />
-
-  {/* Twitter Card Meta Tags */}
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta
-    name="twitter:title"
-    content="Hull Tattoo Studio | Professional Tattooists in Hull"
-  />
-  <meta
-    name="twitter:description"
-    content="Hull Tattoo Studio offers high-quality tattoos, realism, and tattoo apprenticeships. Visit the best tattoo parlour in Hull today!"
-  />
-  <meta
-    name="twitter:image"
-    content="https://www.hulltattoostudio.com/images/og-image.webp"
-  />
-
-  {/* Canonical URL */}
-  <link rel="canonical" href="https://www.hulltattoostudio.com" />
-
-  {/* JSON-LD Structured Data */}
-  <script
-    type="application/ld+json"
-    dangerouslySetInnerHTML={{
-      __html: JSON.stringify(structuredData),
-    }}
-  />
-</Head>
-
-
-      {/* Intro Section */}
-      <MotionSection
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        viewport={{ once: true }}
-        marginBottom={30}
-        marginTop={30}
-      >
-        <HeroTextCard
-  title="WELCOME TO HULL TATTOO STUDIO"
-
-  
-/>
-
+      <MotionSection initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} marginBottom={30} marginTop={30}>
+        <HeroTextCard title="WELCOME TO HULL TATTOO STUDIO" />
       </MotionSection>
-      
 
-      {/* Second Intro Section */}
-      <MotionSection
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        viewport={{ once: true }}
-        marginBottom={16}
-      >
+      <MotionSection initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} marginBottom={16}>
         <TextCard
-  title="What Hull Tattoo Studio Offers"
-  description={`
-    <p>
-      At <strong>Hull Tattoo Studio</strong>, we provide more than just tattoos—we create meaningful, lasting artwork that reflects your style, personality, and vision. Our talented tattoo artists specialize in a variety of techniques, ensuring that every client receives a <strong>custom, high-quality tattoo</strong>.
-    </p>
-    <p>
-      Whether you're looking for a <strong>black and grey realism tattoo</strong>, bold <strong>blackwork</strong>, detailed <strong>fine line tattoos</strong>, or vibrant <strong>anime and traditional designs</strong>, our artists bring expertise and precision to every piece.
-    </p>
-    <h3 style="color:#ff007f; margin-top: 15px;">Our Services Include:</h3>
-    <ul>
-      <li>🎨 <strong>Custom Tattoo Designs</strong> – Work with our artists to create a one-of-a-kind tattoo tailored to your vision.</li>
-      <li>🖤 <strong>Black and Grey Tattoos</strong> – Perfect for realism, shading, and intricate details.</li>
-      <li>⚡ <strong>Blackwork Tattoos</strong> – High-contrast, bold designs with deep black ink.</li>
-      <li>✨ <strong>Fine Line Tattoos</strong> – Delicate, detailed tattoos with clean precision.</li>
-      <li>🖌 <strong>Anime & Pop Culture Tattoos</strong> – Bring your favorite characters and themes to life.</li>
-      <li>🌊 <strong>Japanese & Traditional Tattoos</strong> – Iconic styles with deep cultural roots.</li>
-      <li>🛠 <strong>Cover-Up Tattoos</strong> – Transform or refresh old tattoos with innovative designs.</li>
-      <li>📚 <a href="blog/Apprenticeship" style="color:#00d4ff;"><strong>Tattoo Apprenticeships in Hull</strong></a> – Learn from experienced tattoo artists in a professional environment.</li>
-    </ul>
-    <p>
-      As a leading <strong>tattoo studio in Hull</strong>, we are committed to safety, innovation, and a personalised approach. We use only the highest quality inks, sterilised equipment, and follow strict hygiene protocols to ensure a safe and enjoyable tattooing experience.
-    </p>
-    <p>
-      If you're searching for <strong>the best tattoo shops in Hull</strong> or a trusted <strong>tattooist near you</strong>, look no further. Whether it's your first tattoo or your tenth, our team is dedicated to delivering a piece you'll cherish for years to come.
-    </p>
-    <p style="text-align:center; margin-top: 10px;">
-      <a href="/mike" style="display:inline-block; padding:10px 20px; background-color:#ff007f; color:white; text-decoration:none; border-radius:5px; font-weight:bold;">
-        Book Your Tattoo Consultation Now
-      </a>
-    </p>
-  `}
-  footer="OPEN TUES-FRI 9:30-15:00 | SAT 11:30-18:00"
-  stripes={[
-    { left: "10%", width: "10px", color: "#ff007f" },
-    { left: "30%", width: "15px", color: "#00d4ff" },
-  ]}
-/>
-
+          title="What Hull Tattoo Studio Offers"
+          description={`
+            <p>
+              At <strong>Hull Tattoo Studio</strong>, we provide more than just tattoos—we create meaningful, lasting artwork that reflects your style, personality, and vision. Our talented tattoo artists specialize in a variety of techniques, ensuring that every client receives a <strong>custom, high-quality tattoo</strong>.
+            </p>
+            <p>
+              Whether you're looking for a <strong>black and grey realism tattoo</strong>, bold <strong>blackwork</strong>, detailed <strong>fine line tattoos</strong>, or vibrant <strong>anime and traditional designs</strong>, our artists bring expertise and precision to every piece.
+            </p>
+            <h3 style="color:#ff007f; margin-top: 15px;">Our Services Include:</h3>
+            <ul>
+              <li>🎨 <strong>Custom Tattoo Designs</strong> – Work with our artists to create a one-of-a-kind tattoo tailored to your vision.</li>
+              <li>🖤 <strong>Black and Grey Tattoos</strong> – Perfect for realism, shading, and intricate details.</li>
+              <li>⚡ <strong>Blackwork Tattoos</strong> – High-contrast, bold designs with deep black ink.</li>
+              <li>✨ <strong>Fine Line Tattoos</strong> – Delicate, detailed tattoos with clean precision.</li>
+              <li>🖌 <strong>Anime & Pop Culture Tattoos</strong> – Bring your favorite characters and themes to life.</li>
+              <li>🌊 <strong>Japanese & Traditional Tattoos</strong> – Iconic styles with deep cultural roots.</li>
+              <li>🛠 <strong>Cover-Up Tattoos</strong> – Transform or refresh old tattoos with innovative designs.</li>
+              <li>📚 <a href="blog/Apprenticeship" style="color:#00d4ff;"><strong>Tattoo Apprenticeships in Hull</strong></a> – Learn from experienced tattoo artists in a professional environment.</li>
+            </ul>
+            <p>
+              As a leading <strong>tattoo studio in Hull</strong>, we are committed to safety, innovation, and a personalised approach. We use only the highest quality inks, sterilised equipment, and follow strict hygiene protocols to ensure a safe and enjoyable tattooing experience.
+            </p>
+            <p>
+              If you're searching for <strong>the best tattoo shops in Hull</strong> or a trusted <strong>tattooist near you</strong>, look no further. Whether it's your first tattoo or your tenth, our team is dedicated to delivering a piece you'll cherish for years to come.
+            </p>
+            <p style="text-align:center; margin-top: 10px;">
+              <a href="/mike" style="display:inline-block; padding:10px 20px; background-color:#ff007f; color:white; text-decoration:none; border-radius:5px; font-weight:bold;">
+                Book Your Tattoo Consultation Now
+              </a>
+            </p>
+          `}
+          footer="OPEN TUES-FRI 9:30-15:00 | SAT 11:30-18:00"
+          stripes={[ { left: "10%", width: "10px", color: "#ff007f" }, { left: "30%", width: "15px", color: "#00d4ff" } ]}
+        />
       </MotionSection>
 
-      {/* Buttons Section */}
       <Center marginBottom={10}>
-        <Flex
-          gap={4}
-          flexWrap="wrap"
-          justifyContent="center"
-          width="100%"
-          maxWidth="500px"
-        >
+        <Flex gap={4} flexWrap="wrap" justifyContent="center" width="100%" maxWidth="500px">
           <ReviewsModal
             buttonProps={{
               width: "200px",
               colorScheme: "blue",
               boxShadow: "0 0 10px #00d4ff",
-              _hover: {
-                boxShadow: "0 0 20px #00d4ff, 0 0 40px #ff007f",
-                transform: "scale(1.05)",
-              },
+              _hover: { boxShadow: "0 0 20px #00d4ff, 0 0 40px #ff007f", transform: "scale(1.05)" },
               "aria-label": "Read Reviews",
             }}
           />
@@ -238,41 +187,16 @@ const HomePage: React.FC<HomePageProps> = ({ artists, error }) => {
               width: "200px",
               colorScheme: "pink",
               boxShadow: "0 0 10px #ff007f",
-              _hover: {
-                boxShadow: "0 0 20px #ff007f, 0 0 40px #00d4ff",
-                transform: "scale(1.05)",
-              },
+              _hover: { boxShadow: "0 0 20px #ff007f, 0 0 40px #00d4ff", transform: "scale(1.05)" },
               "aria-label": "Contact Us",
             }}
           />
         </Flex>
       </Center>
 
-      <Box
-        as="main"
-        position="relative"
-        color="pink"
-        width="100%"
-        padding={8}
-        paddingX={{ base: 4, md: 8 }}
-        minHeight="100vh"
-        bg="transparent"
-      >
-        <Box
-          bgGradient="linear(rgba(54, 0, 92, 0.6), rgba(128, 0, 128, 0.6), rgba(0, 0, 0, 0.6))"
-          borderRadius="md"
-          padding={8}
-          boxShadow="0 0 20px #9b5de5, 0 0 30px #f15bb5"
-        >
-          {/* Artists Section */}
-          <MotionSection
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            transition={{ duration: 0.3 }}
-            viewport={{ once: true }}
-            marginBottom={16}
-            marginTop={16}
-          >
+      <Box as="main" position="relative" color="pink" width="100%" padding={8} paddingX={{ base: 4, md: 8 }} minHeight="100vh" bg="transparent">
+        <Box bgGradient="linear(rgba(54, 0, 92, 0.6), rgba(128, 0, 128, 0.6), rgba(0, 0, 0, 0.6))" borderRadius="md" padding={8} boxShadow="0 0 20px #9b5de5, 0 0 30px #f15bb5">
+          <MotionSection initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} transition={{ duration: 0.3 }} viewport={{ once: true }} marginBottom={16} marginTop={16}>
             <TextCard
               title="ARTISTS"
               description={`
@@ -297,10 +221,7 @@ const HomePage: React.FC<HomePageProps> = ({ artists, error }) => {
                   <a href="/harley" style="color:#00d4ff;">Harley’s Page</a> as she refines her skills.
                 </p>
               `}
-              stripes={[
-                { left: "10%", width: "10px", color: "#ff007f" },
-                { left: "30%", width: "15px", color: "#00d4ff" },
-              ]}
+              stripes={[ { left: "10%", width: "10px", color: "#ff007f" }, { left: "30%", width: "15px", color: "#00d4ff" } ]}
             />
 
             <Box marginTop={10}>
@@ -313,10 +234,7 @@ const HomePage: React.FC<HomePageProps> = ({ artists, error }) => {
                     <a href="/blog/Apprenticeship" style="color:#00d4ff;">Apprenticeship Post</a>.
                   </p>
                 `}
-                stripes={[
-                  { left: "10%", width: "10px", color: "#ff007f" },
-                  { left: "30%", width: "15px", color: "#00d4ff" },
-                ]}
+                stripes={[ { left: "10%", width: "10px", color: "#ff007f" }, { left: "30%", width: "15px", color: "#00d4ff" } ]}
               />
             </Box>
 
@@ -329,23 +247,11 @@ const HomePage: React.FC<HomePageProps> = ({ artists, error }) => {
                     <a href="/faq" style="color:#00d4ff;">FAQ page</a> for detailed answers.
                   </p>
                 `}
-                stripes={[
-                  { left: "10%", width: "10px", color: "#ff007f" },
-                  { left: "30%", width: "15px", color: "#00d4ff" },
-                ]}
+                stripes={[ { left: "10%", width: "10px", color: "#ff007f" }, { left: "30%", width: "15px", color: "#00d4ff" } ]}
               />
             </Box>
 
-            {/* Artist Cards */}
-            <Grid
-              templateColumns={{
-                base: "1fr",
-                sm: "repeat(2, 1fr)",
-                md: "repeat(auto-fit, minmax(250px, 1fr))",
-              }}
-              gap={10}
-              marginTop={8}
-            >
+            <Grid templateColumns={{ base: "1fr", sm: "repeat(2, 1fr)", md: "repeat(auto-fit, minmax(250px, 1fr))" }} gap={10} marginTop={8}>
               {artists.map((artist, index) => (
                 <ArtistCard
                   key={artist.slug || index}
@@ -368,7 +274,6 @@ const HomePage: React.FC<HomePageProps> = ({ artists, error }) => {
         <br/>
         <SEOOptimizedContent/>
 
-        {/* FIND US SECTION - Lazy-loaded */}
         <Box marginTop={16}>
           <FindUsLazy />
         </Box>
@@ -377,25 +282,17 @@ const HomePage: React.FC<HomePageProps> = ({ artists, error }) => {
   );
 };
 
-// ISR: Fetch data at build time and revalidate every hour
 export const getStaticProps = async () => {
   try {
-    const response = await axios.get(
-      "https://www.hulltattoostudio.com/api/artists"
-    );
+    const response = await axios.get("https://www.hulltattoostudio.com/api/artists");
     return {
-      props: {
-        artists: response.data.artists,
-      },
+      props: { artists: response.data.artists },
       revalidate: 3600,
     };
   } catch (err) {
     console.error(err);
     return {
-      props: {
-        artists: null,
-        error: "Failed to load artist data.",
-      },
+      props: { artists: null, error: "Failed to load artist data." },
       revalidate: 3600,
     };
   }

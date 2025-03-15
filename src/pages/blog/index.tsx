@@ -97,26 +97,39 @@ const BlogIndex: React.FC<BlogIndexProps> = ({ posts }) => {
     }
   };
 
-  const seoTitle = "Blog | Hull Tattoo Studio";
+  // Updated SEO variables targeting additional search terms
+  const seoTitle =
+    "Hull Tattoo Studio Tattoo Blog | Tattoo Apprentice & Tattoo Information";
   const seoDescription =
-    "Discover the latest updates, insights, and tattoo advice from Hull Tattoo Studio. Explore our blog to learn about our artists, booking tips, aftercare, and more.";
+    "Discover the latest tattoo trends, expert advice, tattoo apprenticeship insights, and comprehensive tattoo information at Hull Tattoo Studio Tattoo Blog. Stay updated with artist stories, booking tips, and aftercare advice.";
   const seoImage = "/images/og-image.webp";
   const siteUrl = "https://www.hulltattoostudio.com/blog";
+
+  // JSON‑LD Structured Data for the Blog page
+  const blogStructuredData = {
+    "@context": "http://schema.org",
+    "@type": "Blog",
+    "name": "Hull Tattoo Studio Tattoo Blog",
+    "url": siteUrl,
+    "description": seoDescription,
+  };
 
   return (
     <>
       <Head>
         <title>{seoTitle}</title>
         <meta name="description" content={seoDescription} />
-        {/* Additional meta tags */}
         <meta
           name="keywords"
-          content="Tattoo Blog, Hull Tattoo Studio Blog, Tattoo Tips, Aftercare Advice, Artist Stories, Booking Tips, Tattoo Insights"
+          content="tattoo blog, tattoo apprentice, Hull Tattoo Studio, tattoo information, tattoo advice, tattoo trends, tattoo tips, tattoo news, tattoo artist insights, tattoo aftercare, tattoo booking"
         />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+        {/* Open Graph Meta Tags */}
         <meta property="og:title" content={seoTitle} />
         <meta
           property="og:description"
-          content="Discover the latest updates, insights, and tattoo advice from Hull Tattoo Studio. Stay informed and inspired."
+          content="Discover the latest tattoo trends, expert advice, and in-depth tattoo apprenticeship insights at Hull Tattoo Studio Tattoo Blog. Stay informed and inspired."
         />
         <meta property="og:image" content={seoImage} />
         <meta property="og:image:alt" content="Hull Tattoo Studio Blog Banner" />
@@ -124,15 +137,26 @@ const BlogIndex: React.FC<BlogIndexProps> = ({ posts }) => {
         <meta property="og:type" content="website" />
         <meta property="og:site_name" content="Hull Tattoo Studio" />
         <meta property="og:locale" content="en_GB" />
+
+        {/* Twitter Card Meta Tags */}
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content={seoTitle} />
         <meta
           name="twitter:description"
-          content="Discover tattoo tips, artist insights, and the latest updates from Hull Tattoo Studio. Explore our blog today!"
+          content="Explore tattoo tips, artist insights, and the latest tattoo trends on the Hull Tattoo Studio Tattoo Blog."
         />
         <meta name="twitter:image" content={seoImage} />
         <meta name="twitter:image:alt" content="Hull Tattoo Studio Blog Banner" />
+
         <link rel="canonical" href={siteUrl} />
+
+        {/* JSON‑LD Structured Data */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(blogStructuredData),
+          }}
+        />
       </Head>
 
       <Box
@@ -150,11 +174,13 @@ const BlogIndex: React.FC<BlogIndexProps> = ({ posts }) => {
             textShadow="0 0 10px #ff007f, 0 0 20px #00d4ff"
             textAlign="center"
           >
-            Hull Tattoo Studio Blog
+            Hull Tattoo Studio Tattoo Blog
           </Heading>
 
           <Text color="gray.300" mb={8} fontSize="lg" textAlign="center">
-            Welcome to Hull Tattoo Studio&rsquo;s blog! Covering tattoo topics and answering your questions.
+            Welcome to Hull Tattoo Studio’s blog – your ultimate resource for tattoo
+            tips, artist insights, tattoo apprenticeship advice, and the latest tattoo
+            trends.
           </Text>
 
           <Box mb={6} textAlign="center">
@@ -192,7 +218,6 @@ const BlogIndex: React.FC<BlogIndexProps> = ({ posts }) => {
                   transition="transform 0.2s"
                   _hover={{ transform: "scale(1.02)" }}
                   sx={{
-                    // Ensure list items inside this box have a left margin
                     ul: { ml: 6 },
                     ol: { ml: 6 },
                   }}

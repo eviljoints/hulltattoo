@@ -37,6 +37,20 @@ const gallery = {
     ],
   },
 };
+const structuredData = {
+  "@context": "http://schema.org",
+  "@type": "Person",
+  "name": "Harley",
+  "jobTitle": "Apprentice Tattoo Artist",
+  "worksFor": {
+    "@type": "Organization",
+    "name": "Hull Tattoo Studio",
+    "url": "https://www.hulltattoostudio.com"
+  },
+  "image": "https://www.hulltattoostudio.com/images/harley.webp",
+  "url": "https://www.hulltattoostudio.com/harley",
+  "description": "Harley is an apprentice tattoo artist at Hull Tattoo Studio specializing in dotwork and pointillism. She is dedicated to learning and perfecting her craft while offering affordable tattoo services."
+};
 
 const HarleyPage: React.FC = () => {
   const [isLargerThan768] = useMediaQuery("(min-width: 768px)");

@@ -105,26 +105,66 @@ const MikePage: React.FC = () => {
   // Ref for Acuity Scheduling section
   const acuityRef = useRef<HTMLDivElement>(null);
 
-  // JSON‑LD structured data
-  const structuredData = {
-    "@context": "http://schema.org",
-    "@type": "Person",
-    name: "Mike (Eggtattooer)",
-    jobTitle: "Tattoo Artist",
-    worksFor: {
-      "@type": "Organization",
-      name: "Hull Tattoo Studio",
-      url: "https://www.hulltattoostudio.com",
+  // Enhanced JSON‑LD Structured Data combining multiple schema types
+  const structuredData = [
+    {
+      "@context": "http://schema.org",
+      "@type": "Person",
+      "name": "Mike (Eggtattooer)",
+      "jobTitle": "Tattoo Artist",
+      "worksFor": {
+        "@type": "Organization",
+        "name": "Hull Tattoo Studio",
+        "url": "https://www.hulltattoostudio.com"
+      },
+      "image": "https://www.hulltattoostudio.com/images/mike.webp",
+      "url": "https://www.hulltattoostudio.com/artists/mike",
+      "description": "Mike is a friendly, down-to-earth tattoo artist at Hull Tattoo Studio with over 10 years of experience. He specializes in realism, bespoke realism, neotrad, and cover-up tattoos.",
+      "sameAs": [
+        "https://facebook.com/Hulltattoostudio",
+        "https://instagram.com/egg_tattooer"
+      ]
     },
-    image: "https://www.hulltattoostudio.com/images/mike.webp",
-    url: "https://www.hulltattoostudio.com/artists/mike",
-    description:
-      "Mike is a friendly, down-to-earth tattoo artist at Hull Tattoo Studio with over 10 years of experience. He specializes in realism, bespoke realism, neotrad, and cover-up tattoos.",
-    sameAs: [
-      "https://facebook.com/Hulltattoostudio",
-      "https://instagram.com/egg_tattooer",
-    ],
-  };
+    {
+      "@context": "http://schema.org",
+      "@type": "TattooStudio",
+      "name": "Hull Tattoo Studio",
+      "description": "Hull Tattoo Studio offers professional tattoo services including tattoo coverups and tattoo apprenticeships in Hull. Visit us for custom tattoos and expert advice.",
+      "image": "https://www.hulltattoostudio.com/images/og-image.webp",
+      "url": "https://www.hulltattoostudio.com",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "652 Anlaby Road",
+        "addressLocality": "Hull",
+        "postalCode": "HU3 6UU",
+        "addressCountry": "UK"
+      },
+      "telephone": "07940080790",
+      "openingHours": "Tu-F 09:30-15:00, Sa 11:30-18:00"
+    },
+    {
+      "@context": "http://schema.org",
+      "@type": "Service",
+      "serviceType": "Tattoo Coverup",
+      "provider": {
+        "@type": "Organization",
+        "name": "Hull Tattoo Studio",
+        "url": "https://www.hulltattoostudio.com"
+      },
+      "description": "Expert tattoo coverup services that transform old or unwanted tattoos into stunning new designs at Hull Tattoo Studio."
+    },
+    {
+      "@context": "http://schema.org",
+      "@type": "Service",
+      "serviceType": "Tattoo Apprenticeship",
+      "provider": {
+        "@type": "Organization",
+        "name": "Hull Tattoo Studio",
+        "url": "https://www.hulltattoostudio.com"
+      },
+      "description": "Comprehensive tattoo apprenticeship programs in Hull for aspiring tattoo artists, offered by Hull Tattoo Studio."
+    }
+  ];
 
   // IntersectionObserver to show disclaimer when Acuity section comes into view
   useEffect(() => {
@@ -153,26 +193,26 @@ const MikePage: React.FC = () => {
       {/* Head Metadata */}
       <Head>
         <title>
-          Mike (Eggtattooer) - Professional Tattoo Artist in Hull | Hull Tattoo Studio
+          Mike (Eggtattooer) - Professional Tattoo Artist in Hull | Hull Tattoo Studio, Tattoo Apprenticeship Hull, Tattoo Coverups &amp; Tattoo Shops Near Me
         </title>
         <meta
           name="description"
-          content="Meet Mike (Eggtattooer), a friendly and approachable tattoo artist at Hull Tattoo Studio with over 10 years of experience. Specializing in realism, bespoke realism, neotrad, and cover-up tattoos, Mike creates one-of-a-kind artworks for every client."
+          content="Meet Mike (Eggtattooer), a professional tattoo artist at Hull Tattoo Studio with over 10 years of experience. Specializing in realism, bespoke realism, neotrad, and tattoo coverups, Mike also offers insights on tattoo apprenticeships in Hull and is part of one of the best tattoo shops near you."
         />
         <meta
           name="keywords"
-          content="Mike, Eggtattooer, Tattoo Artist, Hull Tattoo Studio, Realism Tattoos, Bespoke Realism, Neotrad Tattoos, Cover-up Tattoos, Professional Tattoo Artist, Hull Tattoos"
+          content="Mike, Eggtattooer, Tattoo Artist, Hull Tattoo Studio, Realism Tattoos, Bespoke Realism, Neotrad Tattoos, Cover-up Tattoos, Tattoo Apprenticeship Hull, Tattoo Shops Near Me, Tattoo Coverups, Professional Tattoo Artist, Hull Tattoos"
         />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
 
         {/* Open Graph Meta */}
         <meta
           property="og:title"
-          content="Mike (Eggtattooer) - Professional Tattoo Artist in Hull | Hull Tattoo Studio"
+          content="Mike (Eggtattooer) - Professional Tattoo Artist in Hull | Hull Tattoo Studio, Tattoo Apprenticeship Hull, Tattoo Coverups &amp; Tattoo Shops Near Me"
         />
         <meta
           property="og:description"
-          content="Meet Mike, a friendly and talented tattoo artist at Hull Tattoo Studio with 10+ years of experience in realism, bespoke realism, neotrad, and cover-up tattoos."
+          content="Meet Mike (Eggtattooer), a leading tattoo artist at Hull Tattoo Studio. From stunning realism and bespoke designs to expert tattoo coverups and insights on tattoo apprenticeships in Hull, discover one of the best tattoo shops near you."
         />
         <meta property="og:image" content="/images/mike.webp" />
         <meta property="og:url" content="https://www.hulltattoostudio.com/mike" />

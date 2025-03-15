@@ -130,7 +130,7 @@ const faqs = [
           <ListItem>Dress comfortably to provide easy access to the tattoo area.</ListItem>
         </OrderedList>
         For more detailed preparation advice, refer to our{" "}
-        <NextLink href="/blog/how-to-book-an-appointment-at-hull-tattoo-studio" passHref>
+        <NextLink href="/blog/Booking" passHref>
           <Link color="teal.500">booking appointments blog post</Link>
         </NextLink>.
       </>
@@ -159,7 +159,7 @@ const faqs = [
           </ListItem>
         </OrderedList>
         For an in-depth guide, read our{" "}
-        <NextLink href="/blog/interested-in-becoming-a-tattoo-apprentice" passHref>
+        <NextLink href="/blog/Apprenticeship" passHref>
           <Link color="teal.500">How to Become a Tattoo Apprentice</Link>
         </NextLink> blog post.
       </>
@@ -169,7 +169,7 @@ const faqs = [
     question: "Who is Mike at Hull Tattoo Studio?",
     answer: (
       <>
-        Mike is one of our lead artists at Hull Tattoo Studio, renowned for his expertise in [specific styles, e.g., black and grey realism, neo-traditional, etc.]. With years of experience and a passion for tattoo artistry, Mike plays a pivotal role in mentoring apprentices and ensuring each tattoo meets our high standards of quality.
+        Mike is one of our lead artists at Hull Tattoo Studio, renowned for his expertise in various styles such as black and grey realism and neo-traditional tattoos. With years of experience and a passion for tattoo artistry, Mike also mentors apprentices and ensures each tattoo meets our high quality standards.
         <br />
         Learn more about Mike on our{" "}
         <NextLink href="/mike" passHref>
@@ -186,171 +186,97 @@ const faqs = [
         <NextLink href="/aftercare" passHref>
           <Link color="teal.500">Tattoo Aftercare page</Link>
         </NextLink>. Additionally, our{" "}
-        <NextLink href="/blog/tattoo-aftercare-healing" passHref>
+        <NextLink href="/blog/TattooAftercare" passHref>
           <Link color="teal.500">Tattoo Aftercare & Healing</Link>
         </NextLink> blog post provides an in-depth guide to ensure your tattoo heals beautifully.
       </>
     ),
   },
-  // Add more FAQs as needed from additional blog posts or internal content
 ];
 
-// 2. Updated FAQ Schema for SEO (JSON-LD)
+// 2. Updated FAQ Schema for SEO (JSON‑LD)
+// Only the schema content has been updated here.
 const faqStructuredData = {
   "@context": "http://schema.org",
   "@type": "FAQPage",
-  mainEntity: faqs.map((faq) => ({
+  "publisher": {
+    "@type": "Organization",
+    "name": "Hull Tattoo Studio",
+    "url": "https://www.hulltattoostudio.com",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://www.hulltattoostudio.com/images/logo.webp"
+    }
+  },
+  "mainEntity": faqs.map((faq) => ({
     "@type": "Question",
-    name: faq.question,
-    acceptedAnswer: {
+    "name": faq.question,
+    "acceptedAnswer": {
       "@type": "Answer",
-      text:
+      "text":
         typeof faq.answer === "string"
           ? faq.answer
           : faq.answer
               .toString()
-              .replace(/<[^>]+>/g, "") // Strip HTML tags for structured data
-              .replace(/&amp;/g, "&") // Decode HTML entities
+              .replace(/<[^>]+>/g, "")
+              .replace(/&amp;/g, "&")
               .replace(/&lt;/g, "<")
               .replace(/&gt;/g, ">")
               .replace(/&quot;/g, '"')
               .replace(/&apos;/g, "'")
-              .replace(/&#39;/g, "'"),
-    },
-  })),
+              .replace(/&#39;/g, "'")
+    }
+  }))
 };
 
 const FAQPage: React.FC = () => {
   return (
     <>
-      {/* 3. Head & Meta Tags */}
       <Head>
         <title>Frequently Asked Questions | Hull Tattoo Studio</title>
-        <meta
-          name="description"
-          content="Find comprehensive answers to common questions about booking, apprenticeships, cover-ups, aftercare, payment methods, and more at Hull Tattoo Studio."
-        />
-        <meta
-          name="keywords"
-          content="Tattoo FAQ, Booking Questions, Tattoo Apprenticeship, Tattoo Aftercare, Hull Tattoo Studio, Tattoo Cover-Ups, Payment Methods, Walk-Ins, Mike Tattoo Artist"
-        />
+        <meta name="description" content="Find comprehensive answers to common questions about booking, apprenticeships, cover-ups, aftercare, payment methods, and more at Hull Tattoo Studio." />
+        <meta name="keywords" content="Tattoo FAQ, Booking Questions, Tattoo Apprenticeship, Tattoo Aftercare, Hull Tattoo Studio, Tattoo Cover-Ups, Payment Methods, Walk-Ins, Mike Tattoo Artist" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-
-        {/* Open Graph Metadata */}
-        <meta
-          property="og:title"
-          content="Frequently Asked Questions | Hull Tattoo Studio"
-        />
-        <meta
-          property="og:description"
-          content="Got questions? Our FAQ page provides detailed answers about booking, apprenticeships, payment methods, tattoo preparation, cover-ups, and more at Hull Tattoo Studio."
-        />
+        <meta property="og:title" content="Frequently Asked Questions | Hull Tattoo Studio" />
+        <meta property="og:description" content="Got questions? Our FAQ page provides detailed answers about booking, apprenticeships, aftercare, payment methods, cover-ups, and more at Hull Tattoo Studio." />
         <meta property="og:image" content="/images/og-image.webp" />
         <meta property="og:image:alt" content="Hull Tattoo Studio's FAQ page cover" />
         <meta property="og:url" content="https://www.hulltattoostudio.com/faq" />
         <meta property="og:type" content="website" />
         <meta property="og:site_name" content="Hull Tattoo Studio" />
-
-        {/* Twitter Card Metadata */}
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta
-          name="twitter:title"
-          content="Frequently Asked Questions | Hull Tattoo Studio"
-        />
-        <meta
-          name="twitter:description"
-          content="Answers to your questions about tattoo booking, apprenticeships, aftercare, payment options, cover-ups, and more at Hull Tattoo Studio."
-        />
-        <meta name="twitter:image" content="/images/og-image.webp" />
-        <meta name="twitter:image:alt" content="Hull Tattoo Studio FAQ Cover" />
-
-        {/* Canonical URL */}
         <link rel="canonical" href="https://www.hulltattoostudio.com/faq" />
       </Head>
-
-      {/* 4. Structured Data Injection via Next.js <Script> */}
-      <Script
-        id="faq-structured-data"
-        type="application/ld+json"
-        strategy="beforeInteractive"
-      >
+      <Script id="faq-structured-data" type="application/ld+json" strategy="afterInteractive">
         {JSON.stringify(faqStructuredData)}
       </Script>
-
-      {/* 5. Page Content */}
-      <Box
-        as="main"
-        position="relative"
-        bg="transparent"
-        color="white"
-        w="100%"
-        p={8}
-        px={{ base: 4, md: 8 }}
-        minH="100vh"
-        overflowX="hidden"
-        boxShadow="0 0 20px #ff007f, 0 0 30px #00d4ff"
-      >
-        {/* Neon background lines (CSS in TextCard.module.css) */}
+      <Box as="main" position="relative" bg="transparent" color="white" w="100%" p={8} px={{ base: 4, md: 8 }} minH="100vh" overflowX="hidden" boxShadow="0 0 20px #ff007f, 0 0 30px #00d4ff">
         <Box className={styles.backgroundLines} />
-
-        <Box
-          bgGradient="radial(rgba(54,39,255,0.6), rgba(128,0,128,0.6), rgba(0,0,0,0.6))"
-          borderRadius="md"
-          p={8}
-          boxShadow="0 0 20px #9b5de5, 0 0 30px #f15bb5"
-          position="relative"
-          zIndex="1"
-        >
-          {/* FAQ Section with Motion */}
-          <MotionSection
-            initial={{ opacity: 0, y: 50 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
-          >
-            <Heading
-              as="h1"
-              size="2xl"
-              color="white"
-              textAlign="center"
-              mb={8}
-              textShadow="0 0 10px #ff007f, 0 0 20px #00d4ff"
-            >
+        <Box bgGradient="radial(rgba(54,39,255,0.6), rgba(128,0,128,0.6), rgba(0,0,0,0.6))" borderRadius="md" p={8} boxShadow="0 0 20px #9b5de5, 0 0 30px #f15bb5" position="relative" zIndex="1">
+          <MotionSection initial={{ opacity: 0, y: 50 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }} viewport={{ once: true }}>
+            <Heading as="h1" size="2xl" color="white" textAlign="center" mb={8} textShadow="0 0 10px #ff007f, 0 0 20px #00d4ff">
               Frequently Asked Questions
             </Heading>
-
-            <VStack spacing={6} align="stretch" maxW="800px" mx="auto">
-              {faqs.map((faq, i) => (
-                <Box
-                  key={i}
-                  bg="rgba(0, 0, 0, 0.5)"
-                  p={6}
-                  borderRadius="md"
-                  boxShadow="0 0 10px #ff007f, 0 0 20px #00d4ff"
-                >
-                  <Text fontSize="xl" fontWeight="bold" mb={2}>
-                    Q: {faq.question}
-                  </Text>
-                  <Text fontSize="md" lineHeight="1.8">
-                    {faq.answer}
-                  </Text>
-                </Box>
-              ))}
-            </VStack>
           </MotionSection>
+          <VStack spacing={6} align="stretch" maxW="800px" mx="auto">
+            {faqs.map((faq, i) => (
+              <Box key={i} bg="rgba(0, 0, 0, 0.5)" p={6} borderRadius="md" boxShadow="0 0 10px #ff007f, 0 0 20px #00d4ff">
+                <Text fontSize="xl" fontWeight="bold" mb={2}>
+                  Q: {faq.question}
+                </Text>
+                <Text fontSize="md" lineHeight="1.8">
+                  {faq.answer}
+                </Text>
+              </Box>
+            ))}
+          </VStack>
         </Box>
       </Box>
     </>
   );
 };
 
-// 6. SSG for Better Performance & SEO
 export const getStaticProps = async () => {
-  // If these FAQs came from a CMS or database, you could fetch them here.
-  // For now, we just return an empty props object to statically render the page.
-  return {
-    props: {},
-  };
+  return { props: {} };
 };
 
 export default FAQPage;
