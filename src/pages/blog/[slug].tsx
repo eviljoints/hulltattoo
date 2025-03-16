@@ -1,6 +1,5 @@
-// pages/blog/[slug].tsx
-
 import { GetStaticPaths, GetStaticProps } from "next";
+import Head from "next/head";
 import { MDXRemote, MDXRemoteSerializeResult } from "next-mdx-remote";
 import { serialize } from "next-mdx-remote/serialize";
 import fs from "fs";
@@ -78,65 +77,83 @@ const MDXComponents = {
       {...props}
     />
   ),
-
-  // 2. Expose <ContactUsModal> to MDX, so <ContactUsModal /> works in your .mdx
+  // Expose <ContactUsModal> to MDX, so <ContactUsModal /> works in your .mdx
   ContactUsModal,
 };
 
 export default function BlogPost({ source, frontMatter }: BlogPostProps) {
   return (
-    <Box
-      // Outer container with radial background
-      minH="100vh"
-      py={10}
-      px={{ base: 4, md: 8 }}
-      bgGradient="radial(rgba(54,39,255,0.6), rgba(128,0,128,0.6), rgba(0,0,0,0.6))"
-    >
+    <>
+      <Head>
+        <title>
+          {Array.isArray(frontMatter.title)
+            ? frontMatter.title.join(" ")
+            : frontMatter.title}{" "}
+          | Hull Tattoo Studio
+        </title>
+        <meta 
+          name="description" 
+          content={
+            frontMatter.excerpt 
+              ? frontMatter.excerpt 
+              : "Hull Tattoo Studio - quality tattoo services and industry insights."
+          } 
+        />
+        <meta name="robots" content="index, follow" />
+      </Head>
       <Box
-        // Inner container for the post content
-        maxW="800px"
-        mx="auto"
-        p={{ base: 4, md: 8 }}
-        bg="rgba(0,0,0,0.6)"
-        borderRadius="md"
-        boxShadow="0 0 20px #9b5de5, 0 0 30px #f15bb5"
-        position="relative"
+        // Outer container with radial background
+        minH="100vh"
+        py={10}
+        px={{ base: 4, md: 8 }}
+        bgGradient="radial(rgba(54,39,255,0.6), rgba(128,0,128,0.6), rgba(0,0,0,0.6))"
       >
-        {/* Title (optional if your MDX also has <h1>) */}
-        <Heading
-          as="h1"
-          fontSize={{ base: "3xl", md: "4xl" }}
-          color="white"
-          textAlign="center"
-          mb={4}
-          textShadow="0 0 10px #ff007f, 0 0 20px #00d4ff"
+        <Box
+          // Inner container for the post content
+          maxW="800px"
+          mx="auto"
+          p={{ base: 4, md: 8 }}
+          bg="rgba(0,0,0,0.6)"
+          borderRadius="md"
+          boxShadow="0 0 20px #9b5de5, 0 0 30px #f15bb5"
+          position="relative"
         >
-          {frontMatter.title}
-        </Heading>
+          {/* Title (optional if your MDX also has <h1>) */}
+          <Heading
+            as="h1"
+            fontSize={{ base: "3xl", md: "4xl" }}
+            color="white"
+            textAlign="center"
+            mb={4}
+            textShadow="0 0 10px #ff007f, 0 0 20px #00d4ff"
+          >
+            {frontMatter.title}
+          </Heading>
 
-        {/* Optional cover image */}
-        {frontMatter.coverImage && (
-          <Image
-            src={frontMatter.coverImage}
-            alt={frontMatter.title}
-            width="100%"
-            maxH="400px"
-            objectFit="cover"
-            borderRadius="md"
-            my={4}
-            boxShadow="0 0 10px #ff007f, 0 0 20px #00d4ff"
-          />
-        )}
+          {/* Optional cover image */}
+          {frontMatter.coverImage && (
+            <Image
+              src={frontMatter.coverImage}
+              alt={frontMatter.title}
+              width="100%"
+              maxH="400px"
+              objectFit="cover"
+              borderRadius="md"
+              my={4}
+              boxShadow="0 0 10px #ff007f, 0 0 20px #00d4ff"
+            />
+          )}
 
-        {/* Date */}
-        <Text color="gray.300" fontSize="md" mb={6} textAlign="center">
-          {frontMatter.date}
-        </Text>
+          {/* Date */}
+          <Text color="gray.300" fontSize="md" mb={6} textAlign="center">
+            {frontMatter.date}
+          </Text>
 
-        {/* The actual MDX content with custom Chakra components, including ContactUsModal */}
-        <MDXRemote {...source} components={MDXComponents} />
+          {/* The actual MDX content with custom Chakra components, including ContactUsModal */}
+          <MDXRemote {...source} components={MDXComponents} />
+        </Box>
       </Box>
-    </Box>
+    </>
   );
 }
 
