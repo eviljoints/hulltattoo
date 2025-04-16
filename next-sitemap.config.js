@@ -2,7 +2,7 @@
 
 /** @type {import('next-sitemap').IConfig} */
 module.exports = {
-  siteUrl: 'https://hulltattoostudio.com', // Replace with your website's URL
+  siteUrl: 'https://www.hulltattoostudio.com', // Replace with your website's URL
   generateRobotsTxt: true, // Automatically generate robots.txt
   changefreq: 'weekly', // Default change frequency for all pages
   priority: 0.7, // Default priority for all pages

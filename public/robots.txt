@@ -4,7 +4,7 @@ Allow: /
 Disallow: /admin
 
 # Host
-Host: https://hulltattoostudio.com
+Host: https://www.hulltattoostudio.com
 
 # Sitemaps
-Sitemap: https://hulltattoostudio.com/sitemap.xml
+Sitemap: https://www.hulltattoostudio.com/sitemap.xml
