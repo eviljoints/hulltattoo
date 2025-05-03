@@ -17,7 +17,7 @@ const faqs = [
         You can book your tattoo appointment through multiple convenient methods:
         <OrderedList styleType="decimal" mt={2} mb={2}>
           <ListItem>
-            <strong>Book in Person:</strong> Visit our studio at <strong>652 Anlaby Road, HU3 6UU</strong> during our opening hours to discuss your tattoo idea and receive personalized advice.
+            <strong>Book in Person:</strong> Visit our studio at <strong>255 Hedon Road , HU9 1NQ</strong> during our opening hours to discuss your tattoo idea and receive personalized advice.
           </ListItem>
           <ListItem>
             <strong>Message Us on Social Media:</strong> Reach out via our <strong>Facebook</strong> or <strong>Instagram</strong> pages with a detailed description, reference images, and your preferred tattoo size and placement.

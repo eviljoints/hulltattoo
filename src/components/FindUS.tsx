@@ -31,15 +31,15 @@ const FindUs: React.FC = () => {
           textShadow="0 0 5px #ff007f, 0 0 10px #00d4ff"
         >
           Hull Tattoo Studio <br />
-          652 Anlaby Road, <br />
-          Hull, HU3 6UU, UK <br />
+          255 Hedon Road, <br />
+          Hull, HU9 1NQ, UK <br />
           Tel. 07940080790
         </Text>
 
         {/* Google Maps Embed */}
         <Box
           as="iframe"
-          src="https://maps.google.com/maps?q=652%20Anlaby%20Road%20Hull%20HU3%206UU&t=&z=15&ie=UTF8&iwloc=&output=embed"
+          src="https://maps.google.com/maps?q=255%20Hedon%20Road%20Hull%20HU9%201NQ&t=&z=15&ie=UTF8&iwloc=&output=embed"
           width="100%"
           height="450px"
           border="0"

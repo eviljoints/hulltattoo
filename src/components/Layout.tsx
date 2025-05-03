@@ -243,7 +243,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         <p className="footer-text">
           © {currentYear} Hull Tattoo Studio. All rights reserved.
           <br />
-          652 Anlaby Road, Hull, HU3 6UU.
+          255 Hedon Road, Hull, HU9 1NQ.
         </p>
       </footer>
 
