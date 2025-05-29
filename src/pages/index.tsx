@@ -11,6 +11,7 @@ import TextCard from "../components/TextCard";
 import SEOOptimizedContent from "~/components/Seo";
 import HeroTextCard from "~/components/HeroTextCard";
 
+
 // Dynamically import non-critical components
 const ReviewsModal = dynamic(() => import("~/components/ReviewsModal"), {
   ssr: false,
@@ -21,6 +22,7 @@ const ContactUsModal = dynamic(() => import("~/components/ContactUsModal"), {
 const FindUsLazy = dynamic(() => import("../components/FindUS"), {
   ssr: false,
 });
+const FAQSection = dynamic(() => import("../components/FAQSection"), { ssr: false });
 
 // Data Interfaces
 interface Stripe {
@@ -277,7 +279,11 @@ const HomePage: React.FC<HomePageProps> = ({ artists, error }) => {
         <Box marginTop={16}>
           <FindUsLazy />
         </Box>
+        <Box marginTop={16}>
+        <FAQSection />
+        </Box>
       </Box>
+      
     </>
   );
 };

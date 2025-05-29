@@ -1,21 +1,20 @@
-// ./components/Layout.tsx
+// components/Layout.tsx
 
 import React, { ReactNode } from "react";
 import Link from "next/link";
-import Image from "next/image";
-import Head from "next/head"; // Included for global SEO tags
+import Head from "next/head";
 
 import {
   FaFacebook,
   FaInstagram,
   FaHome,
   FaFirstAid,
-  FaQuestionCircle,
   FaStar,
   FaNewspaper,
   FaYoutube,
   FaTiktok,
-  FaUserFriends, // Use this icon for Artists
+  FaUserFriends,
+  FaPaintBrush,
 } from "react-icons/fa";
 
 import {
@@ -31,7 +30,6 @@ import NeonLogo from "./NeonLogo";
 
 interface LayoutProps {
   children: ReactNode;
-  // Optional prop for per-page canonical URLs
 }
 
 const Layout: React.FC<LayoutProps> = ({ children }) => {
@@ -48,28 +46,19 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     >
       {/* Global SEO Head Tags */}
       <Head>
-        {/* 
-          General site-wide meta tags can be included here.
-          Avoid adding a global canonical URL to prevent overriding per-page canonical URLs.
-        */}
         <meta name="robots" content="index, follow" />
         <link rel="sitemap" type="application/xml" href="/sitemap.xml" />
-        {/* Remove the global canonical URL to allow per-page canonical URLs */}
-        {/* <link rel="canonical" href="https://www.hulltattoostudio.com" /> */}
       </Head>
 
       {/* Header with Logo */}
       <header className="header">
-  <div className="logo-container">
-    <Link href="/" passHref>
-      <a aria-label="Go to home">
-        <NeonLogo />
-      </a>
-    </Link>
-  </div>
-
-
-
+        <div className="logo-container">
+          <Link href="/" passHref legacyBehavior>
+            <a aria-label="Go to home">
+              <NeonLogo />
+            </a>
+          </Link>
+        </div>
 
         {/* Social Media Icons */}
         <div className="footer-socials">
@@ -115,24 +104,27 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       {/* Navbar - Desktop */}
       <nav className="navbar">
         <div className="navbar-desktop">
-          <Link href="/" passHref>
+          <Link href="/" passHref legacyBehavior>
             <a className="navbar-link">Home</a>
           </Link>
 
-          <Link href="/aftercare" passHref>
+          <Link href="/aftercare" passHref legacyBehavior>
             <a className="navbar-link">Aftercare</a>
           </Link>
 
-          <Link href="/faq" passHref>
-            <a className="navbar-link">FAQ</a>
-          </Link>
-
-          <Link href="/loyalty" passHref>
+          <Link href="/loyalty" passHref legacyBehavior>
             <a className="navbar-link">Loyalty</a>
           </Link>
 
-          <Link href="/blog" passHref>
+          <Link href="/blog" passHref legacyBehavior>
             <a className="navbar-link">Blog</a>
+          </Link>
+
+          <Link href="/designs" passHref legacyBehavior>
+            <a className="navbar-link" style={{ display: "flex", alignItems: "center" }}>
+              
+              Designs
+            </a>
           </Link>
 
           {/* Artists Dropdown (Desktop) */}
@@ -159,39 +151,22 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
               boxShadow="0 0 10px #ff007f, 0 0 15px #00d4ff"
               color="white"
             >
-              <MenuItem
-                bg="transparent"
-                _hover={{ bg: "rgba(255, 7, 131, 0.86)" }}
-                color="white"
-              >
-                <Link href="/mike" passHref>
-                  <a style={{ textDecoration: "none", color: "inherit" }}>
-                    Mike
-                  </a>
-                </Link>
-              </MenuItem>
-              <MenuItem
-                bg="transparent"
-                _hover={{ bg: "rgba(255, 7, 131, 0.86)" }}
-                color="white"
-              >
-                <Link href="/poppy" passHref>
-                  <a style={{ textDecoration: "none", color: "inherit" }}>
-                    Poppy
-                  </a>
-                </Link>
-              </MenuItem>
-              <MenuItem
-                bg="transparent"
-                _hover={{ bg: "rgba(255, 7, 131, 0.86)" }}
-                color="white"
-              >
-                <Link href="/harley" passHref>
-                  <a style={{ textDecoration: "none", color: "inherit" }}>
-                    Harley
-                  </a>
-                </Link>
-              </MenuItem>
+              {[
+                { name: "Mike", href: "/mike" },
+                { name: "Poppy", href: "/poppy" },
+                { name: "Harley", href: "/harley" },
+              ].map(({ name, href }) => (
+                <MenuItem
+                  key={name}
+                  bg="transparent"
+                  _hover={{ bg: "rgba(255, 7, 131, 0.86)" }}
+                  color="white"
+                >
+                  <Link href={href} passHref legacyBehavior>
+                    <a style={{ textDecoration: "none", color: "inherit" }}>{name}</a>
+                  </Link>
+                </MenuItem>
+              ))}
             </MenuList>
           </Menu>
         </div>
@@ -203,79 +178,75 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       {/* Footer */}
       <footer className="footer">
         <div className="footer-socials">
-          <a
-            href="https://www.instagram.com/hull_tattoo_studio/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="footer-icon"
-            aria-label="Instagram"
-          >
-            <FaInstagram />
-          </a>
-          <a
-            href="https://www.facebook.com/Hulltattoostudio"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="footer-icon"
-            aria-label="Facebook"
-          >
-            <FaFacebook />
-          </a>
-          <a
-            href="https://www.youtube.com/@Hulltattoostudio"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="footer-icon"
-            aria-label="YouTube"
-          >
-            <FaYoutube />
-          </a>
-          <a
-            href="https://www.tiktok.com/@hulltattoostudio_"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="footer-icon"
-            aria-label="TikTok"
-          >
-            <FaTiktok />
-          </a>
+          {[
+            {
+              href: "https://www.instagram.com/hull_tattoo_studio/",
+              label: "Instagram",
+              icon: <FaInstagram />,
+            },
+            {
+              href: "https://www.facebook.com/Hulltattoostudio",
+              label: "Facebook",
+              icon: <FaFacebook />,
+            },
+            {
+              href: "https://www.youtube.com/@Hulltattoostudio",
+              label: "YouTube",
+              icon: <FaYoutube />,
+            },
+            {
+              href: "https://www.tiktok.com/@hulltattoostudio_",
+              label: "TikTok",
+              icon: <FaTiktok />,
+            },
+          ].map(({ href, label, icon }) => (
+            <a
+              key={label}
+              href={href}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="footer-icon"
+              aria-label={label}
+            >
+              {icon}
+            </a>
+          ))}
         </div>
         <p className="footer-text">
           © {currentYear} Hull Tattoo Studio. All rights reserved.
-          <br />
-          255 Hedon Road, Hull, HU9 1NQ.
+          <br />255 Hedon Road, Hull, HU9 1NQ.
         </p>
       </footer>
 
       {/* Bottom Navbar for Mobile */}
       <nav className="navbar-bottom">
-        <Link href="/" passHref>
+        <Link href="/" passHref legacyBehavior>
           <a className="navbar-icon" aria-label="Home">
             <FaHome />
           </a>
         </Link>
 
-        <Link href="/aftercare" passHref>
+        <Link href="/aftercare" passHref legacyBehavior>
           <a className="navbar-icon" aria-label="Aftercare">
             <FaFirstAid />
           </a>
         </Link>
 
-        <Link href="/faq" passHref>
-          <a className="navbar-icon" aria-label="FAQ">
-            <FaQuestionCircle />
-          </a>
-        </Link>
-
-        <Link href="/loyalty" passHref>
+        <Link href="/loyalty" passHref legacyBehavior>
           <a className="navbar-icon" aria-label="Loyalty">
             <FaStar />
           </a>
         </Link>
 
-        <Link href="/blog" passHref>
+        <Link href="/blog" passHref legacyBehavior>
           <a className="navbar-icon" aria-label="Blog">
             <FaNewspaper />
+          </a>
+        </Link>
+
+        <Link href="/designs" passHref legacyBehavior>
+          <a className="navbar-icon" aria-label="Designs">
+            <FaPaintBrush />
           </a>
         </Link>
 
@@ -299,37 +270,17 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             boxShadow="0 0 10px #ff007f, 0 0 15px #00d4ff"
             color="white"
           >
-            <MenuItem
-              bg="transparent"
-              _hover={{ bg: "rgba(255, 0, 127, 0.2)" }}
-              color="white"
-            >
-              <Link href="/mike" passHref>
-                <a style={{ textDecoration: "none", color: "inherit" }}>Mike</a>
-              </Link>
-            </MenuItem>
-            <MenuItem
-              bg="transparent"
-              _hover={{ bg: "rgba(255, 0, 127, 0.2)" }}
-              color="white"
-            >
-              <Link href="/poppy" passHref>
-                <a style={{ textDecoration: "none", color: "inherit" }}>
-                  Poppy
-                </a>
-              </Link>
-            </MenuItem>
-            <MenuItem
-              bg="transparent"
-              _hover={{ bg: "rgba(255, 0, 127, 0.2)" }}
-              color="white"
-            >
-              <Link href="/harley" passHref>
-                <a style={{ textDecoration: "none", color: "inherit" }}>
-                  Harley
-                </a>
-              </Link>
-            </MenuItem>
+            {[
+              { name: "Mike", href: "/mike" },
+              { name: "Poppy", href: "/poppy" },
+              { name: "Harley", href: "/harley" },
+            ].map(({ name, href }) => (
+              <MenuItem key={name} bg="transparent" _hover={{ bg: "rgba(255,0,127,0.2)" }}>
+                <Link href={href} passHref legacyBehavior>
+                  <a style={{ textDecoration: "none", color: "inherit" }}>{name}</a>
+                </Link>
+              </MenuItem>
+            ))}
           </MenuList>
         </Menu>
       </nav>

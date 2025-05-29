@@ -4,7 +4,8 @@ datasource db {
 }
 
 generator client {
-  provider = "prisma-client-js"
+  provider      = "prisma-client-js"
+  binaryTargets = ["native"]
 }
 
 model Review {
@@ -13,21 +14,21 @@ model Review {
   rating    Int
   comment   String
   createdAt DateTime @default(now())
-  status    String   @default("pending") // "pending", "approved", "rejected"
+  status    String   @default("pending")
 }
 
 model Client {
-  id         Int       @id @default(autoincrement())
+  id         Int      @id @default(autoincrement())
   name       String
-  hours      Int       @default(0)
-  stamps     Int       @default(0)
-  clientId   String    @unique
-  email      String?   @unique
-  createdAt  DateTime  @default(now())
-  updatedAt  DateTime  @updatedAt
-  signUpDate DateTime  @default(now())
-  googleId   String?   @unique  // <-- new field for Google OAuth
-  appleId    String?   @unique  // <-- new field for Apple OAuth
+  hours      Int      @default(0)
+  stamps     Int      @default(0)
+  clientId   String   @unique
+  email      String?  @unique
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  signUpDate DateTime @default(now())
+  googleId   String?  @unique
+  appleId    String?  @unique
 }
 
 model File {
@@ -36,12 +37,26 @@ model File {
   mimetype  String
   content   String
   createdAt DateTime @default(now())
+  // NOTE: no more `designs` back-relation
 }
+
 model PostView {
   id        Int      @id @default(autoincrement())
   slug      String   @unique
   views     Int      @default(0)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model TattooDesign {
+  id         Int      @id @default(autoincrement())
+  name       String
+  price      Decimal  @db.Decimal(10, 2)
+  artistName String
+  imagePath  String
+  description String? 
+  pageNumber Int      @unique
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 }
 
