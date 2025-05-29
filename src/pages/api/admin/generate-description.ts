@@ -28,7 +28,7 @@ Take the user’s raw tattoo name and their short prompt, and output JSON:
   "generatedName": "...",
   "description": "..."
 }
-End the description with "DM to book" and include 3–5 hashtags.
+End the description with "DM to book", include 3–5 hashtags and the address at 255 hedon road HU9 1NQ.
     `.trim()
 
     const user = `

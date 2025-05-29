@@ -1,4 +1,5 @@
-// pages/admin/designs.tsx
+// src/pages/admin/designs.tsx
+
 import React, {
   useState,
   useEffect,
@@ -13,26 +14,31 @@ type Artist = typeof ARTISTS[number]
 type Design = {
   id:         number
   name:       string
-  price:      string        // we store as whole‐number strings
+  price:      string        // whole‐number strings
   artistName: Artist
-  imagePath:  string
+  imagePath:  string        // stores the full Blob URL
   pageNumber: number
   description:string
+}
+
+type FileItem = {
+  name: string
+  url:  string
 }
 
 type AdminForm = {
   name:        string
   price:       string
   artistName:  Artist
-  imagePath:   string
+  imagePath:   string        // will store the public URL
   prompt:      string
   description: string
 }
 
 const AdminDesignsPage: React.FC = () => {
-  const [files, setFiles]           = useState<string[]>([])
-  const [designs, setDesigns]       = useState<Design[]>([])
-  const [form, setForm]             = useState<AdminForm>({
+  const [files,   setFiles]   = useState<FileItem[]>([])
+  const [designs, setDesigns] = useState<Design[]>([])
+  const [form, setForm]       = useState<AdminForm>({
     name:        '',
     price:       '',
     artistName:  'Mike',
@@ -40,14 +46,14 @@ const AdminDesignsPage: React.FC = () => {
     prompt:      '',
     description: '',
   })
-  const [message, setMessage]       = useState<string>('')
-  const [generating, setGenerating] = useState(false)
+  const [message,    setMessage]    = useState<string>('')
+  const [generating, setGenerating] = useState<boolean>(false)
 
-  // helper to load filenames
+  // Load the list of uploaded blob files
   const refreshFiles = () => {
     fetch('/api/design-images')
-      .then(r => r.json())
-      .then(setFiles)
+      .then(res => res.json())
+      .then((data: FileItem[]) => setFiles(data))
       .catch(console.error)
   }
 
@@ -80,10 +86,7 @@ const AdminDesignsPage: React.FC = () => {
       const res = await fetch('/api/admin/generate-description', {
         method:  'POST',
         headers: { 'Content-Type': 'application/json' },
-        body:    JSON.stringify({
-          rawName: form.name,
-          prompt:  form.prompt,
-        }),
+        body:    JSON.stringify({ rawName: form.name, prompt: form.prompt }),
       })
       const json = await res.json()
       if (res.ok && 'generatedName' in json) {
@@ -152,12 +155,11 @@ const AdminDesignsPage: React.FC = () => {
 
   return (
     <div style={{ maxWidth: 600, margin: '2rem auto', padding: '1rem' }}>
-      {/* --- File uploader centered at top --- */}
       <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
         <FileUploader
-          onUpload={(filename) => {
+          onUpload={(url) => {
             refreshFiles()
-            setForm(f => ({ ...f, imagePath: filename }))
+            setForm(f => ({ ...f, imagePath: url }))
           }}
         />
       </div>
@@ -199,7 +201,9 @@ const AdminDesignsPage: React.FC = () => {
             required
             style={{ width: '100%' }}
           >
-            {ARTISTS.map(a => <option key={a} value={a}>{a}</option>)}
+            {ARTISTS.map(a => (
+              <option key={a} value={a}>{a}</option>
+            ))}
           </select>
         </label>
 
@@ -213,12 +217,17 @@ const AdminDesignsPage: React.FC = () => {
             style={{ width: '100%' }}
           >
             <option value="">-- select file --</option>
-            {files.map(f => <option key={f} value={f}>{f}</option>)}
+            {files.map(f => (
+              <option key={f.url} value={f.url}>
+                {f.name}
+              </option>
+            ))}
           </select>
         </label>
+
         {form.imagePath && (
           <img
-            src={`/designs/${form.imagePath}`}
+            src={form.imagePath}
             alt="Preview"
             style={{ maxWidth: '100%', border: '1px solid #444', borderRadius: 4 }}
           />
@@ -260,13 +269,19 @@ const AdminDesignsPage: React.FC = () => {
           />
         </label>
 
-        <button type="submit" style={{ padding: '0.5rem 1rem', cursor: 'pointer' }}>
+        <button
+          type="submit"
+          style={{ padding: '0.5rem 1rem', cursor: 'pointer' }}
+        >
           Save Design
         </button>
       </form>
 
       {message && (
-        <p style={{ marginTop: '1rem', color: message.startsWith('Error') ? 'red' : 'green' }}>
+        <p style={{
+          marginTop: '1rem',
+          color: message.startsWith('Error') ? 'red' : 'green'
+        }}>
           {message}
         </p>
       )}
@@ -275,10 +290,14 @@ const AdminDesignsPage: React.FC = () => {
       <table style={{ width: '100%', borderCollapse: 'collapse' }}>
         <thead>
           <tr>
-            {['Pg','Name','Artist','Price','Img','Desc',''].map((h,i) => (
+            {['Pg', 'Name', 'Artist', 'Price', 'Img', 'Desc', ''].map((h, i) => (
               <th
                 key={i}
-                style={{ padding:'0.5rem', borderBottom:'1px solid #444', textAlign:'left' }}
+                style={{
+                  padding: '0.5rem',
+                  borderBottom: '1px solid #444',
+                  textAlign: 'left',
+                }}
               >
                 {h}
               </th>
@@ -288,23 +307,28 @@ const AdminDesignsPage: React.FC = () => {
         <tbody>
           {designs.map(d => (
             <tr key={d.id}>
-              <td style={{ padding:'0.5rem' }}>{d.pageNumber}</td>
-              <td style={{ padding:'0.5rem' }}>{d.name}</td>
-              <td style={{ padding:'0.5rem' }}>{d.artistName}</td>
-              <td style={{ padding:'0.5rem' }}>£{d.price}</td>
-              <td style={{ padding:'0.5rem' }}>
+              <td style={{ padding: '0.5rem' }}>{d.pageNumber}</td>
+              <td style={{ padding: '0.5rem' }}>{d.name}</td>
+              <td style={{ padding: '0.5rem' }}>{d.artistName}</td>
+              <td style={{ padding: '0.5rem' }}>£{d.price}</td>
+              <td style={{ padding: '0.5rem' }}>
                 <img
-                  src={`/designs/${d.imagePath}`}
+                  src={d.imagePath}
                   alt={d.name}
                   width={50}
-                  style={{ borderRadius:4 }}
+                  style={{ borderRadius: 4 }}
                 />
               </td>
-              <td style={{ padding:'0.5rem' }}>{d.description}</td>
-              <td style={{ padding:'0.5rem' }}>
+              <td style={{ padding: '0.5rem' }}>{d.description}</td>
+              <td style={{ padding: '0.5rem' }}>
                 <button
                   onClick={() => handleDelete(d.id)}
-                  style={{ background:'transparent', color:'red', border:'none', cursor:'pointer' }}
+                  style={{
+                    background: 'transparent',
+                    color: 'red',
+                    border: 'none',
+                    cursor: 'pointer',
+                  }}
                 >
                   Delete
                 </button>

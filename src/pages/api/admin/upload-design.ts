@@ -1,87 +1,90 @@
-// pages/api/admin/upload-design.ts
-import type { NextApiRequest, NextApiResponse } from 'next'
-import formidable, { IncomingForm, File as FormidableFile } from 'formidable'
-import fs from 'fs'
-import path from 'path'
-import os from 'os'
+// src/pages/api/admin/upload-design.ts
 
-// Disable Next.js body parsing so formidable can handle multipart
+import type { NextApiRequest, NextApiResponse } from 'next'
+import formidable, { IncomingForm, File as FormidableFile, Files } from 'formidable'
+import fs from 'fs'
+import os from 'os'
+import path from 'path'
+import { put } from '@vercel/blob'
+
 export const config = { api: { bodyParser: false } }
 
-type ResponseData = { ok: true; filename: string } | { ok: false; error: string }
+type Failure = { ok: false; error: string }
+type Success = { ok: true; filename: string; url: string }
+type Resp    = Failure | Success
 
-const UPLOAD_DIR = path.join(process.cwd(), 'public', 'designs')
-function ensureDir(dir: string) {
-  if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true })
-}
-
-function parseForm(req: NextApiRequest): Promise<{ fields: formidable.Fields; files: formidable.Files }> {
+// Now returns fields as a plain object so TS won't infer 'never'
+function parseForm(req: NextApiRequest): Promise<{
+  fields: Record<string, any>
+  files:  Files
+}> {
   return new Promise((resolve, reject) => {
     const form = new IncomingForm({
-      uploadDir: os.tmpdir(),
+      uploadDir:     os.tmpdir(),
       keepExtensions: true,
-      maxFileSize: 10 * 1024 * 1024, // 10MB
+      maxFileSize:   10 * 1024 * 1024, // 10MB
     })
-    form.parse(req, (err, fields, files) => {
-      if (err) return reject(err)
-      resolve({ fields, files })
-    })
+    form.parse(req, (err, fields, files) =>
+      err ? reject(err) : resolve({ fields: fields as Record<string, any>, files })
+    )
   })
 }
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<ResponseData>
+  res: NextApiResponse<Resp>
 ) {
   if (req.method !== 'POST') {
     res.setHeader('Allow', ['POST'])
     return res.status(405).json({ ok: false, error: 'Method Not Allowed' })
   }
 
-  ensureDir(UPLOAD_DIR)
-
-  let fields, files
+  // 1. Parse the form
+  let fields: Record<string, any>, files: Files
   try {
     ;({ fields, files } = await parseForm(req))
   } catch (err: any) {
     console.error('Form parse error', err)
-    return res.status(500).json({ ok: false, error: 'Upload failed' })
+    return res.status(400).json({ ok: false, error: err.message || 'Parsing failed' })
   }
 
-  const uploaded = Array.isArray(files.file)
-    ? files.file[0]
-    : (files.file as FormidableFile | undefined)
-
-  if (!uploaded) {
-    return res.status(400).json({ ok: false, error: 'Missing file' })
+  // 2. Grab the uploaded file (array vs single)
+  const fileField = files.file
+  if (!fileField) {
+    return res.status(400).json({ ok: false, error: 'Missing file field' })
   }
+  const fileArray = Array.isArray(fileField) ? fileField : [fileField]
+  const uploadedFile: FormidableFile = fileArray[0]
 
-  // Determine base name: user-supplied or fallback to original
-  const supplied = typeof fields.filename === 'string' ? fields.filename.trim() : ''
-  const origName = uploaded.originalFilename || path.basename(uploaded.filepath)
-  const fallbackBase = path.basename(origName, path.extname(origName))
-  const baseName = supplied || fallbackBase
-
-  // Optional: restrict to images only
-  if (!uploaded.mimetype?.startsWith('image/')) {
-    await fs.promises.unlink(uploaded.filepath)
+  // 3. Validate it's an image
+  if (!uploadedFile.mimetype?.startsWith('image/')) {
+    fs.unlink(uploadedFile.filepath, () => {})
     return res.status(400).json({ ok: false, error: 'Only image files allowed' })
   }
 
-  // Sanitize and assemble final filename
-  const safeBase = baseName.replace(/\s+/g, '-').replace(/[^\w\-]/g, '')
-  const ext = path.extname(origName)
-  const finalFilename = `${safeBase}${ext}`
-  const destPath = path.join(UPLOAD_DIR, finalFilename)
+  // 4. Build a safe filename
+  const originalName    = uploadedFile.originalFilename || path.basename(uploadedFile.filepath)
+  const ext             = path.extname(originalName)
+  const rawFilename     = typeof fields.filename === 'string' ? fields.filename.trim() : ''
+  const base            = rawFilename || path.basename(originalName, ext)
+  const safeBase        = base.replace(/\s+/g, '-').replace(/[^\w\-]/g, '')
+  const finalFilename   = `${safeBase}${ext}`
 
+  // 5. Upload to Vercel Blob
   try {
-    await fs.promises.rename(uploaded.filepath, destPath)
-    return res.status(200).json({ ok: true, filename: finalFilename })
+    const token  = process.env.BLOB_READ_WRITE_TOKEN as string
+    const stream = fs.createReadStream(uploadedFile.filepath)
+    const { url } = await put(`designs/${finalFilename}`, stream, {
+      access: 'public',
+      token,
+    })
+
+    // clean up temp file
+    fs.unlink(uploadedFile.filepath, () => {})
+
+    return res.status(200).json({ ok: true, filename: finalFilename, url })
   } catch (err: any) {
-    console.error('Rename error', err)
-    if (fs.existsSync(uploaded.filepath)) {
-      await fs.promises.unlink(uploaded.filepath)
-    }
-    return res.status(500).json({ ok: false, error: 'Failed to save file' })
+    console.error('Blob upload error', err)
+    return res.status(500).json({ ok: false, error: 'Blob upload failed' })
   }
 }
