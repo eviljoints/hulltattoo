@@ -226,7 +226,8 @@ const AdminDesignsPage: React.FC = () => {
           />
         </label>
         <button 
-          type="button" 
+          type="button"
+          className="center-btn" 
           onClick={handleGenerate} 
           disabled={!form.title||!form.prompt||generating}
         >
