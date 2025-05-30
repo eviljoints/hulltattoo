@@ -1,56 +1,60 @@
+// pages/api/admin/images.ts
+
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { list, put, del } from '@vercel/blob'
 
-type FileMeta      = { name: string; url: string }
-type ErrorResp     = { error: string }
-type SuccessDelete = { success: true }
-type RenameReq     = { oldName: string; newName: string }
+type FileMeta        = { name: string; url: string }
+type ErrorResp       = { error: string }
+type SuccessDelete   = { success: true }
+type RenameRequest   = { oldName: string; newName: string }
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<FileMeta[] | FileMeta | SuccessDelete | ErrorResp>
 ) {
   const token = process.env.BLOB_READ_WRITE_TOKEN as string
+
   try {
-    // ─── GET / LIST ───────────────────────────────────────────────────────
+    // ─── LIST ─────────────────────────────────────────────────────────────
     if (req.method === 'GET') {
       const { blobs } = await list({ token })
       const designs = blobs
+        .filter(b => b.pathname.startsWith('designs/'))
         .map(b => ({
           name: b.pathname.replace(/^designs\//, ''),
           url:  b.url,
         }))
-        // filter out any empty or leading‐dot names
-        .filter(f => f.name && !f.name.startsWith('.'))
       return res.status(200).json(designs)
     }
 
-    // ─── PATCH / RENAME ───────────────────────────────────────────────────
+    // ─── RENAME ────────────────────────────────────────────────────────────
     if (req.method === 'PATCH') {
-      const { oldName, newName } = req.body as RenameReq
+      const { oldName, newName } = req.body as RenameRequest
       if (!oldName || !newName) {
         return res.status(400).json({ error: 'Missing oldName or newName' })
       }
 
-      // find the source blob
+      // locate the blob
       const { blobs } = await list({ token })
       const src = blobs.find(b => b.pathname === `designs/${oldName}`)
       if (!src) {
         return res.status(404).json({ error: 'Source file not found' })
       }
 
-      // fetch its bytes
+      // fetch its data
       const fetchRes = await fetch(src.url)
       if (!fetchRes.ok) {
         throw new Error(`Failed to fetch blob: ${fetchRes.status}`)
       }
       const buffer = Buffer.from(await fetchRes.arrayBuffer())
 
-      // write under the new key
+      // write it under the new name
       await put(`designs/${newName}`, buffer, { access: 'public', token })
-      // delete the old key
+
+      // delete the old blob
       await del(`designs/${oldName}`, { token })
 
+      // respond with new metadata
       return res.status(200).json({
         name: newName,
         url:  src.url.replace(oldName, newName),
@@ -59,29 +63,19 @@ export default async function handler(
 
     // ─── DELETE ────────────────────────────────────────────────────────────
     if (req.method === 'DELETE') {
-      const raw = req.query.name
-      const name = Array.isArray(raw) ? raw[0] : raw
-      if (!name || typeof name !== 'string' || !name.trim() || name.startsWith('.')) {
-        return res.status(400).json({ error: 'Invalid or missing name parameter' })
+      const name = typeof req.query.name === 'string' ? req.query.name : undefined
+      if (!name) {
+        return res.status(400).json({ error: 'Missing name query parameter' })
       }
-
-      // ensure it exists before deleting
-      const { blobs } = await list({ token })
-      const exists = blobs.some(b => b.pathname === `designs/${name}`)
-      if (!exists) {
-        return res.status(404).json({ error: 'File not found' })
-      }
-
       await del(`designs/${name}`, { token })
       return res.status(200).json({ success: true })
     }
 
-    // ─── METHOD NOT ALLOWED ────────────────────────────────────────────────
-    res.setHeader('Allow', ['GET','PATCH','DELETE'])
+    // ─── FALLBACK ─────────────────────────────────────────────────────────
+    res.setHeader('Allow', ['GET', 'PATCH', 'DELETE'])
     return res.status(405).json({ error: `Method ${req.method} Not Allowed` })
-
   } catch (err: any) {
-    console.error('API /design-images error:', err)
+    console.error('API /admin/images error:', err)
     return res.status(500).json({ error: err.message || 'Server error' })
   }
 }

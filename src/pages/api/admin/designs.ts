@@ -1,50 +1,48 @@
-// pages/api/admin/designs.ts
+// src/pages/api/admin/designs.ts
+
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { PrismaClient, Prisma } from '@prisma/client'
-import fs from 'fs/promises'
-import path from 'path'
 
 const prisma = new PrismaClient()
-const designsDir = path.join(process.cwd(), 'public', 'designs')
-
-// simple slugify helper
-function slugify(name: string) {
-  return name
-    .toLowerCase()
-    .trim()
-    .replace(/\s+/g, '-')
-    .replace(/[^\w\-\.]+/g, '')
-}
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  // CREATE
+  // ─── LIST ─────────────────────────────────────────────────────────────
+  if (req.method === 'GET') {
+    try {
+      const designs = await prisma.tattooDesign.findMany({
+        orderBy: { pageNumber: 'asc' },
+      })
+      return res.status(200).json(designs)
+    } catch (err: any) {
+      console.error('GET /api/admin/designs error:', err)
+      return res.status(500).json({ error: 'Fetch failed' })
+    }
+  }
+
+  // ─── CREATE ────────────────────────────────────────────────────────────
   if (req.method === 'POST') {
     try {
       const { name, price, artistName, imagePath, description } = req.body
-      if (!name || !price || !artistName || !imagePath || !description) {
+      if (
+        !name ||
+        price === undefined ||
+        !artistName ||
+        !imagePath ||
+        !description
+      ) {
         return res.status(400).json({ error: 'Missing required fields' })
       }
 
       // parse & floor to whole pounds
       const priceInt = Math.floor(Number(price))
 
-      // rename file: slugify name + preserve ext
-      const ext = path.extname(imagePath)
-      const safeName = slugify(name)
-      const newFilename = `${safeName}${ext}`
-      const oldPath = path.join(designsDir, imagePath)
-      const newPath = path.join(designsDir, newFilename)
-      if (oldPath !== newPath) {
-        await fs.rename(oldPath, newPath).catch(() => {})
-      }
-
-      // next pageNumber = max + 1
+      // determine next pageNumber
       const last = await prisma.tattooDesign.findFirst({
         orderBy: { pageNumber: 'desc' },
-        select:  { pageNumber: true }
+        select:  { pageNumber: true },
       })
       const pageNumber = last ? last.pageNumber + 1 : 1
 
@@ -53,21 +51,22 @@ export default async function handler(
           name,
           price:      new Prisma.Decimal(priceInt),
           artistName,
-          imagePath:  newFilename,
+          imagePath,               // store your full Blob URL
           description,
-          pageNumber
-        }
+          pageNumber,
+        },
       })
-      return res.status(200).json(design)
+      return res.status(201).json(design)
     } catch (err: any) {
       console.error('POST /api/admin/designs error:', err)
       return res.status(500).json({ error: err.message })
     }
   }
 
-  // DELETE
+  // ─── DELETE ────────────────────────────────────────────────────────────
   if (req.method === 'DELETE') {
     try {
+      // id can come in query or in body
       const rawId =
         typeof req.query.id === 'string'
           ? req.query.id
@@ -77,14 +76,9 @@ export default async function handler(
         return res.status(400).json({ error: 'Missing or invalid id' })
       }
 
-      const design = await prisma.tattooDesign.findUnique({ where: { id } })
-      if (!design) {
-        return res.status(404).json({ error: 'Design not found' })
-      }
-
-      // remove from DB + disk
       await prisma.tattooDesign.delete({ where: { id } })
-      await fs.unlink(path.join(designsDir, design.imagePath)).catch(() => {})
+      // NOTE: we do *not* delete the Blob file here; if you want to,
+      // you can call Vercel Blob's delete API separately.
 
       return res.status(200).json({ success: true })
     } catch (err: any) {
@@ -93,19 +87,7 @@ export default async function handler(
     }
   }
 
-  // LIST
-  if (req.method === 'GET') {
-    try {
-      const designs = await prisma.tattooDesign.findMany({
-        orderBy: { pageNumber: 'asc' }
-      })
-      return res.status(200).json(designs)
-    } catch (err: any) {
-      console.error('GET /api/admin/designs error:', err)
-      return res.status(500).json({ error: 'Fetch failed' })
-    }
-  }
-
+  // ─── METHOD NOT ALLOWED ────────────────────────────────────────────────
   res.setHeader('Allow', ['GET', 'POST', 'DELETE'])
-  res.status(405).end('Method Not Allowed')
+  res.status(405).end(`Method ${req.method} Not Allowed`)
 }

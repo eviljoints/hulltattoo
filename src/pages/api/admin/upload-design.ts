@@ -13,16 +13,16 @@ type Failure = { ok: false; error: string }
 type Success = { ok: true; filename: string; url: string }
 type Resp    = Failure | Success
 
-// Now returns fields as a plain object so TS won't infer 'never'
+// parseForm now returns fields as any so TS won’t infer never
 function parseForm(req: NextApiRequest): Promise<{
   fields: Record<string, any>
   files:  Files
 }> {
   return new Promise((resolve, reject) => {
     const form = new IncomingForm({
-      uploadDir:     os.tmpdir(),
+      uploadDir:      os.tmpdir(),
       keepExtensions: true,
-      maxFileSize:   10 * 1024 * 1024, // 10MB
+      maxFileSize:    10 * 1024 * 1024, // 10MB
     })
     form.parse(req, (err, fields, files) =>
       err ? reject(err) : resolve({ fields: fields as Record<string, any>, files })
@@ -39,7 +39,7 @@ export default async function handler(
     return res.status(405).json({ ok: false, error: 'Method Not Allowed' })
   }
 
-  // 1. Parse the form
+  // 1. Parse the multipart form
   let fields: Record<string, any>, files: Files
   try {
     ;({ fields, files } = await parseForm(req))
@@ -48,7 +48,7 @@ export default async function handler(
     return res.status(400).json({ ok: false, error: err.message || 'Parsing failed' })
   }
 
-  // 2. Grab the uploaded file (array vs single)
+  // 2. Extract the uploaded file
   const fileField = files.file
   if (!fileField) {
     return res.status(400).json({ ok: false, error: 'Missing file field' })
@@ -62,27 +62,24 @@ export default async function handler(
     return res.status(400).json({ ok: false, error: 'Only image files allowed' })
   }
 
-  // 4. Build a safe filename
-  const originalName    = uploadedFile.originalFilename || path.basename(uploadedFile.filepath)
-  const ext             = path.extname(originalName)
-  const rawFilename     = typeof fields.filename === 'string' ? fields.filename.trim() : ''
-  const base            = rawFilename || path.basename(originalName, ext)
-  const safeBase        = base.replace(/\s+/g, '-').replace(/[^\w\-]/g, '')
-  const finalFilename   = `${safeBase}${ext}`
+  // 4. Use the exact original filename
+  const originalName = uploadedFile.originalFilename
+    ? path.basename(uploadedFile.originalFilename)
+    : path.basename(uploadedFile.filepath)
 
-  // 5. Upload to Vercel Blob
+  // 5. Upload to Vercel Blob under `designs/<originalName>`
   try {
     const token  = process.env.BLOB_READ_WRITE_TOKEN as string
     const stream = fs.createReadStream(uploadedFile.filepath)
-    const { url } = await put(`designs/${finalFilename}`, stream, {
+    const { url } = await put(`designs/${originalName}`, stream, {
       access: 'public',
       token,
     })
 
-    // clean up temp file
+    // remove temp file
     fs.unlink(uploadedFile.filepath, () => {})
 
-    return res.status(200).json({ ok: true, filename: finalFilename, url })
+    return res.status(200).json({ ok: true, filename: originalName, url })
   } catch (err: any) {
     console.error('Blob upload error', err)
     return res.status(500).json({ ok: false, error: 'Blob upload failed' })

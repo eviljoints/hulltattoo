@@ -1,13 +1,14 @@
-// pages/designs.tsx
+// src/pages/designs.tsx
+
 import React, { useState, useEffect } from 'react'
 import type { NextPage } from 'next'
 
 type Design = {
   id:         number
-  name:       string
+  name:       string            // tattoo title
   price:      number | string
   artistName: string
-  imagePath:  string
+  imagePath:  string            // full Blob URL
   pageNumber: number
   description?: string
 }
@@ -45,13 +46,15 @@ const DesignsPage: NextPage = () => {
         {designs.map(d => (
           <div className="card" key={d.id}>
             <div className="img-wrap">
-              <img src={`/designs/${d.imagePath}`} alt={d.name} />
+              <img src={d.imagePath} alt={d.name} />
             </div>
             <div className="info">
-              <h2>{d.name}</h2>
+              <h2>{d.name}</h2> {/* Tattoo Title */}
               <p className="artist">By {d.artistName}</p>
               <p className="price">
-                £{typeof d.price === 'number' ? Math.floor(d.price) : parseInt(d.price as string,10)}
+                £{typeof d.price === 'number'
+                   ? Math.floor(d.price)
+                   : parseInt(d.price as string,10)}
               </p>
               {d.description && <p className="desc">{d.description}</p>}
             </div>

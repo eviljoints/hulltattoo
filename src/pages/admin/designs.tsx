@@ -7,16 +7,18 @@ import React, {
   FormEvent,
 } from 'react'
 import FileUploader from '../../components/FileUploader'
+import ManageDesigns from '~/components/ManageImages'
+import ManageImages from '~/components/ManageImages'
 
 const ARTISTS = ['Mike', 'Poppy', 'Harley'] as const
 type Artist = typeof ARTISTS[number]
 
 type Design = {
   id:         number
-  name:       string
+  name:       string        // tattoo title stored in DB
   price:      string        // whole‐number strings
   artistName: Artist
-  imagePath:  string        // stores the full Blob URL
+  imagePath:  string        // full Blob URL
   pageNumber: number
   description:string
 }
@@ -27,10 +29,10 @@ type FileItem = {
 }
 
 type AdminForm = {
-  name:        string
+  title:       string       // tattoo title
   price:       string
   artistName:  Artist
-  imagePath:   string        // will store the public URL
+  imagePath:   string       // public URL
   prompt:      string
   description: string
 }
@@ -38,8 +40,8 @@ type AdminForm = {
 const AdminDesignsPage: React.FC = () => {
   const [files,   setFiles]   = useState<FileItem[]>([])
   const [designs, setDesigns] = useState<Design[]>([])
-  const [form, setForm]       = useState<AdminForm>({
-    name:        '',
+  const [form, setForm] = useState<AdminForm>({
+    title:       '',
     price:       '',
     artistName:  'Mike',
     imagePath:   '',
@@ -49,7 +51,7 @@ const AdminDesignsPage: React.FC = () => {
   const [message,    setMessage]    = useState<string>('')
   const [generating, setGenerating] = useState<boolean>(false)
 
-  // Load the list of uploaded blob files
+  // Load blob file list
   const refreshFiles = () => {
     fetch('/api/design-images')
       .then(res => res.json())
@@ -79,20 +81,24 @@ const AdminDesignsPage: React.FC = () => {
     setForm(f => ({ ...f, [name]: value }))
   }
 
+  // Only updates description; leaves title (and imagePath) untouched
   async function handleGenerate() {
-    if (!form.name || !form.prompt) return
+    if (!form.title || !form.prompt) return
     setGenerating(true)
     try {
-      const res = await fetch('/api/admin/generate-description', {
+      const res  = await fetch('/api/admin/generate-description', {
         method:  'POST',
         headers: { 'Content-Type': 'application/json' },
-        body:    JSON.stringify({ rawName: form.name, prompt: form.prompt }),
+        body:   JSON.stringify({
+        rawName:  form.title,
+        prompt:   form.prompt,
+        imageUrl: form.imagePath,    // <-- send the selected Blob URL here
+              }),
       })
       const json = await res.json()
-      if (res.ok && 'generatedName' in json) {
+      if (res.ok && 'description' in json) {
         setForm(f => ({
           ...f,
-          name:        json.generatedName,
           description: json.description,
         }))
       } else {
@@ -112,8 +118,8 @@ const AdminDesignsPage: React.FC = () => {
       const res = await fetch('/api/admin/designs', {
         method:  'POST',
         headers: { 'Content-Type': 'application/json' },
-        body:    JSON.stringify({
-          name:        form.name,
+        body: JSON.stringify({
+          name:        form.title,        // send as "name" to your DB
           price:       form.price,
           artistName:  form.artistName,
           imagePath:   form.imagePath,
@@ -126,7 +132,7 @@ const AdminDesignsPage: React.FC = () => {
       }
       setMessage('Design saved!')
       setForm({
-        name:        '',
+        title:       '',
         price:       '',
         artistName:  'Mike',
         imagePath:   '',
@@ -155,6 +161,7 @@ const AdminDesignsPage: React.FC = () => {
 
   return (
     <div style={{ maxWidth: 600, margin: '2rem auto', padding: '1rem' }}>
+      {/* File uploader */}
       <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
         <FileUploader
           onUpload={(url) => {
@@ -168,10 +175,10 @@ const AdminDesignsPage: React.FC = () => {
 
       <form onSubmit={handleSubmit} style={{ display: 'grid', gap: '1rem' }}>
         <label>
-          Tattoo Name
+          Tattoo Title
           <input
-            name="name"
-            value={form.name}
+            name="title"
+            value={form.title}
             onChange={handleChange}
             required
             style={{ width: '100%' }}
@@ -246,7 +253,7 @@ const AdminDesignsPage: React.FC = () => {
         <button
           type="button"
           onClick={handleGenerate}
-          disabled={!form.name || !form.prompt || generating}
+          disabled={!form.title || !form.prompt || generating}
           style={{
             background: generating ? '#888' : '#00d4ff',
             color:      '#000',
@@ -255,7 +262,7 @@ const AdminDesignsPage: React.FC = () => {
             cursor:     generating ? 'wait' : 'pointer',
           }}
         >
-          {generating ? 'Generating…' : 'Auto-generate Name & Description'}
+          {generating ? 'Generating…' : 'Generate Description'}
         </button>
 
         <label>
@@ -286,17 +293,19 @@ const AdminDesignsPage: React.FC = () => {
         </p>
       )}
 
+      <ManageImages/>
+
       <h2 style={{ marginTop: '2rem' }}>Existing Designs</h2>
       <table style={{ width: '100%', borderCollapse: 'collapse' }}>
         <thead>
           <tr>
-            {['Pg', 'Name', 'Artist', 'Price', 'Img', 'Desc', ''].map((h, i) => (
+            {['Pg','Title','Artist','Price','Img','Desc',''].map((h,i) => (
               <th
                 key={i}
                 style={{
-                  padding: '0.5rem',
-                  borderBottom: '1px solid #444',
-                  textAlign: 'left',
+                  padding:'0.5rem',
+                  borderBottom:'1px solid #444',
+                  textAlign:'left'
                 }}
               >
                 {h}
@@ -307,27 +316,27 @@ const AdminDesignsPage: React.FC = () => {
         <tbody>
           {designs.map(d => (
             <tr key={d.id}>
-              <td style={{ padding: '0.5rem' }}>{d.pageNumber}</td>
-              <td style={{ padding: '0.5rem' }}>{d.name}</td>
-              <td style={{ padding: '0.5rem' }}>{d.artistName}</td>
-              <td style={{ padding: '0.5rem' }}>£{d.price}</td>
-              <td style={{ padding: '0.5rem' }}>
+              <td style={{ padding:'0.5rem' }}>{d.pageNumber}</td>
+              <td style={{ padding:'0.5rem' }}>{d.name}</td>
+              <td style={{ padding:'0.5rem' }}>{d.artistName}</td>
+              <td style={{ padding:'0.5rem' }}>£{d.price}</td>
+              <td style={{ padding:'0.5rem' }}>
                 <img
                   src={d.imagePath}
                   alt={d.name}
                   width={50}
-                  style={{ borderRadius: 4 }}
+                  style={{ borderRadius:4 }}
                 />
               </td>
-              <td style={{ padding: '0.5rem' }}>{d.description}</td>
-              <td style={{ padding: '0.5rem' }}>
+              <td style={{ padding:'0.5rem' }}>{d.description}</td>
+              <td style={{ padding:'0.5rem' }}>
                 <button
                   onClick={() => handleDelete(d.id)}
                   style={{
-                    background: 'transparent',
-                    color: 'red',
-                    border: 'none',
-                    cursor: 'pointer',
+                    background:'transparent',
+                    color:'red',
+                    border:'none',
+                    cursor:'pointer'
                   }}
                 >
                   Delete
