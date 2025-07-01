@@ -9,7 +9,7 @@ import React, {
 import FileUploader from '../../components/FileUploader'
 import ManageImages from '~/components/ManageImages'
 
-const ARTISTS = ['Mike', 'Poppy', 'Harley'] as const
+const ARTISTS = ['Mike', 'Harley'] as const
 type Artist = typeof ARTISTS[number]
 
 type Design = {

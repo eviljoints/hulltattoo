@@ -42,16 +42,6 @@ const artists: Artist[] = [
     artsPage: "/mike",
     stripes: generateStripes(),
   },
-  {
-    name: "Poppy",
-    role: "Apprentice Tattoo Artist",
-    description: "Poppy is an emerging talent in the tattoo industry with a passion for blackwork and minimalist designs. She enjoys creating pieces that combine clean lines with artistic flair. Friendly and approachable, Poppy loves working with clients to bring their ideas to life in a unique and meaningful way.",
-    image: "/images/poppy.webp",
-    gallery: "/images/poppy-gallery.webp",
-    instagram: "https://instagram.com/macabre_tattooz",
-    artsPage: "/poppy",
-    stripes: generateStripes(),
-  },
   
   {
     name: "Harley",

@@ -214,8 +214,7 @@ const HomePage: React.FC<HomePageProps> = ({ artists, error }) => {
                 </p>
                 <br />
                 <p>
-                  <strong>Poppy</strong> focuses on simple black and grey, blackwork, and limited colour pieces. She is approachable and always happy to discuss your unique ideas. Follow her journey on her 
-                  <a href="/poppy" style="color:#00d4ff;">Poppy Page</a>.
+                
                 </p>
                 <br />
                 <p>
@@ -293,7 +292,7 @@ export const getStaticProps = async () => {
     const response = await axios.get("https://www.hulltattoostudio.com/api/artists");
     return {
       props: { artists: response.data.artists },
-      revalidate: 3600,
+      revalidate: 60,
     };
   } catch (err) {
     console.error(err);

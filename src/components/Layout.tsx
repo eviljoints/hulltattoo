@@ -153,7 +153,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             >
               {[
                 { name: "Mike", href: "/mike" },
-                { name: "Poppy", href: "/poppy" },
+               
                 { name: "Harley", href: "/harley" },
               ].map(({ name, href }) => (
                 <MenuItem
@@ -272,7 +272,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           >
             {[
               { name: "Mike", href: "/mike" },
-              { name: "Poppy", href: "/poppy" },
+              
               { name: "Harley", href: "/harley" },
             ].map(({ name, href }) => (
               <MenuItem key={name} bg="transparent" _hover={{ bg: "rgba(255,0,127,0.2)" }}>

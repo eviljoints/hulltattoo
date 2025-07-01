@@ -14,8 +14,8 @@ export const authenticateAdmin = (req: NextApiRequest, res: NextApiResponse) => 
   const decoded = Buffer.from(token, "base64").toString("utf-8");
   const [username, password] = decoded.split(":");
 
-  const ADMIN_USERNAME = process.env.ADMIN_USERNAME || "HTC";
-  const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "PoppySmellz";
+  const ADMIN_USERNAME = process.env.ADMIN_USERNAME || "HTS";
+  const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "Wewillrockyou";
 
   if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
     return true;

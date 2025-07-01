@@ -4,10 +4,10 @@ import { Box, FormControl, FormLabel, Select, Text, Link as ChakraLink } from '@
 import NextLink from 'next/link';
 import Cookies from 'js-cookie';
 import MikesAvailability from '../../components/MikesAvailability';
-import PoppysAvailability from '../../components/PoppysAvailability';
+import HarleysAvailability from '../../components/HarleyAvailability';
 
 const CalendarPage: React.FC = () => {
-  const [who, setWho] = useState<'mike' | 'poppy'>('mike');
+  const [who, setWho] = useState<'mike' | 'Harley'>('mike');
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
@@ -47,12 +47,12 @@ const CalendarPage: React.FC = () => {
     <Box bg="rgb(42,0,21)" color="#fff" p={4}>
       <FormControl mb={4}>
         <FormLabel>View availability for:</FormLabel>
-        <Select value={who} onChange={(e) => setWho(e.target.value as 'mike' | 'poppy')}>
+        <Select value={who} onChange={(e) => setWho(e.target.value as 'mike' | 'Harley')}>
           <option value="mike">Mike</option>
-          <option value="poppy">Poppy</option>
+          <option value="Harley">Harley</option>
         </Select>
       </FormControl>
-      {who === 'mike' ? <MikesAvailability /> : <PoppysAvailability />}
+      {who === 'mike' ? <MikesAvailability /> : <HarleysAvailability />}
     </Box>
   );
 };

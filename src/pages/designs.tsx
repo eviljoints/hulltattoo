@@ -13,7 +13,7 @@ type Design = {
   description?: string
 }
 
-const ARTISTS = ['Mike','Poppy','Harley'] as const
+const ARTISTS = ['Mike','Harley'] as const
 type Artist = typeof ARTISTS[number]
 
 const DesignsPage: NextPage = () => {

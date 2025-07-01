@@ -1,10 +1,10 @@
 // pages/Calendar.tsx
 import React, { useState } from 'react'
 import MikesAvailability from '../components/MikesAvailability'
-import PoppysAvailability from '../components/PoppysAvailability'
+import HarleysAvailability from '../components/HarleyAvailability'
 
 const CalendarPage: React.FC = () => {
-  const [who, setWho] = useState<'mike' | 'poppy'>('mike')
+  const [who, setWho] = useState<'mike' | 'Harley'>('mike')
 
   return (
     <div style={{ background: 'rgb(42, 0, 21)', color: '#fff', padding: '1rem' }}>
@@ -15,7 +15,7 @@ const CalendarPage: React.FC = () => {
         <select
           id="availability-selector"
           value={who}
-          onChange={(e) => setWho(e.target.value as 'mike' | 'poppy')}
+          onChange={(e) => setWho(e.target.value as 'mike' | 'Harley')}
           style={{
             background:   '#111',
             color:        '#fff',
@@ -26,11 +26,11 @@ const CalendarPage: React.FC = () => {
           }}
         >
           <option value="mike">Mike</option>
-          <option value="poppy">Poppy</option>
+          <option value="harley">Harley</option>
         </select>
       </div>
 
-      {who === 'mike' ? <MikesAvailability /> : <PoppysAvailability />}
+      {who === 'mike' ? <MikesAvailability /> : <HarleysAvailability />}
     </div>
   )
 }

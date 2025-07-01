@@ -1,4 +1,4 @@
-// pages/api/poppy-calendar.ts
+// pages/api/Harley-calendar.ts
 import type { NextApiRequest, NextApiResponse } from 'next'
 import ICAL from 'ical.js'
 
@@ -14,7 +14,7 @@ export default async function handler(
 ) {
   try {
     const icsRes = await fetch(
-      'https://calendar.google.com/calendar/ical/dd7a6a79f797b04aaaf576d0294c4fad3f329e68a1cd7ba7228a0638f582084b%40group.calendar.google.com/private-c00ddb615048b4497f181c17fcf97a68/basic.ics'
+      'https://calendar.google.com/calendar/ical/5a61bcf24cca0df618bec71c01ac6b9f4ca93276f07e3615c8423f8fc7658392%40group.calendar.google.com/private-04e4297c219b09b582e27a8397cfa876/basic.ics'
     )
     if (!icsRes.ok) throw new Error(`Google returned ${icsRes.status}`)
     const icsText = await icsRes.text()
@@ -34,7 +34,7 @@ export default async function handler(
 
     res.status(200).json(events)
   } catch (e: any) {
-    console.error('API /poppy-calendar error:', e)
+    console.error('API /Harley-calendar error:', e)
     res.status(500).json({ error: 'Failed to fetch calendar' })
   }
 }

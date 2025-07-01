@@ -1,4 +1,4 @@
-// components/PoppysAvailability.tsx
+// components/HarleysAvailability.tsx
 import React, { useState, useEffect, useRef } from 'react'
 import FullCalendar from '@fullcalendar/react'
 import dayGridPlugin from '@fullcalendar/daygrid'
@@ -16,8 +16,8 @@ import {
   format as formatDate,
 } from 'date-fns'
 
-// Mirror Mike's availability for Poppy
-export default function PoppysAvailability() {
+// Mirror Mike's availability for Harley
+export default function HarleysAvailability() {
   const [events, setEvents]         = useState<EventInput[]>([])
   const [viewType, setViewType]     = useState<'Week'|'Month'>('Week')
   const [selectedPeriod, setPeriod] = useState<Date>(startOfWeek(new Date(), { weekStartsOn:1 }))
@@ -28,9 +28,9 @@ export default function PoppysAvailability() {
   const calendarRef   = useRef<FullCalendar>(null)
   const weekMondayRef = useRef<Date>(startOfWeek(new Date(), { weekStartsOn:1 }))
 
-  // fetch Poppy's bookings
+  // fetch Harley's bookings
   useEffect(() => {
-    fetch('/api/poppy-calendar')
+    fetch('/api/Harley-calendar')
       .then(r => r.ok ? r.json() : Promise.reject(r.status))
       .then((data: {title:string;start:string;end:string}[]) => {
         setEvents(data.map(b => ({
@@ -80,7 +80,7 @@ export default function PoppysAvailability() {
     if(!wrapperRef.current) return
     const canvas = await html2canvas(wrapperRef.current, { backgroundColor: '#000' })
     const link   = document.createElement('a')
-    link.download = `poppy-availability-${formatDate(weekMondayRef.current,'yyyy-MM-dd')}.png`
+    link.download = `Harley-availability-${formatDate(weekMondayRef.current,'yyyy-MM-dd')}.png`
     link.href     = canvas.toDataURL('image/png')
     link.click()
   }
@@ -127,10 +127,10 @@ export default function PoppysAvailability() {
     const end   = viewType==='Week'? addWeeks(selectedPeriod,1): addMonths(selectedPeriod,1)
     const hours = computeHourlySlots(simpleBusy, start, end)
     let payload:string
-    if(hours.length===0) payload = `Poppy is fully booked between ${formatDate(start,'dd/MM/yyyy')} and ${formatDate(end,'dd/MM/yyyy')}. Drop us a message to join the waitlist! 📩`
+    if(hours.length===0) payload = `Harley is fully booked between ${formatDate(start,'dd/MM/yyyy')} and ${formatDate(end,'dd/MM/yyyy')}. Drop us a message to join the waitlist! 📩`
     else {
       const bullets = hours.map(h=>`- ${formatDate(h.start,'dd/MM/yyyy HH:mm')} to ${formatDate(h.end,'HH:mm')}`).join('\n')
-      payload = `Here are Poppy’s available 1-hour slots between ${formatDate(start,'dd/MM/yyyy')} and ${formatDate(end,'dd/MM/yyyy')}:\n\n${bullets}\n\nDrop us a message to book your slot! 📩`
+      payload = `Here are Harley’s available 1-hour slots between ${formatDate(start,'dd/MM/yyyy')} and ${formatDate(end,'dd/MM/yyyy')}:\n\n${bullets}\n\nDrop us a message to book your slot! 📩`
     }
     try {
       const res = await fetch('/api/generate-availability-post', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt:payload})})
@@ -145,7 +145,7 @@ export default function PoppysAvailability() {
   return (
     <div ref={wrapperRef} style={{background:'#000',color:'#fff',padding:'1rem'}}>
       <header style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:'1rem'}}>
-        <h2>Poppy’s Availability</h2>
+        <h2>Harley’s Availability</h2>
         <div style={{display:'flex',gap:8}}>
           <select value={viewType} onChange={e=>setViewType(e.target.value as any)}>
             <option value='Week'>Week</option>
