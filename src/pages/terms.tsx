@@ -1,6 +1,7 @@
 // ./src/pages/terms.tsx
 import Head from 'next/head';
-import { Box } from '@chakra-ui/react';
+import NextLink from 'next/link';
+import { Box, Link as ChakraLink } from '@chakra-ui/react';
 
 export default function Terms() {
   const pageUrl = 'https://www.hulltattoostudio.com/terms';
@@ -97,7 +98,13 @@ export default function Terms() {
         <p>We rely on Stripe (payments), Google (Calendar/OAuth), Vercel (hosting), Neon (database), Vercel Blob (image storage), and our email provider. Their terms apply in addition to these Terms.</p>
 
         <h2>Privacy</h2>
-        <p>See our <a href="/privacy">Privacy Policy</a> for information on personal data and your rights.</p>
+        <p>
+          See our{' '}
+          <ChakraLink as={NextLink} href="/privacy">
+            Privacy Policy
+          </ChakraLink>{' '}
+          for information on personal data and your rights.
+        </p>
 
         <h2>Availability & Changes</h2>
         <p>We do not guarantee uninterrupted service. We may modify or discontinue features with reasonable notice where practical.</p>
