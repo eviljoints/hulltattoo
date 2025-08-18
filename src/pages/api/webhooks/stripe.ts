@@ -1,173 +1,132 @@
-// ./src/pages/api/webhooks/stripe.ts
+// src/pages/api/webhooks/stripe.ts
 import type { NextApiRequest, NextApiResponse } from 'next';
-import Stripe from 'stripe';
-import { stripe } from '@/lib/stripe';
-import { prisma } from '@/lib/prisma';
-import { insertEvent } from '@/lib/google';
-import { buildICS } from '@/lib/ics';
-import { sendMail } from '@/lib/email';
+import { stripe } from '~/lib/stripe';
+import { prisma } from '~/lib/prisma';
+import { insertEvent } from '~/lib/google';
 
 export const config = { api: { bodyParser: false } };
 
-async function readRawBody(req: any): Promise<Buffer> {
-  return new Promise((resolve, reject) => {
+function buffer(readable: any) {
+  return new Promise<Buffer>((resolve, reject) => {
     const chunks: any[] = [];
-    req.on('data', (c: any) => chunks.push(Buffer.from(c)));
-    req.on('end', () => resolve(Buffer.concat(chunks)));
-    req.on('error', reject);
+    readable.on('data', (chunk: any) => chunks.push(Buffer.from(chunk)));
+    readable.on('end', () => resolve(Buffer.concat(chunks)));
+    readable.on('error', reject);
   });
 }
 
+function mergeNotes(notes: string | null, patch: Record<string, any>) {
+  let base: Record<string, any> = {};
+  try { if (notes) base = JSON.parse(notes); } catch {}
+  return JSON.stringify({ ...base, ...patch });
+}
+
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  if (req.method !== 'POST') {
-    res.setHeader('Allow', 'POST');
-    return res.status(405).send('Method Not Allowed');
-  }
+  if (req.method !== 'POST') { res.setHeader('Allow','POST'); return res.status(405).end('Method Not Allowed'); }
 
   const sig = req.headers['stripe-signature'] as string;
+  const buf = await buffer(req);
 
-  let event: Stripe.Event;
+  let event;
   try {
-    const buf = await readRawBody(req);
     event = stripe.webhooks.constructEvent(buf, sig, process.env.STRIPE_WEBHOOK_SECRET!);
   } catch (err: any) {
-    console.error('[stripe] constructEvent failed:', err?.message || err);
+    console.error('[stripe webhook] signature error', err?.message);
     return res.status(400).send(`Webhook Error: ${err.message}`);
   }
 
   try {
-    switch (event.type) {
-      case 'checkout.session.completed': {
-        const session = event.data.object as Stripe.Checkout.Session;
-        const bookingId = session.metadata?.bookingId;
-        if (!bookingId) break;
+    if (event.type === 'checkout.session.completed') {
+      const s = event.data.object as any;
+      const bookingId = s.metadata?.bookingId as string | undefined;
+      const paymentIntentId = s.payment_intent;
+      if (!bookingId) return res.status(200).json({ ok: true });
 
-        const paymentIntentId =
-          (typeof session.payment_intent === 'string'
-            ? session.payment_intent
-            : session.payment_intent?.id) || null;
+      const booking = await prisma.booking.findUnique({
+        where: { id: bookingId },
+        include: { artist: true, service: true },
+      });
+      if (!booking) return res.status(200).json({ ok: true });
+      if (booking.status === 'CONFIRMED') return res.status(200).json({ ok: true, already: true });
 
-        const booking = await prisma.booking.findUnique({
-          where: { id: bookingId },
-          include: { service: true, artist: true },
-        });
-        if (!booking) break;
-
-        // Final overlap guard — if another CONFIRMED/PENDING overlaps, cancel this booking and (optionally) refund
-        const overlapping = await prisma.booking.findFirst({
-          where: {
-            artistId: booking.artistId,
-            status: { in: ['PENDING', 'CONFIRMED'] },
-            NOT: { id: booking.id },
-            AND: [{ start: { lt: booking.end } }, { end: { gt: booking.start } }],
-          },
-          select: { id: true },
-        });
-        if (overlapping) {
-          await prisma.booking.update({
-            where: { id: booking.id },
-            data: { status: 'CANCELLED' },
-          });
-          return res.status(200).json({ doubleBooked: true });
-        }
-
-        // Build a rich description for Google Calendar (include form details & image links)
-        let details: { placement?: string; brief?: string; images?: string[]; email?: string; name?: string } = {};
-        try { details = booking.notes ? JSON.parse(booking.notes) : {}; } catch {}
-
-        const lines: string[] = [
-          'Booked via Hull Tattoo Studio',
-          details.placement ? `Placement: ${details.placement}` : '',
-          details.brief ? `Brief: ${details.brief}` : '',
-        ].filter(Boolean);
-        if (Array.isArray(details.images) && details.images.length) {
-          lines.push('Images:');
-          details.images.slice(0, 3).forEach((u) => lines.push(u));
-        }
-        lines.push(`BOOKING:${booking.id}`);
-        const description = lines.join('\n');
-
-        // Create/update Google Calendar event
-        let gEventId = '';
-        try {
-          const { eventId } = await insertEvent({
-            artistId: booking.artistId,
-            start: booking.start,
-            end: booking.end,
-            summary: `${booking.service.title} – ${booking.customerName || booking.customerEmail || 'Client'}`,
-            description,
-            attendees: booking.customerEmail
-              ? [{ email: booking.customerEmail, displayName: booking.customerName || undefined }]
-              : undefined,
-            location: details.placement || undefined,
-            timeZone: 'Europe/London',
-          });
-          gEventId = eventId || '';
-        } catch (e: any) {
-          console.error('[gcal] insertEvent failed:', e?.message || e);
-        }
-
-        // Confirm booking & store Stripe + GCal refs
-        const extra = gEventId ? ` [gEventId:${gEventId}]` : '';
-        await prisma.booking.update({
-          where: { id: booking.id },
-          data: {
-            status: 'CONFIRMED',
-            stripePaymentIntentId: paymentIntentId,
-            notes: `${booking.notes || ''}${extra}`.trim(),
-          },
-        });
-
-        // Email customer with ICS
-        try {
-          const ics = await buildICS({
-            title: booking.service.title,
-            start: booking.start,
-            end: booking.end,
-            description: 'Hull Tattoo Studio booking',
-            location: '255 Hedon Road, Hull, HU9 1NQ',
-          });
-
-          if (booking.customerEmail) {
-            await sendMail({
-              to: booking.customerEmail,
-              subject: `Booking confirmed – ${booking.service.title}`,
-              html: `<p>Your booking is confirmed.</p>
-                     <p><strong>Date:</strong> ${booking.start.toLocaleString('en-GB', { timeZone: 'Europe/London' })}</p>
-                     <p>We look forward to seeing you.</p>`,
-              attachments: [
-                { filename: 'booking.ics', content: ics, contentType: 'text/calendar' },
-              ],
-            });
-          }
-        } catch (e: any) {
-          console.error('[email] sendMail failed:', e?.message || e);
-        }
-
-        break;
+      // final overlap check against CONFIRMED bookings
+      const overlap = await prisma.booking.findFirst({
+        where: {
+          artistId: booking.artistId,
+          NOT: { id: booking.id },
+          status: 'CONFIRMED',
+          AND: [{ start: { lt: booking.end } }, { end: { gt: booking.start } }],
+        },
+        select: { id: true },
+      });
+      if (overlap) {
+        await prisma.booking.update({ where: { id: booking.id }, data: { status: 'CANCELLED' } });
+        return res.status(200).json({ cancelled: true });
       }
 
-      case 'checkout.session.expired': {
-        const session = event.data.object as Stripe.Checkout.Session;
-        const bookingId = session.metadata?.bookingId;
-        if (bookingId) {
-          const b = await prisma.booking.findUnique({ where: { id: bookingId }, select: { status: true } });
-          if (b?.status === 'PENDING') {
-            await prisma.booking.delete({ where: { id: bookingId } });
-          }
-        }
-        break;
+      // create Google event
+      let gEventId: string | null = null;
+      try {
+        gEventId = await insertEvent({
+          artistId: booking.artistId,
+          start: booking.start,
+          end: booking.end,
+          summary: `${booking.service.title} – ${booking.customerName || booking.customerEmail || 'Client'}`,
+          description: 'Booked via Hull Tattoo Studio',
+          timeZone: 'Europe/London',
+          attendees: booking.customerEmail ? [{ email: booking.customerEmail }] : undefined,
+          location: 'Hull Tattoo Studio, 255 Hedon Road, Hull, HU9 1NQ',
+        });
+      } catch (e: any) {
+        console.error('[webhook] insertEvent failed:', e?.message || e);
       }
 
-      default:
-        // ignore other events
-        break;
+      const newNotes = mergeNotes(booking.notes || null, {
+        gcalEventId: gEventId,
+        stripePaymentIntentId: paymentIntentId,
+      });
+
+      await prisma.booking.update({
+        where: { id: booking.id },
+        data: {
+          status: 'CONFIRMED',
+          stripePaymentIntentId: paymentIntentId || booking.stripePaymentIntentId || null,
+          notes: newNotes,
+        },
+      });
+
+      return res.status(200).json({ ok: true });
     }
 
+    // Expired checkout sessions → cancel the pending hold
+    if (event.type === 'checkout.session.expired') {
+      const s = event.data.object as any;
+      const bookingId = s.metadata?.bookingId as string | undefined;
+      if (bookingId) {
+        await prisma.booking.updateMany({
+          where: { id: bookingId, status: 'PENDING' },
+          data: { status: 'CANCELLED' },
+        });
+      }
+      return res.status(200).json({ ok: true });
+    }
+
+    if (event.type === 'payment_intent.payment_failed') {
+      const pi = event.data.object as any;
+      const bookingId = pi.metadata?.bookingId as string | undefined;
+      if (bookingId) {
+        await prisma.booking.updateMany({
+          where: { id: bookingId, status: 'PENDING' },
+          data: { status: 'CANCELLED' },
+        });
+      }
+      return res.status(200).json({ ok: true });
+    }
+
+    // default: acknowledge
     return res.status(200).json({ received: true });
   } catch (err: any) {
-    console.error('[stripe webhook] handler error:', err?.message || err);
-    // Acknowledge anyway to avoid retries; errors were logged.
-    return res.status(200).json({ received: true, warning: err?.message || 'non-fatal' });
+    console.error('[stripe webhook] handler error', err?.message || err, err?.stack);
+    return res.status(500).json({ error: 'Internal Server Error' });
   }
 }

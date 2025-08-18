@@ -1,10 +1,11 @@
+// src/pages/api/bookings/checkout.ts
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { prisma } from '~/lib/prisma';
 import { stripe } from '~/lib/stripe';
 
 type Iso = string;
 const LONDON_TZ = 'Europe/London';
-const HOLD_MINUTES = Number(process.env.BOOKING_HOLD_MINUTES || 20); // fresh pending holds block for 20 min
+const HOLD_MINUTES = Number(process.env.BOOKING_HOLD_MINUTES || 20); // fresh PENDING holds block for 20 min
 
 function addMinutes(iso: Iso, m: number) {
   return new Date(new Date(iso).getTime() + m * 60000).toISOString();
@@ -29,7 +30,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   try {
-    // Basic Stripe sanity
     const secret = process.env.STRIPE_SECRET_KEY || '';
     if (!secret || !secret.startsWith('sk_')) {
       console.error('[checkout] Misconfigured STRIPE_SECRET_KEY');
@@ -45,7 +45,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return res.status(400).json({ error: 'artistId, serviceId, startISO, customerEmail required' });
     }
 
-    // Fetch artist + service
     const [artist, service] = await Promise.all([
       prisma.artist.findUnique({ where: { id: String(artistId) }, select: { id: true, name: true, isActive: true } }),
       prisma.service.findUnique({
@@ -76,13 +75,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return res.status(400).json({ error: 'Invalid price for service' });
     }
 
-    // Times
     const duration = Number(service.durationMin || 60);
     const endISO = addMinutes(startISO, duration);
 
-    // Double-booking guard:
-    //  - CONFIRMED always blocks
-    //  - PENDING only blocks if created in the last HOLD_MINUTES
+    // Double-booking guard: CONFIRMED always blocks; PENDING blocks only if created in last HOLD_MINUTES
     const pendingFreshAfter = new Date(Date.now() - HOLD_MINUTES * 60_000);
     const clash = await prisma.booking.findFirst({
       where: {
@@ -127,7 +123,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       include: { service: true, artist: true },
     });
 
-    // Simple/old Checkout Session (cards/Revolut Pay etc. as you had before)
     const origin = siteOriginFromReq(req);
     const session = await stripe.checkout.sessions.create({
       mode: 'payment',
@@ -154,13 +149,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           },
         },
       ],
-      success_url: `${origin}/booking/success?bookingId=${booking.id}`,
+      // pass session id for fallback finalization
+      success_url: `${origin}/booking/success?bookingId=${booking.id}&session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${origin}/booking/cancelled?bookingId=${booking.id}`,
-      // If this type causes type errors for your Stripe typings, remove it:
-      // expires_at: Math.floor(Date.now() / 1000) + 30 * 60, // 30 minutes
     });
 
-    // Save Checkout session ID (helpful for debugging)
     await prisma.booking.update({
       where: { id: booking.id },
       data: { stripeCheckoutId: session.id },
