@@ -3,6 +3,7 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import { stripe } from '~/lib/stripe';
 import { prisma } from '~/lib/prisma';
 import { insertEvent } from '~/lib/google';
+import { sendMail } from '~/lib/email';
 
 export const config = { api: { bodyParser: false } };
 
@@ -15,10 +16,82 @@ function buffer(readable: any) {
   });
 }
 
-function mergeNotes(notes: string | null, patch: Record<string, any>) {
-  let base: Record<string, any> = {};
-  try { if (notes) base = JSON.parse(notes); } catch {}
-  return JSON.stringify({ ...base, ...patch });
+// ---------- helpers to format details ----------
+const LONDON_TZ = 'Europe/London';
+const STUDIO_EMAIL = process.env.EMAIL_USER || 'admin@hulltattoostudio.com';
+
+function formatGBP(pence?: number | null) {
+  const val = typeof pence === 'number' ? pence : 0;
+  return `£${(val / 100).toFixed(2)}`;
+}
+
+function parseNotes(notes: string | null) {
+  if (!notes) return {};
+  try { return JSON.parse(notes) || {}; } catch { return {}; }
+}
+
+function formatWhenRange(start: Date, end: Date) {
+  const opts: Intl.DateTimeFormatOptions = {
+    timeZone: LONDON_TZ,
+    weekday: 'short',
+    year: 'numeric',
+    month: 'short',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+  };
+  const s = start.toLocaleString('en-GB', opts);
+  const e = end.toLocaleString('en-GB', { timeZone: LONDON_TZ, hour: '2-digit', minute: '2-digit' });
+  return `${s} – ${e} (${LONDON_TZ})`;
+}
+
+function buildEventDescription(booking: any) {
+  const extra = parseNotes(booking.notes);
+  const lines: string[] = [];
+
+  lines.push(`Service: ${booking.service?.title || ''}`);
+  lines.push(`Artist: ${booking.artist?.name || ''}`);
+  lines.push(`Customer: ${booking.customerName || booking.customerEmail || 'N/A'}`);
+  lines.push(`Email: ${booking.customerEmail || 'N/A'}`);
+  lines.push(`When: ${formatWhenRange(booking.start, booking.end)}`);
+  lines.push(`Price: ${formatGBP(booking.totalAmount)} ${booking.currency || 'GBP'}`);
+  if (extra.placement) lines.push(`Placement: ${extra.placement}`);
+  if (extra.brief) {
+    lines.push('Brief:');
+    lines.push(extra.brief);
+  }
+  const imgs: string[] = Array.isArray(extra.images) ? extra.images : [];
+  if (imgs.length > 0) {
+    lines.push('Images:');
+    imgs.forEach((u, idx) => lines.push(`${idx + 1}. ${u}`));
+  }
+  lines.push('');
+  lines.push(`Booking ID: ${booking.id}`);
+
+  return lines.join('\n');
+}
+
+function buildStudioEmailHTML(booking: any) {
+  const extra = parseNotes(booking.notes);
+  const imgs: string[] = Array.isArray(extra.images) ? extra.images : [];
+
+  return `
+    <h2>New Booking Confirmed</h2>
+    <p><strong>Service:</strong> ${booking.service?.title || ''}</p>
+    <p><strong>Artist:</strong> ${booking.artist?.name || ''}</p>
+    <p><strong>Customer:</strong> ${booking.customerName || booking.customerEmail || 'N/A'}</p>
+    <p><strong>Email:</strong> ${booking.customerEmail || 'N/A'}</p>
+    <p><strong>When:</strong> ${formatWhenRange(booking.start, booking.end)}</p>
+    <p><strong>Price:</strong> ${formatGBP(booking.totalAmount)} ${booking.currency || 'GBP'}</p>
+    ${extra.placement ? `<p><strong>Placement:</strong> ${extra.placement}</p>` : ''}
+    ${extra.brief ? `<p><strong>Brief:</strong><br/>${String(extra.brief).replace(/\n/g, '<br/>')}</p>` : ''}
+    ${
+      imgs.length
+        ? `<p><strong>Images:</strong><br/>${imgs.map(u => `<a href="${u}" target="_blank" rel="noreferrer">${u}</a>`).join('<br/>')}</p>`
+        : ''
+    }
+    <p><strong>Booking ID:</strong> ${booking.id}</p>
+  `;
 }
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
@@ -49,7 +122,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       if (!booking) return res.status(200).json({ ok: true });
       if (booking.status === 'CONFIRMED') return res.status(200).json({ ok: true, already: true });
 
-      // final overlap check against CONFIRMED bookings
+      // final overlap check against CONFIRMED
       const overlap = await prisma.booking.findFirst({
         where: {
           artistId: booking.artistId,
@@ -64,7 +137,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         return res.status(200).json({ cancelled: true });
       }
 
-      // create Google event
+      // create Google event with full description
       let gEventId: string | null = null;
       try {
         gEventId = await insertEvent({
@@ -72,7 +145,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           start: booking.start,
           end: booking.end,
           summary: `${booking.service.title} – ${booking.customerName || booking.customerEmail || 'Client'}`,
-          description: 'Booked via Hull Tattoo Studio',
+          description: buildEventDescription(booking),
           timeZone: 'Europe/London',
           attendees: booking.customerEmail ? [{ email: booking.customerEmail }] : undefined,
           location: 'Hull Tattoo Studio, 255 Hedon Road, Hull, HU9 1NQ',
@@ -81,24 +154,34 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         console.error('[webhook] insertEvent failed:', e?.message || e);
       }
 
-      const newNotes = mergeNotes(booking.notes || null, {
-        gcalEventId: gEventId,
-        stripePaymentIntentId: paymentIntentId,
-      });
-
+      // confirm & save refs
       await prisma.booking.update({
         where: { id: booking.id },
         data: {
           status: 'CONFIRMED',
           stripePaymentIntentId: paymentIntentId || booking.stripePaymentIntentId || null,
-          notes: newNotes,
+          notes: JSON.stringify({
+            ...(parseNotes(booking.notes) || {}),
+            gcalEventId: gEventId || null,
+            stripePaymentIntentId: paymentIntentId || null,
+          }),
         },
       });
+
+      // email studio with same details
+      try {
+        await sendMail({
+          to: STUDIO_EMAIL,
+          subject: `New booking – ${booking.service.title} with ${booking.artist.name} – ${formatWhenRange(booking.start, booking.end)}`,
+          html: buildStudioEmailHTML(booking),
+        });
+      } catch (e: any) {
+        console.error('[webhook] studio email failed:', e?.message || e);
+      }
 
       return res.status(200).json({ ok: true });
     }
 
-    // Expired checkout sessions → cancel the pending hold
     if (event.type === 'checkout.session.expired') {
       const s = event.data.object as any;
       const bookingId = s.metadata?.bookingId as string | undefined;
@@ -123,7 +206,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return res.status(200).json({ ok: true });
     }
 
-    // default: acknowledge
     return res.status(200).json({ received: true });
   } catch (err: any) {
     console.error('[stripe webhook] handler error', err?.message || err, err?.stack);
