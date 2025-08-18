@@ -220,3 +220,13 @@ model Review {
   createdAt DateTime @default(now())
   status    String   @default("pending")
 }
+model LoyaltyClient {
+  id         Int      @id @default(autoincrement())
+  name       String
+  clientId   String   @unique
+  hours      Int      @default(0)
+  stamps     Int      @default(0)
+  signUpDate DateTime @default(now())
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
