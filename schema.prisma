@@ -1,13 +1,217 @@
+// schema.prisma
+
+generator client {
+  provider = "prisma-client-js"
+}
+
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
-generator client {
-  provider      = "prisma-client-js"
-  binaryTargets = ["native"]
+/**
+ * -------- Enums --------
+ */
+enum Role {
+  ADMIN
+  ARTIST
+  STAFF
+  CUSTOMER
 }
 
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+  REFUNDED
+}
+
+enum OverrideType {
+  OPEN
+  CLOSED
+  EXTEND
+  REDUCE
+}
+
+/**
+ * -------- Models --------
+ */
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String?
+  role      Role     @default(CUSTOMER)
+
+  // One-to-one (optional) relation to Artist if this user is an artist
+  artist    Artist?
+
+  // Backref if you link bookings to users
+  bookings  Booking[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Artist {
+  id          String   @id @default(cuid())
+  userId      String?  @unique
+  user        User?    @relation(fields: [userId], references: [id])
+
+  slug        String   @unique // e.g. "mike", "harley"
+  name        String
+  roleTitle   String?
+  bio         String?
+  instagram   String?
+  facebook    String?
+  image       String?
+  gallery     String?
+  hourlyRate  Int?
+  isActive    Boolean  @default(true)
+
+  // Google Calendar integration
+  calendarId   String?
+  googleTokens Json?
+
+  // Relations
+  bookings              Booking[]
+  availabilityTemplates AvailabilityTemplate[]
+  availabilityOverrides AvailabilityOverride[]
+  serviceLinks          ServiceOnArtist[]
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([isActive, name])
+}
+
+model Service {
+  id              String   @id @default(cuid())
+  slug            String   @unique
+  title           String
+  description     String?
+
+  // Booking logic expects these fields:
+  durationMin     Int                 // base duration (minutes)
+  priceGBP        Int                 // base price (pence)
+  depositGBP      Int?                // optional fixed deposit (pence)
+  depositPct      Int?                // optional % (0..100)
+  bufferBeforeMin Int?
+  bufferAfterMin  Int?
+  active          Boolean  @default(true)
+
+  // Relations
+  bookings    Booking[]
+  artistLinks ServiceOnArtist[]
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+// Per-artist activation + optional price override
+model ServiceOnArtist {
+  id        String  @id @default(cuid())
+  artistId  String
+  serviceId String
+  priceGBP  Int?      // optional override price (pence)
+  active    Boolean   @default(true)
+
+  artist  Artist  @relation(fields: [artistId], references: [id], onDelete: Cascade)
+  service Service @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+
+  @@unique([artistId, serviceId], name: "artistId_serviceId")
+}
+
+// Canonical booking record used by checkout + Stripe
+model Booking {
+  id                    String        @id @default(cuid())
+  artistId              String
+  serviceId             String
+
+  // Optional link to a user account
+  customerId            String?
+  customer              User?         @relation(fields: [customerId], references: [id])
+
+  customerEmail         String?
+  customerName          String?
+
+  start                 DateTime
+  end                   DateTime
+  status                BookingStatus @default(PENDING)
+
+  // money in minor units (pence) to avoid float issues
+  totalAmount           Int
+  currency              String        @default("GBP")
+
+  // Optional deposit in pence (if you ever enable deposits)
+  depositAmount         Int?
+
+  // Stripe references
+  stripePaymentIntentId String?
+  stripeCheckoutId      String?
+
+  // Free-form JSON/string (we store form details & gcal event id markers here)
+  notes                 String?
+
+  artist                Artist        @relation(fields: [artistId], references: [id])
+  service               Service       @relation(fields: [serviceId], references: [id])
+
+  createdAt             DateTime      @default(now())
+  updatedAt             DateTime      @updatedAt
+
+  @@index([artistId, start, end])
+  @@index([customerId, start])
+}
+
+// Weekly template rows (0=Sun..6=Sat) used by availability computation
+model AvailabilityTemplate {
+  id        String  @id @default(cuid())
+  artistId  String
+  artist    Artist  @relation(fields: [artistId], references: [id])
+
+  weekday   Int     // 0..6 (JS Date.getDay)
+  startMin  Int     // minutes since midnight (e.g., 9:30 => 570)
+  endMin    Int
+
+  timezone  String  @default("Europe/London")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([artistId, weekday])
+}
+
+// Specific date overrides (CLOSED/EXTEND/REDUCE) with optional window
+model AvailabilityOverride {
+  id        String       @id @default(cuid())
+  artistId  String
+  artist    Artist       @relation(fields: [artistId], references: [id])
+
+  date      DateTime
+  type      OverrideType
+
+  startMin  Int?
+  endMin    Int?
+
+  note      String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([artistId, date])
+}
+
+model TattooDesign {
+  id          Int      @id @default(autoincrement())
+  name        String
+  price       Decimal  @db.Decimal(10, 2)
+  artistName  String
+  imagePath   String
+  description String?
+  pageNumber  Int      @unique
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
 model Review {
   id        Int      @id @default(autoincrement())
   name      String
@@ -16,47 +220,3 @@ model Review {
   createdAt DateTime @default(now())
   status    String   @default("pending")
 }
-
-model Client {
-  id         Int      @id @default(autoincrement())
-  name       String
-  hours      Int      @default(0)
-  stamps     Int      @default(0)
-  clientId   String   @unique
-  email      String?  @unique
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
-  signUpDate DateTime @default(now())
-  googleId   String?  @unique
-  appleId    String?  @unique
-}
-
-model File {
-  id        Int      @id @default(autoincrement())
-  name      String
-  mimetype  String
-  content   String
-  createdAt DateTime @default(now())
-  // NOTE: no more `designs` back-relation
-}
-
-model PostView {
-  id        Int      @id @default(autoincrement())
-  slug      String   @unique
-  views     Int      @default(0)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
-model TattooDesign {
-  id         Int      @id @default(autoincrement())
-  name       String
-  price      Decimal  @db.Decimal(10, 2)
-  artistName String
-  imagePath  String
-  description String? 
-  pageNumber Int      @unique
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
-}
-

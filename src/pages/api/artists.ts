@@ -1,61 +1,72 @@
 // ./src/pages/api/artists.ts
+import type { NextApiRequest, NextApiResponse } from "next";
 
-import { NextApiRequest, NextApiResponse } from 'next';
-
-interface Stripe {
-  left: string;
-  width: string;
-  color: string;
-}
-
-interface Artist {
+type Stripe = { left: string; width: string; color: string };
+type Artist = {
+  slug: string;
   name: string;
   role: string;
+  description: string;
   image: string;
   gallery: string;
   facebook?: string;
   instagram?: string;
   artsPage: string;
   stripes: Stripe[];
-  description: string;
-}
-
-const generateStripes = (): Stripe[] => {
-  return [
-    { left: "10%", width: "2px", color: "#ff007f" },
-    { left: "30%", width: "3px", color: "#00ff7f" },
-    { left: "50%", width: "1px", color: "#00d4ff" },
-    { left: "70%", width: "2px", color: "#ff007f" },
-    { left: "90%", width: "3px", color: "#00ff7f" },
-  ];
 };
 
 const artists: Artist[] = [
   {
+    slug: "mike",
     name: "Mike",
-    role: "Sponsored Realism Tattoo Artist",
-    description: "Mike is a highly skilled tattoo artist with over 8 years of experience specialising in black and grey realism as well as colour realism. His precision and artistic eye make him one of the most sought-after tattooists in Hull. As a sponsored artist by Apollo Tattoo Aftercare, Mike ensures top-quality results with exceptional care and professionalism.",
+    role: "Black & Grey / Colour Realism",
+    description:
+      "≈12 years’ experience. Specialises in realism and custom pieces.",
     image: "/images/mike.webp",
     gallery: "/images/mike-gallery.webp",
-    facebook: "https://facebook.com/Hulltattoostudio",
-    instagram: "https://instagram.com/egg_tattooer",
+    facebook: "https://www.facebook.com/Hulltattoostudio",
+    instagram: "https://www.instagram.com/hull_tattoo_studio/",
     artsPage: "/mike",
-    stripes: generateStripes(),
+    stripes: [
+      { left: "10%", width: "10px", color: "#ff007f" },
+      { left: "30%", width: "15px", color: "#00d4ff" },
+    ],
   },
-  
   {
+    slug: "harley",
     name: "Harley",
-    role: "Apprentice Tattoo Artist",
-    description: "Harley is the newest addition to the Hull Tattoo Studio team, currently perfecting her skills on fake skin. Her goal is to specialize in blackwork and pointillism tattoos, creating intricate and detailed designs. Harley's dedication to her craft and eagerness to learn make her a promising talent to watch as she hones her artistry.",
+    role: "Blackwork / Pointillism (Developing)",
+    description:
+      "Developing artist focusing on blackwork, dotwork and illustrative styles.",
     image: "/images/harley.webp",
     gallery: "/images/harley-gallery.webp",
-    instagram: "https://www.instagram.com/harleybovilltattoos/",
+    instagram: "https://www.instagram.com/hull_tattoo_studio/",
     artsPage: "/harley",
-    stripes: generateStripes(),
-  }
-  
+    stripes: [
+      { left: "15%", width: "12px", color: "#ff007f" },
+      { left: "35%", width: "14px", color: "#00d4ff" },
+    ],
+  },
+  {
+    slug: "jen",
+    name: "Jen",
+    role: "Apprentice of full colour neo traditional",
+    description:
+      "Developing artist focusing on Neo Trad and full colour work.",
+    image: "/images/mike.webp",
+    gallery: "/images/mike-gallery.webp",
+    facebook: "https://www.facebook.com/profile.php?id=61575953590191",
+    instagram: "https://www.instagram.com/theplanetthieftattoo/",
+    artsPage: "/jen",
+    stripes: [
+      { left: "10%", width: "10px", color: "#ff007f" },
+      { left: "30%", width: "15px", color: "#00d4ff" },
+    ],
+  },
 ];
 
 export default function handler(req: NextApiRequest, res: NextApiResponse) {
+  // Cache for 60s at the edge; allow SWR for 5 min
+  res.setHeader("Cache-Control", "s-maxage=60, stale-while-revalidate=300");
   res.status(200).json({ artists });
 }

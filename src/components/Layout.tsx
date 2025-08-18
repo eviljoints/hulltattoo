@@ -48,6 +48,40 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       <Head>
         <meta name="robots" content="index, follow" />
         <link rel="sitemap" type="application/xml" href="/sitemap.xml" />
+        {/* Preload brand font (improves FCP/LCP) */}
+<link
+  rel="preload"
+  href="/fonts/VanillaWhale.otf"
+  as="font"
+  type="font/otf"
+  crossOrigin="anonymous"
+/>
+
+{/* Organization + Logo schema (site-wide) */}
+<script
+  type="application/ld+json"
+  dangerouslySetInnerHTML={{
+    __html: JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "Hull Tattoo Studio",
+      "url": "https://www.hulltattoostudio.com",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://www.hulltattoostudio.com/images/logo.png",
+        "width": 512,
+        "height": 512
+      },
+      "sameAs": [
+        "https://www.instagram.com/hull_tattoo_studio/",
+        "https://www.facebook.com/Hulltattoostudio",
+        "https://www.youtube.com/@Hulltattoostudio",
+        "https://www.tiktok.com/@hulltattoostudio_"
+      ]
+    })
+  }}
+/>
+
       </Head>
 
       {/* Header with Logo */}
@@ -120,12 +154,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             <a className="navbar-link">Blog</a>
           </Link>
 
-          <Link href="/designs" passHref legacyBehavior>
-            <a className="navbar-link" style={{ display: "flex", alignItems: "center" }}>
-              
-              Designs
-            </a>
-          </Link>
+          
 
           {/* Artists Dropdown (Desktop) */}
           <Menu>
@@ -195,7 +224,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
               icon: <FaYoutube />,
             },
             {
-              href: "https://www.tiktok.com/@hulltattoostudio_",
+              href: "https://www.tiktok.com/@eggtattooer",
               label: "TikTok",
               icon: <FaTiktok />,
             },
@@ -244,11 +273,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           </a>
         </Link>
 
-        <Link href="/designs" passHref legacyBehavior>
-          <a className="navbar-icon" aria-label="Designs">
-            <FaPaintBrush />
-          </a>
-        </Link>
+        
 
         {/* Artists Dropdown for Mobile */}
         <Menu>

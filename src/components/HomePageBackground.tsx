@@ -5,36 +5,28 @@ import { keyframes } from "@emotion/react";
 import { Box, chakra, shouldForwardProp } from "@chakra-ui/react";
 import { motion, isValidMotionProp } from "framer-motion";
 
-// Define keyframes for the diagonal motion
+/** Diagonal sweep (GPU-accelerated) */
 const moveDiagonal = keyframes`
-  0% { transform: translate(-100%, -100%); }
-  100% { transform: translate(100%, 100%); }
+  0%   { transform: translate3d(-120%, -120%, 0); }
+  100% { transform: translate3d(120%, 120%, 0); }
 `;
 
-// Create a MotionBox component that combines Chakra UI and Framer Motion
+/** Chakra + Framer Motion wrapper (unchanged API) */
 const MotionBox = chakra(motion.div, {
-  shouldForwardProp: (prop) =>
-    isValidMotionProp(prop) || shouldForwardProp(prop),
+  shouldForwardProp: (prop) => isValidMotionProp(prop) || shouldForwardProp(prop),
 });
 
 const HomePageBackground: React.FC = () => {
-  // Define additional neon line configurations
-  const additionalNeonLines = [
-    {
-      color: "#ffff00", // Neon Yellow
-      width: "2px",
-      height: "200%",
-      animationDuration: "14s",
-      animationDelay: "6s",
-    },
-    {
-      color: "#ff00ff", // Neon Magenta
-      width: "2px",
-      height: "200%",
-      animationDuration: "16s",
-      animationDelay: "8s",
-    },
-    // You can add more lines as desired
+  // Use your site neon palette
+  const PINK = "#ff007f";
+  const CYAN = "#00d4ff";
+
+  // Sleek neon beams (kept minimal for performance)
+  const neonLines = [
+    { color: CYAN, width: "2px", height: "200%", duration: "16s", delay: "0s", blur: "8px", opacity: 0.55 },
+    { color: PINK, width: "2px", height: "200%", duration: "18s", delay: "4s", blur: "10px", opacity: 0.55 },
+    { color: CYAN, width: "1px", height: "200%", duration: "22s", delay: "8s", blur: "6px", opacity: 0.4 },
+    { color: PINK, width: "1px", height: "200%", duration: "26s", delay: "12s", blur: "6px", opacity: 0.4 },
   ];
 
   return (
@@ -45,23 +37,60 @@ const HomePageBackground: React.FC = () => {
       width="100%"
       height="100%"
       overflow="hidden"
-      zIndex="5" // Ensure it layers above the default background but behind content
-      pointerEvents="none" // Allow clicks to pass through
+      zIndex="5"                // sits under header/nav/footer (which are 19/20/1000)
+      pointerEvents="none"      // never intercepts clicks
     >
-      {additionalNeonLines.map((line, index) => (
+      {/* Radial neon wash (very subtle, matches site theme) */}
+      <Box
+        position="absolute"
+        inset="0"
+        opacity={0.8}
+        sx={{
+          background:
+            `radial-gradient(1200px 600px at 20% 10%, ${PINK}22, transparent 60%),
+             radial-gradient(900px 600px at 80% 80%, ${CYAN}20, transparent 60%)`,
+          mixBlendMode: "screen",
+        }}
+      />
+
+      {/* Futuristic grid/scanlines (subtle) */}
+      <Box
+        position="absolute"
+        inset="0"
+        opacity={0.35}
+        sx={{
+          backgroundImage:
+            "linear-gradient(to right, rgba(255,255,255,0.06) 1px, transparent 1px)," +
+            "linear-gradient(to bottom, rgba(255,255,255,0.04) 1px, transparent 1px)",
+          backgroundSize: "48px 48px, 48px 48px",
+          mixBlendMode: "screen",
+        }}
+      />
+
+      {/* Animated neon beams (diagonal sweeps) */}
+      {neonLines.map((line, i) => (
         <MotionBox
-          key={index}
+          key={i}
           position="absolute"
-          top="-100%"
-          left="-100%"
+          top="-120%"
+          left="-120%"
           width={line.width}
           height={line.height}
           bg={line.color}
-          boxShadow={`0 0 10px ${line.color},
-                       0 0 20px ${line.color},
-                       0 0 30px ${line.color}`}
-          animation={`${moveDiagonal} ${line.animationDuration} linear infinite`}
-          sx={{ animationDelay: line.animationDelay }}
+          opacity={line.opacity}
+          sx={{
+            filter: `blur(${line.blur})`,
+            boxShadow: `0 0 12px ${line.color}, 0 0 24px ${line.color}`,
+            willChange: "transform",
+            animation: `${moveDiagonal} ${line.duration} linear infinite`,
+            animationDelay: line.delay,
+            mixBlendMode: "screen",
+            // Respect reduced motion
+            "@media (prefers-reduced-motion: reduce)": {
+              animation: "none",
+              opacity: 0.2,
+            },
+          }}
         />
       ))}
     </Box>

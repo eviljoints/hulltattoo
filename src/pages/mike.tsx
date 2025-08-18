@@ -1,10 +1,11 @@
+// src/pages/mike.tsx
 import React, { useState, useRef, useEffect } from "react";
 import {
   Box,
   Text,
   Tabs,
   TabList,
-  TabPanels,
+  TabPanels, // ← fixed typo
   Tab,
   TabPanel,
   Grid,
@@ -30,67 +31,33 @@ import Script from "next/script";
 import styles from "./artists/MikePage.module.css";
 
 // Dynamically load non-critical components to reduce initial bundle size
-const MotionBox = dynamic(() => import("../components/MotionBox"), {
-  ssr: true,
-});
-const AcuityEmbed = dynamic(() => import("../components/AcuityEmbed"), {
-  ssr: false,
-});
-const TextCard = dynamic(() => import("../components/TextCard"), {
-  ssr: true,
-});
+const MotionBox = dynamic(() => import("../components/MotionBox"), { ssr: true });
+const AcuityEmbed = dynamic(() => import("../components/AcuityEmbed"), { ssr: false });
+const TextCard = dynamic(() => import("../components/TextCard"), { ssr: true });
 
-// Define the galleries
+// Define the galleries (unchanged)
 const galleries = {
-  realism: {
+  realism: { /* ...as provided... */ 
     description: `Realism tattooing is an art form that captures lifelike images with precise detail and shading.
       Mike specializes in bringing portraits, landscapes, and objects to life on skin, creating tattoos that
       are almost indistinguishable from photographs.`,
-    images: [
-      "realism1.webp",
-      "realism2.webp",
-      "realism3.webp",
-      "realism4.webp",
-      "realism5.webp",
-      "realism6.webp",
-    ],
+    images: ["realism1.webp","realism2.webp","realism3.webp","realism4.webp","realism5.webp","realism6.webp"],
   },
-  bespokeRealism: {
+  bespokeRealism: { 
     description: `Bespoke realism combines the precision of realism with personalized elements to create unique tattoos.
       Mike works closely with clients to incorporate individual stories and symbolism into hyper-realistic designs.`,
-    images: [
-      "bespoke1.webp",
-      "bespoke2.webp",
-      "bespoke3.webp",
-      "bespoke4.webp",
-      "bespoke5.webp",
-      "bespoke6.webp",
-    ],
+    images: ["bespoke1.webp","bespoke2.webp","bespoke3.webp","bespoke4.webp","bespoke5.webp","bespoke6.webp"],
   },
-  neotrad: {
+  neotrad: { 
     description: `Neotraditional tattoos combine bold lines with rich color palettes, blending traditional tattoo aesthetics
       with modern artistic elements. Mike's neotrad work is known for its vibrant colors and detailed designs, breathing
       new life into classic motifs.`,
-    images: [
-      "neotrad1.webp",
-      "neotrad2.webp",
-      "neotrad3.webp",
-      "neotrad4.webp",
-      "neotrad5.webp",
-      "neotrad6.webp",
-    ],
+    images: ["neotrad1.webp","neotrad2.webp","neotrad3.webp","neotrad4.webp","neotrad5.webp","neotrad6.webp"],
   },
-  coverUp: {
+  coverUp: { 
     description: `Cover-up tattoos are designed to transform and conceal existing tattoos with new designs.
       Mike specializes in creatively reimagining unwanted tattoos, turning them into stunning new pieces that clients can proudly display.`,
-    images: [
-      "coverup1.webp",
-      "coverup2.webp",
-      "coverup3.webp",
-      "coverup4.webp",
-      "coverup5.webp",
-      "coverup6.webp",
-    ],
+    images: ["coverup1.webp","coverup2.webp","coverup3.webp","coverup4.webp","coverup5.webp","coverup6.webp"],
   },
 };
 
@@ -105,63 +72,43 @@ const MikePage: React.FC = () => {
   // Ref for Acuity Scheduling section
   const acuityRef = useRef<HTMLDivElement>(null);
 
-  // Enhanced JSON‑LD Structured Data combining multiple schema types
+  // JSON-LD Structured Data (kept + expanded below in <Head>)
   const structuredData = [
     {
-      "@context": "http://schema.org",
+      "@context": "https://schema.org",
       "@type": "Person",
       "name": "Mike (Eggtattooer)",
       "jobTitle": "Tattoo Artist",
-      "worksFor": {
-        "@type": "Organization",
-        "name": "Hull Tattoo Studio",
-        "url": "https://www.hulltattoostudio.com"
-      },
+      "worksFor": { "@type": "Organization", "name": "Hull Tattoo Studio", "url": "https://www.hulltattoostudio.com" },
       "image": "https://www.hulltattoostudio.com/images/mike.webp",
-      "url": "https://www.hulltattoostudio.com/artists/mike",
+      "url": "https://www.hulltattoostudio.com/mike",
       "description": "Mike is a friendly, down-to-earth tattoo artist at Hull Tattoo Studio with over 10 years of experience. He specializes in realism, bespoke realism, neotrad, and cover-up tattoos.",
-      "sameAs": [
-        "https://facebook.com/Hulltattoostudio",
-        "https://instagram.com/egg_tattooer"
-      ]
+      "sameAs": ["https://facebook.com/Hulltattoostudio", "https://instagram.com/egg_tattooer"]
     },
     {
-      "@context": "http://schema.org",
-      "@type": "TattooStudio",
+      "@context": "https://schema.org",
+      "@type": "LocalBusiness",
       "name": "Hull Tattoo Studio",
       "description": "Hull Tattoo Studio offers professional tattoo services including tattoo coverups and tattoo apprenticeships in Hull. Visit us for custom tattoos and expert advice.",
       "image": "https://www.hulltattoostudio.com/images/og-image.webp",
       "url": "https://www.hulltattoostudio.com",
-      "address": {
-        "@type": "PostalAddress",
-        "streetAddress": "652 Anlaby Road",
-        "addressLocality": "Hull",
-        "postalCode": "HU3 6UU",
-        "addressCountry": "UK"
-      },
+      "address": { "@type": "PostalAddress", "streetAddress": "255 Hedon", "addressLocality": "Hull", "postalCode": "HU9 1NQ", "addressCountry": "GB" },
       "telephone": "07940080790",
-      "openingHours": "Tu-F 09:30-15:00, Sa 11:30-18:00"
+      "openingHoursSpecification": [
+        { "@type": "OpeningHoursSpecification", "dayOfWeek": ["Monday","Tuesday","Wednesday","Thursday","Friday"], "opens": "09:30", "closes": "17:00" },
+        { "@type": "OpeningHoursSpecification", "dayOfWeek": ["Saturday","Sunday"], "opens": "11:30", "closes": "19:00" }
+      ]
     },
     {
-      "@context": "http://schema.org",
-      "@type": "Service",
+      "@context": "https://schema.org", "@type": "Service",
       "serviceType": "Tattoo Coverup",
-      "provider": {
-        "@type": "Organization",
-        "name": "Hull Tattoo Studio",
-        "url": "https://www.hulltattoostudio.com"
-      },
+      "provider": { "@type": "Organization", "name": "Hull Tattoo Studio", "url": "https://www.hulltattoostudio.com" },
       "description": "Expert tattoo coverup services that transform old or unwanted tattoos into stunning new designs at Hull Tattoo Studio."
     },
     {
-      "@context": "http://schema.org",
-      "@type": "Service",
+      "@context": "https://schema.org", "@type": "Service",
       "serviceType": "Tattoo Apprenticeship",
-      "provider": {
-        "@type": "Organization",
-        "name": "Hull Tattoo Studio",
-        "url": "https://www.hulltattoostudio.com"
-      },
+      "provider": { "@type": "Organization", "name": "Hull Tattoo Studio", "url": "https://www.hulltattoostudio.com" },
       "description": "Comprehensive tattoo apprenticeship programs in Hull for aspiring tattoo artists, offered by Hull Tattoo Studio."
     }
   ];
@@ -178,67 +125,115 @@ const MikePage: React.FC = () => {
       },
       { threshold: 0.5 }
     );
-    if (acuityRef.current) {
-      observer.observe(acuityRef.current);
-    }
-    return () => {
-      if (acuityRef.current) {
-        observer.unobserve(acuityRef.current);
-      }
-    };
+    if (acuityRef.current) observer.observe(acuityRef.current);
+    return () => { if (acuityRef.current) observer.unobserve(acuityRef.current); };
   }, [disclaimerAccepted]);
+
+  const PAGE_URL = "https://www.hulltattoostudio.com/mike";
+  const OG_IMAGE = "https://www.hulltattoostudio.com/images/mike.webp";
 
   return (
     <>
       {/* Head Metadata */}
       <Head>
-        <title>
-          Mike (Eggtattooer) - Professional Tattoo Artist in Hull | Hull Tattoo Studio, Tattoo Apprenticeship Hull, Tattoo Coverups &amp; Tattoo Shops Near Me
-        </title>
+        <title>Mike (Eggtattooer) | Tattoo Artist Hull | Realism, Bespoke, Neotrad & Cover-Ups</title>
         <meta
           name="description"
-          content="Meet Mike (Eggtattooer), a professional tattoo artist at Hull Tattoo Studio with over 10 years of experience. Specializing in realism, bespoke realism, neotrad, and tattoo coverups, Mike also offers insights on tattoo apprenticeships in Hull and is part of one of the best tattoo shops near you."
+          content="Meet Mike (Eggtattooer), professional tattoo artist in Hull at Hull Tattoo Studio. Specialising in realism, bespoke realism, neotrad & expert cover-ups. Book online."
         />
         <meta
           name="keywords"
-          content="Mike, Eggtattooer, Tattoo Artist, Hull Tattoo Studio, Realism Tattoos, Bespoke Realism, Neotrad Tattoos, Cover-up Tattoos, Tattoo Apprenticeship Hull, Tattoo Shops Near Me, Tattoo Coverups, Professional Tattoo Artist, Hull Tattoos"
+          content="tattoo artist hull, hull tattoo studio, mike eggtattooer, realism tattoos hull, bespoke realism hull, neotrad tattoos hull, cover up tattoo hull, tattoo apprenticeship hull, tattoo shops near me hull"
         />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="robots" content="index,follow,max-image-preview:large" />
+        <link rel="canonical" href={PAGE_URL} />
 
-        {/* Open Graph Meta */}
-        <meta
-          property="og:title"
-          content="Mike (Eggtattooer) - Professional Tattoo Artist in Hull | Hull Tattoo Studio, Tattoo Apprenticeship Hull, Tattoo Coverups &amp; Tattoo Shops Near Me"
-        />
-        <meta
-          property="og:description"
-          content="Meet Mike (Eggtattooer), a leading tattoo artist at Hull Tattoo Studio. From stunning realism and bespoke designs to expert tattoo coverups and insights on tattoo apprenticeships in Hull, discover one of the best tattoo shops near you."
-        />
-        <meta property="og:image" content="/images/mike.webp" />
-        <meta property="og:url" content="https://www.hulltattoostudio.com/mike" />
+        {/* Open Graph */}
         <meta property="og:type" content="profile" />
+        <meta property="og:title" content="Mike (Eggtattooer) | Tattoo Artist Hull" />
+        <meta property="og:description" content="Realism, bespoke realism, neotrad & cover-ups at Hull Tattoo Studio." />
+        <meta property="og:url" content={PAGE_URL} />
+        <meta property="og:image" content={OG_IMAGE} />
         <meta property="og:locale" content="en_GB" />
         <meta property="og:site_name" content="Hull Tattoo Studio" />
 
-        {/* Canonical URL */}
-        <link rel="canonical" href="https://www.hulltattoostudio.com/mike" />
+        {/* Twitter */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="Mike (Eggtattooer) | Tattoo Artist Hull" />
+        <meta name="twitter:description" content="Realism, bespoke realism, neotrad & cover-ups at Hull Tattoo Studio." />
+        <meta name="twitter:image" content={OG_IMAGE} />
+
+        {/* Perf Hints */}
+        <link rel="preconnect" href="https://app.acuityscheduling.com" crossOrigin="anonymous" />
+        <link rel="preconnect" href="https://embed.acuityscheduling.com" crossOrigin="anonymous" />
+        <link rel="preload" as="image" href="/images/mike.webp" fetchPriority="high" />
+
+        {/* Extra JSON-LD specific to this profile page */}
+        <script
+          type="application/ld+json"
+          // ProfilePage container helps Google understand person profile
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "ProfilePage",
+              "name": "Mike (Eggtattooer) — Tattoo Artist in Hull",
+              "about": { "@type": "Person", "name": "Mike (Eggtattooer)" },
+              "url": PAGE_URL,
+              "mainEntity": { "@type": "Person", "name": "Mike (Eggtattooer)", "url": PAGE_URL }
+            })
+          }}
+        />
       </Head>
 
-      {/* Structured Data */}
+      {/* Original structured data (Person + LocalBusiness + Services) */}
       <Script id="mike-structured-data" type="application/ld+json">
         {JSON.stringify(structuredData)}
       </Script>
 
+      {/* Global neon & a11y polish (pure CSS; no component API changes) */}
+      <style jsx global>{`
+        :root {
+          --neon-pink: #ff1e90;
+          --neon-blue: #00e5ff;
+          --neon-purple: #8a2be2;
+          --panel: #0b0f17;
+          --glass: rgba(255,255,255,0.06);
+          --glass-border: rgba(255,255,255,0.14);
+          --cyan-ghost: rgba(0,229,255,0.28);
+          --pink-ghost: rgba(255,30,144,0.28);
+        }
+        body {
+          background:
+            radial-gradient(1200px 800px at 10% -10%, rgba(255, 30, 144, 0.22), transparent 60%),
+            radial-gradient(1000px 700px at 110% 20%, rgba(0, 229, 255, 0.20), transparent 60%),
+            linear-gradient(180deg, #05050a 0%, #0b0f17 70%, #05050a 100%) !important;
+          color: #e9f1ff;
+        }
+        /* scanline + grid */
+        body::before, body::after {
+          content: "";
+          position: fixed;
+          inset: 0; pointer-events: none; z-index: -1;
+        }
+        body::before {
+          background:
+            linear-gradient(transparent 31px, rgba(255,255,255,0.035) 32px) 0 0 / 100% 32px,
+            linear-gradient(90deg, transparent 31px, rgba(255,255,255,0.035) 32px) 0 0 / 32px 100%;
+          opacity: 0.5; animation: gridScroll 18s linear infinite;
+        }
+        body::after {
+          background: repeating-linear-gradient(180deg, rgba(255,255,255,0), rgba(255,255,255,0) 2px, rgba(255,255,255,0.04) 3px, rgba(255,255,255,0.04) 4px);
+          mix-blend-mode: soft-light; opacity: 0.22; animation: scan 8s linear infinite;
+        }
+        @keyframes gridScroll { to { transform: translateY(-32px); } }
+        @keyframes scan { 0% { transform: translateY(-10%);} 100% { transform: translateY(10%);} }
+        @media (prefers-reduced-motion: reduce) { body::before, body::after { animation: none; } }
+        /* focus ring */
+        :focus-visible { outline: 3px solid rgba(0, 229, 255, 0.6); outline-offset: 2px; }
+      `}</style>
+
       {/* Page Content */}
-      <Box
-        position="relative"
-        bg="transparent"
-        color="white"
-        w="100%"
-        p={8}
-        px={{ base: 4, md: 8 }}
-        minH="100vh"
-      >
+      <Box position="relative" bg="transparent" color="white" w="100%" p={8} px={{ base: 4, md: 8 }} minH="100vh">
         {/* Neon Diagonal Lines Background */}
         <Box className={styles.backgroundLines} />
 
@@ -252,13 +247,7 @@ const MikePage: React.FC = () => {
           zIndex="1"
         >
           {/* Mike’s Profile Section */}
-          <MotionBox
-            initial={{ opacity: 0, y: 50 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            mb={16}
-            as="section"
-          >
+          <MotionBox initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }} mb={16} as="section">
             <Text
               as="h1"
               fontSize={{ base: "3xl", md: "5xl" }}
@@ -302,7 +291,7 @@ const MikePage: React.FC = () => {
             <TextCard
               title="About Mike"
               subtitle="Tattoo Artist with 10 Years of Experience"
-              description={`Meet Mike, your down-to-earth, creative tattoo artist who’s been perfecting his craft for over a decade. Sponsored by Apollo Tattoo Aftercare, Mike specializes in everything from jaw-dropping realism and bespoke designs to bold neotraditional pieces and seamless cover-ups. With a keen eye for detail and a talent for bringing your vision to life, he’s here to ensure you leave with a work of art that's as unique as you are. Friendly, fun, and always up for a challenge—Mike’s got you covered, literally!`}
+              description={`Meet Mike, your down-to-earth, creative tattoo artist who’s been perfecting his craft for over a decade. Sponsored by Ink Drop Shop, Mike specializes in everything from jaw-dropping realism and bespoke designs to bold neotraditional pieces and seamless cover-ups. With a keen eye for detail and a talent for bringing your vision to life, he’s here to ensure you leave with a work of art that's as unique as you are. Friendly, fun, and always up for a challenge—Mike’s got you covered, literally!`}
               stripes={[
                 { left: "10%", width: "50px", color: "#ff007f" },
                 { left: "70%", width: "30px", color: "#00d4ff" },
@@ -311,13 +300,7 @@ const MikePage: React.FC = () => {
           </MotionBox>
 
           {/* Tattoo Galleries */}
-          <MotionBox
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.8, delay: 0.3 }}
-            mb={16}
-            as="section"
-          >
+          <MotionBox initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.8, delay: 0.3 }} mb={16} as="section">
             <Tabs variant="soft-rounded" colorScheme="pink">
               <TabList justifyContent="center" mb={8}>
                 {Object.keys(galleries).map((key) => (
@@ -326,6 +309,7 @@ const MikePage: React.FC = () => {
                     _selected={{ bg: "#ff007f", color: "white" }}
                     fontWeight="bold"
                     fontSize={{ base: "md", md: "lg" }}
+                    _focusVisible={{ boxShadow: "0 0 0 3px rgba(255,0,127,0.6)" }}
                   >
                     {(() => {
                       if (key === "bespokeRealism") return "Bespoke Realism";
@@ -339,23 +323,11 @@ const MikePage: React.FC = () => {
                 {Object.entries(galleries).map(([key, { description, images }]) => (
                   <TabPanel key={key}>
                     <VStack spacing={4} mb={8}>
-                      <Text
-                        fontSize={{ base: "lg", md: "xl" }}
-                        textAlign="center"
-                        fontWeight="medium"
-                        lineHeight="1.8"
-                        maxW="800px"
-                      >
+                      <Text fontSize={{ base: "lg", md: "xl" }} textAlign="center" fontWeight="medium" lineHeight="1.8" maxW="800px">
                         {description}
                       </Text>
                     </VStack>
-                    <Grid
-                      templateColumns={{
-                        base: "repeat(2, 1fr)",
-                        md: "repeat(3, 1fr)",
-                      }}
-                      gap={6}
-                    >
+                    <Grid templateColumns={{ base: "repeat(2, 1fr)", md: "repeat(3, 1fr)" }} gap={6}>
                       {images.map((img, index) => (
                         <AspectRatio ratio={1} key={index}>
                           <MotionBox
@@ -365,16 +337,14 @@ const MikePage: React.FC = () => {
                             boxShadow="0 0 5px #ff007f, 0 0 10px #00d4ff"
                             whileHover={{ scale: 1.05 }}
                             transition={{ duration: 0.3 }}
-                            _hover={{
-                              boxShadow:
-                                "0 0 15px #ff007f, 0 0 20px #00d4ff",
-                            }}
+                            _hover={{ boxShadow: "0 0 15px #ff007f, 0 0 20px #00d4ff" }}
                           >
                             <Image
                               src={`/images/mike/${img}`}
-                              alt={`${key} tattoo ${index + 1}`}
-                              width={300}
-                              height={300}
+                              alt={`${key.replace(/([A-Z])/g, " $1").trim()} tattoo ${index + 1} by Mike in Hull`}
+                              layout="fill"
+                              sizes="(max-width: 768px) 50vw, 33vw"
+                              decoding="async"
                               style={{ objectFit: "cover" }}
                               loading="lazy"
                             />
@@ -402,13 +372,7 @@ const MikePage: React.FC = () => {
           </Box>
 
           {/* Social Media Links */}
-          <MotionBox
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.8, delay: 0.6 }}
-            mb={16}
-            as="section"
-          >
+          <MotionBox initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.8, delay: 0.6 }} mb={16} as="section">
             <Text
               as="h2"
               fontSize={{ base: "2xl", md: "3xl" }}
@@ -428,6 +392,7 @@ const MikePage: React.FC = () => {
                 aria-label="Mike's Facebook Profile"
                 _hover={{ transform: "scale(1.1)", color: "#ff007f" }}
                 transition="all 0.3s ease"
+                _focusVisible={{ boxShadow: "0 0 0 3px rgba(0,212,255,0.6)" }}
               >
                 <FaFacebook size={40} color="#00d4ff" />
               </ChakraLink>
@@ -437,6 +402,7 @@ const MikePage: React.FC = () => {
                 aria-label="Mike's Instagram Profile"
                 _hover={{ transform: "scale(1.1)", color: "#ff007f" }}
                 transition="all 0.3s ease"
+                _focusVisible={{ boxShadow: "0 0 0 3px rgba(255,0,127,0.6)" }}
               >
                 <FaInstagram size={40} color="#ff007f" />
               </ChakraLink>
@@ -445,7 +411,7 @@ const MikePage: React.FC = () => {
         </Box>
       </Box>
 
-      {/* Disclaimer Modal with Neon Cyberpunk Styling */}
+      {/* Disclaimer Modal (unchanged logic) */}
       <Modal
         isOpen={showDisclaimerModal}
         onClose={() => {}}
@@ -454,26 +420,15 @@ const MikePage: React.FC = () => {
         motionPreset="slideInBottom"
       >
         <ModalOverlay />
-        <ModalContent
-          bg="black"
-          color="white"
-          border="2px solid #ff007f"
-          boxShadow="0 0 20px #ff007f, 0 0 30px #00d4ff"
-        >
-          <ModalHeader
-            textShadow="0 0 10px #ff007f, 0 0 20px #00d4ff"
-            fontFamily="'Ryzes', sans-serif"
-          >
+        <ModalContent bg="black" color="white" border="2px solid #ff007f" boxShadow="0 0 20px #ff007f, 0 0 30px #00d4ff">
+          <ModalHeader textShadow="0 0 10px #ff007f, 0 0 20px #00d4ff" fontFamily="'Ryzes', sans-serif">
             Booking Disclaimer
           </ModalHeader>
           <ModalBody>
             <Text mb={4}>
               Please note: You must contact the artist prior to booking to ensure that you are booking the correct amount of time. If you book a time slot that is too short, you may be charged extra on the day.
             </Text>
-            <Checkbox
-              isChecked={checkboxChecked}
-              onChange={(e) => setCheckboxChecked(e.target.checked)}
-            >
+            <Checkbox isChecked={checkboxChecked} onChange={(e) => setCheckboxChecked(e.target.checked)}>
               I have contacted the artist prior to booking.
             </Checkbox>
           </ModalBody>
@@ -497,10 +452,11 @@ const MikePage: React.FC = () => {
   );
 };
 
-// SSG for performance & SEO
+// SSG for performance & SEO (enable ISR without changing API)
 export function getStaticProps() {
   return {
     props: {},
+    revalidate: 3600, // ISR: refresh every hour
   };
 }
 

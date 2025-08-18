@@ -1,5 +1,6 @@
 // src/pages/admin/index.tsx
 import React, { useState, useEffect } from 'react';
+import Head from 'next/head';
 import NextLink from 'next/link';
 import { Box, Button, VStack, Heading } from '@chakra-ui/react';
 import Cookies from 'js-cookie';
@@ -59,17 +60,35 @@ const AdminDashboard: React.FC = () => {
   if (!isAuthenticated) {
     return (
       <Box p={8} minH="100vh" display="flex" alignItems="center" justifyContent="center">
-        <Button colorScheme="blue" onClick={authenticate}>Login</Button>
+        <Head>
+          <title>Admin Login – Hull Tattoo Studio</title>
+          <meta name="robots" content="noindex,nofollow" />
+          <meta name="description" content="Admin login for Hull Tattoo Studio." />
+        </Head>
+        <Button colorScheme="blue" onClick={authenticate} aria-label="Login to admin">Login</Button>
       </Box>
     );
   }
 
   return (
     <Box p={8}>
-      <Button colorScheme="red" mb={4} onClick={handleLogout}>Logout</Button>
+      <Head>
+        <title>Admin Dashboard – Hull Tattoo Studio</title>
+        <meta name="robots" content="noindex,nofollow" />
+        <link rel="canonical" href={`${process.env.NEXT_PUBLIC_SITE_URL || ''}/admin`} />
+        <meta name="description" content="Internal admin dashboard for Hull Tattoo Studio." />
+        <meta property="og:title" content="Admin Dashboard – Hull Tattoo Studio" />
+        <meta property="og:type" content="website" />
+        <meta property="og:description" content="Internal admin dashboard." />
+        <meta name="twitter:card" content="summary" />
+      </Head>
+
+      <Button colorScheme="red" mb={4} onClick={handleLogout} aria-label="Logout">Logout</Button>
+
       <VStack spacing={4} align="start">
         <Heading size="md">Admin Dashboard</Heading>
-        {/* Link-wrapped buttons to avoid multiple child error */}
+
+        {/* Existing sections */}
         <NextLink href="/admin/designs" passHref>
           <Button as="a" w="100%">Manage Designs</Button>
         </NextLink>
@@ -81,6 +100,17 @@ const AdminDashboard: React.FC = () => {
         </NextLink>
         <NextLink href="/admin/reviews" passHref>
           <Button as="a" w="100%">Manage Reviews</Button>
+        </NextLink>
+
+        {/* NEW: CRM sections */}
+        <NextLink href="/admin/artists" passHref>
+          <Button as="a" w="100%">Manage Artists</Button>
+        </NextLink>
+        <NextLink href="/admin/services" passHref>
+          <Button as="a" w="100%">Manage Services</Button>
+        </NextLink>
+        <NextLink href="/admin/pricing" passHref>
+          <Button as="a" w="100%">Per-Artist Pricing & Activation</Button>
         </NextLink>
       </VStack>
     </Box>

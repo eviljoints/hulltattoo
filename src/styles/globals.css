@@ -1,375 +1,538 @@
 /* ./src/styles/globals.css */
 
-
-/* Import react-responsive-carousel styles */
+/* --- Vendor styles (unchanged) --- */
 @import 'react-responsive-carousel/lib/styles/carousel.min.css';
 @import 'react-datepicker/dist/react-datepicker.css';
-/* Define Custom Font */
-@font-face {
-  font-family: 'Ryzes';
-  src: url('/public/fonts/VanillaWhale.otf') format('opentype');
-  font-weight: normal;
-  font-style: normal;
-  font-display: swap;
+
+/* --- Fonts (kept paths; tolerant to either /public or /fonts) --- */
+@font-face{
+  font-family:'Ryzes';
+  src: url('/public/fonts/VanillaWhale.otf') format('opentype'),
+       url('/fonts/VanillaWhale.otf') format('opentype');
+  font-weight:normal; font-style:normal; font-display:swap;
 }
-@font-face {
-  font-family: 'VanillaWhale';
+@font-face{
+  font-family:'VanillaWhale';
   src: url('/fonts/VanillaWhale.otf') format('opentype');
-  font-weight: normal;
-  font-style: normal;
+  font-weight:normal; font-style:normal;
 }
 
-.neon-text {
+/* ===========================================================
+   FUTURISTIC NEON / MECHANICAL THEME  (visual only)
+   =========================================================== */
+
+/* Tokens */
+:root{
+  --neon-pink:#ff007f;
+  --neon-blue:#00d4ff;
+  --core-white:#ffffff;
+  --bg-deep:#000000;
+  --text-main:#ffffff;
+  --focus-outline:#ffffff;
+  --border-strong:#ff007f;
+}
+
+/* Base + smoothing */
+*,*::before,*::after{ box-sizing:border-box; }
+html{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;}
+html,body{
+  background: var(--bg-deep) !important;
+  color: var(--text-main) !important;
+  font-family:"Ryzes","Orbitron",Arial,sans-serif;
+  margin:0; padding:0; line-height:1.6; overflow-x:hidden;
+}
+
+/* Layout wrapper */
+.layout-container{
+  display:flex; flex-direction:column; min-height:100vh; position:relative;
+}
+
+/* Neon grid + radial wash (behind everything) */
+.layout-container::before{
+  content:""; position:fixed; inset:0; z-index:-1; pointer-events:none;
+  background-image:
+    linear-gradient(to right, rgba(255,255,255,.06) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255,255,255,.04) 1px, transparent 1px);
+  background-size:48px 48px,48px 48px;
+  mix-blend-mode:screen; opacity:.35;
+}
+.layout-container::after{
+  content:""; position:fixed; inset:0; z-index:-2; pointer-events:none;
+  background:
+    radial-gradient(1200px 600px at 20% 10%, rgba(255,0,127,.20), transparent 60%),
+    radial-gradient(900px 600px at 80% 80%, rgba(0,212,255,.18), transparent 60%);
+}
+
+/* Glow + flicker */
+/* Glow + flicker */
+@keyframes neon-flicker {
+  0%,100% { opacity:1; filter:brightness(1); }
+  92% { opacity:.95; filter:brightness(1.03); }
+  94% { opacity:.9; filter:brightness(1.08); }
+  96% { opacity:.96; }
+  97% { opacity:.88; }
+}
+
+.neon-text,
+.header-title,
+.navbar-link,
+.footer-text,
+.footer-icon,
+button, a,
+h1,h2,h3,h4,h5,h6 {
+  color: var(--text-main);
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  text-shadow:
+    0 0 1px var(--core-white),
+    0 0 2px var(--core-white),
+    0 0 3px var(--neon-pink),
+    0 0 5px var(--neon-pink),
+    0 0 7px rgba(255,0,127,.5),
+    0 0 9px var(--neon-blue),
+    0 0 14px rgba(0,212,255,.4),
+    0 0 18px rgba(0,212,255,.3);
+  animation: neon-flicker 3.2s infinite steps(60,end);
+}
+
+.neon-hero {
   font-family: 'VanillaWhale', sans-serif;
-  font-size: 3rem;
-  color: white;
-  text-shadow: 
-    0 0 2px white, 
-    0 0 4px white, 
-    0 0 6px #ff007f, 
-    0 0 10px #ff007f, 
-    0 0 14px rgba(255, 0, 127, 0.8), 
-    0 0 18px rgba(255, 0, 127, 0.5);
-  animation: neonGlow 1.5s ease-in-out infinite alternate;
+  letter-spacing: .08em;
+  text-shadow:
+    0 0 2px var(--core-white),
+    0 0 3px var(--core-white),
+    0 0 5px var(--neon-pink),
+    0 0 8px var(--neon-pink),
+    0 0 11px rgba(255,0,127,.6),
+    0 0 16px var(--neon-blue),
+    0 0 22px rgba(0,212,255,.45),
+    0 0 28px rgba(0,212,255,.35);
 }
 
-@keyframes neonGlow {
-  from {
-    text-shadow: 
-      0 0 2px white, 
-      0 0 4px white, 
-      0 0 6px #ff007f, 
-      0 0 10px #ff007f, 
-      0 0 14px rgba(255, 0, 127, 0.8), 
-      0 0 18px rgba(255, 0, 127, 0.5);
-  }
-  to {
-    text-shadow: 
-      0 0 3px white, 
-      0 0 6px white, 
-      0 0 8px #ff007f, 
-      0 0 12px #ff007f, 
-      0 0 16px rgba(255, 0, 127, 1), 
-      0 0 20px rgba(255, 0, 127, 0.9);
-  }
-}
-
-
-.responsive-video {
-  position: relative;
-  padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
-  height: 0;
-  overflow: hidden;
-}
-
-.responsive-video iframe {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  border: 0;
-}
-
-/* Shimmer Diagonal Animation */
-@keyframes shimmer-diagonal {
-  0% {
-    transform: translate(-100%, -100%);
-  }
-  100% {
-    transform: translate(100%, 100%);
-  }
-}
-
-/* Apply box-sizing globally */
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-}
-/* Slick Carousel styles */
-.slick-prev:before,
-.slick-next:before {
-  color: white;
-}
-
-.slick-dots li button:before {
-  color: white;
-}
-
-
-/* Prevent horizontal scrolling */
-html, body {
-  background-color: black !important;
-  color: white !important;
-  font-family: "Ryzes", "Orbitron", Arial, sans-serif; /* Ensure custom font is prioritized */
-  margin: 0;
-  padding: 0;
-  line-height: 1.6;
-  overflow-x: hidden;
-}
-
-/* Layout Container */
-.layout-container {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-}
-
-/* Header Styles */
-.header {
-  border-bottom: 2px solid #ff007f;
+/* Bigger NeonLogo */
+.logo-container .neon-text {
+  font-size: clamp(3rem, 10vw, 8rem);
+  margin: 0 auto;
+  line-height: 1.1;
   text-align: center;
-  padding: 20px 1rem;
-  position: relative;
-  z-index: 10;
-  overflow: visible;
+  text-shadow:
+    0 0 2px var(--core-white),
+    0 0 4px var(--neon-pink),
+    0 0 7px var(--neon-pink),
+    0 0 10px var(--neon-blue),
+    0 0 15px rgba(0,212,255,.5),
+    0 0 20px rgba(255,0,127,.4);
+  animation: neon-flicker 3s infinite steps(80, end);
 }
 
-.header-title {
-  font-size: 2rem;
-  color: white; /* Set text color to white */
-  text-shadow: 
-    0 0 10px #ff007f, 
-    0 0 20px #ff007f, 
-    0 0 30px #00d4ff, 
-    0 0 40px #00d4ff;
-  transition: text-shadow 0.3s ease;
-  font-family: 'Ryzes', sans-serif; /* Ensure custom font is applied */
+
+/* Utility panels */
+.neon-border{
+  position:relative; border:2px solid var(--neon-blue); border-radius:18px;
+  box-shadow:0 0 8px var(--neon-blue), inset 0 0 8px rgba(0,212,255,.6), 0 0 18px var(--neon-pink);
+}
+.glass-card{
+  background:rgba(0,0,0,.5); border:1px solid rgba(0,212,255,.35); border-radius:16px;
+  backdrop-filter:blur(4px);
+  box-shadow:0 0 10px rgba(0,212,255,.4), 0 0 20px rgba(255,0,127,.25);
 }
 
-.header-title:hover {
-  text-shadow: 
-    0 0 20px #ff007f, 
-    0 0 30px #ff007f, 
-    0 0 40px #00d4ff, 
-    0 0 50px #00d4ff;
+/* ===========================================================
+   HEADER (glassy hologram)
+   =========================================================== */
+/* ===========================================================
+   HEADER (full-width, big logo, neon buzzing socials)
+   =========================================================== */
+/* ===========================================================
+   HEADER — centered logo, socials underneath, neon buzz
+   =========================================================== */
+/* ==== FORCE CENTERED, BIG NEON LOGO + SOCIALS UNDERNEATH ==== */
+
+/* 1) Make header a vertical, centered panel */
+.header {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 100% !important;
+  padding: 22px 2rem 18px !important;
 }
 
+/* 2) Center the logo container and its link */
 .logo-container {
+  width: 100% !important;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+}
+.logo-container a {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  text-decoration: none !important;
+}
+
+/* 3) Hard-override NeonLogo sizing (works for <svg> or <img>) */
+.logo-container svg,
+.logo-container img {
+  width: clamp(240px, 28vw, 480px) !important; /* ~3×, responsive */
+  height: auto !important;
+  max-width: 90vw !important;
+  display: block !important;
+  margin: 0 auto !important;
+
+  /* buzzing neon glow */
+  filter:
+    drop-shadow(0 0 4px var(--core-white))
+    drop-shadow(0 0 10px var(--neon-pink))
+    drop-shadow(0 0 18px var(--neon-blue))
+    drop-shadow(0 0 28px rgba(0,212,255,.9)) !important;
+  animation: neon-flicker 3s infinite steps(80, end) !important;
+}
+
+/* 4) Move socials under the logo, centered, with strong glow */
+.header .footer-socials {
+  width: 100% !important;
+  margin-top: 14px !important;
+  display: flex !important;
+  flex-wrap: wrap !important;
+  justify-content: center !important;
+  align-items: center !important;
+  gap: clamp(14px, 2.5vw, 28px) !important;
+}
+
+.header .footer-icon {
+  font-size: clamp(1.6rem, 2.4vw, 2.6rem) !important;
+  line-height: 1 !important;
+  display: inline-grid !important;
+  place-items: center !important;
+  color: var(--neon-blue) !important;
+  text-shadow:
+    0 0 6px var(--core-white),
+    0 0 12px var(--neon-pink),
+    0 0 20px var(--neon-blue),
+    0 0 32px rgba(0,212,255,1) !important;
+  transition: transform .15s ease, color .2s ease, text-shadow .2s ease !important;
+  animation: neon-flicker 4s infinite steps(100, end) !important;
+}
+.header .footer-icon:hover,
+.header .footer-icon:focus-visible {
+  color: var(--neon-pink) !important;
+  transform: scale(1.08) translateY(-2px) !important;
+  outline: none !important;
+  text-shadow:
+    0 0 10px var(--core-white),
+    0 0 18px var(--neon-pink),
+    0 0 28px var(--neon-blue),
+    0 0 44px rgba(0,212,255,1) !important;
+}
+
+/* 5) Very small screens: keep logo readable */
+@media (max-width: 380px) {
+  .logo-container svg,
+  .logo-container img {
+    width: clamp(200px, 65vw, 340px) !important;
+  }
+}
+
+
+/* Bigger, centered logo (works for <img> or SVG from NeonLogo) */
+.logo-container{
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 10px;
+  width: 100%;
 }
-
-.header img {
+.logo-container svg,
+.logo-container img{
+  /* ~3× base size with responsive clamp */
+  width: clamp(220px, 28vw, 420px);
+  height: auto;
   display: block;
   margin: 0 auto;
+
+  /* neon “buzzing” glow */
+  filter:
+    drop-shadow(0 0 4px var(--core-white))
+    drop-shadow(0 0 10px var(--neon-pink))
+    drop-shadow(0 0 18px var(--neon-blue))
+    drop-shadow(0 0 28px rgba(0,212,255,.85));
+  animation: neon-flicker 3s infinite steps(80, end);
 }
 
-/* Navbar Styles */
-.navbar {
+/* Socials UNDER the logo, centered, chunky glow */
+.header .footer-socials{
   display: flex;
+  flex-wrap: wrap;
   justify-content: center;
   align-items: center;
-  background: linear-gradient(to right, #000000, #2E0854); /* Black to dark purple */
-  border-bottom: 2px solid #ff007f;
-  padding: 10px 1rem;
-}
 
-.navbar-desktop {
-  display: flex;
-  justify-content: center;
-  gap: 40px;
-}
-
-.navbar-link {
-  text-decoration: none;
-  color: #00d4ff;
-  font-size: 1rem;
-  text-transform: uppercase;
-  transition: color 0.3s ease, text-shadow 0.3s ease;
-  display: flex;
-  align-items: center;
-}
-
-.navbar-link:hover {
-  color: #ff007f;
-  text-shadow: 
-    0 0 10px #ff007f, 
-    0 0 20px #ff007f, 
-    0 0 30px #00d4ff;
-}
-
-/* Main Content */
-.main-content {
-  background-color: black;
-  flex-grow: 1;
-  max-width: 1200px;
+  /* spacing from logo + between icons */
+  margin-top: 14px;
+  gap: clamp(14px, 2.5vw, 28px);
   width: 100%;
-  margin: 0 auto;
-  padding: 20px 1rem;
-  text-align: center;
 }
 
-/* Footer Styles */
-.footer {
-  background-color: transparent; /* Changed to transparent */
-  border-top: 2px solid #ff007f;
-  padding: 20px 1rem;
-  text-align: center;
+/* Bigger icons in header only (footer keeps its own size) */
+.header .footer-icon{
+  font-size: clamp(1.6rem, 2.4vw, 2.6rem);
+  line-height: 1;
+  display: inline-grid;
+  place-items: center;
+
+  color: var(--neon-blue);
+  text-shadow:
+    0 0 6px var(--core-white),
+    0 0 12px var(--neon-pink),
+    0 0 20px var(--neon-blue),
+    0 0 32px rgba(0,212,255,.95);
+  transition: transform .15s ease, color .2s ease, text-shadow .2s ease;
+  animation: neon-flicker 4s infinite steps(100, end);
+}
+.header .footer-icon:hover,
+.header .footer-icon:focus-visible{
+  color: var(--neon-pink);
+  transform: scale(1.08) translateY(-2px);
+  outline: none;
+  text-shadow:
+    0 0 10px var(--core-white),
+    0 0 18px var(--neon-pink),
+    0 0 28px var(--neon-blue),
+    0 0 44px rgba(0,212,255,1);
 }
 
+/* Tiny screens: keep it readable without overflowing */
+@media (max-width: 380px){
+  .logo-container svg,
+  .logo-container img{
+    width: clamp(200px, 65vw, 320px);
+  }
+}
+
+
+/* Logo container — make it much bigger */
+.logo-container {
+  flex: 1;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+.logo-container svg,
+.logo-container img {
+  width: 100px;   /* ~3x bigger than before */
+  height: auto;
+  filter: drop-shadow(0 0 8px var(--core-white))
+          drop-shadow(0 0 16px var(--neon-pink))
+          drop-shadow(0 0 28px var(--neon-blue));
+  animation: neon-flicker 3s infinite steps(80, end);
+}
+
+/* Social links area */
 .footer-socials {
   display: flex;
-  justify-content: center;
-  gap: 20px;
-  margin-bottom: 10px;
+  gap: 30px; /* spacing between icons */
+  justify-content: flex-end;
+  align-items: center;
+  flex: 1;
 }
-
 .footer-icon {
-  color: #00d4ff;
-  font-size: 1.5rem;
-  transition: color 0.3s ease, text-shadow 0.3s ease;
+  font-size: 2.2rem;   /* larger icons */
+  color: var(--neon-blue);
+  transition: transform 0.15s ease, color 0.2s ease, text-shadow 0.2s ease;
+  text-shadow:
+    0 0 6px var(--core-white),
+    0 0 12px var(--neon-pink),
+    0 0 20px var(--neon-blue),
+    0 0 32px rgba(0,212,255,0.9);
+  animation: neon-flicker 4s infinite steps(100, end);
+}
+.footer-icon:hover,
+.footer-icon:focus-visible {
+  color: var(--neon-pink);
+  transform: scale(1.1) translateY(-2px);
+  text-shadow:
+    0 0 10px var(--core-white),
+    0 0 18px var(--neon-pink),
+    0 0 28px var(--neon-blue),
+    0 0 44px rgba(0,212,255,1);
 }
 
-.footer-icon:hover {
-  color: #ff007f;
-  text-shadow: 
-    0 0 10px #ff007f, 
-    0 0 20px #ff007f, 
-    0 0 30px #ff007f;
+
+/* ===========================================================
+   NAVIGATION
+   =========================================================== */
+
+/* Full-width sticky desktop bar container */
+.navbar{
+  position:sticky; top:76px; z-index:19; width:100%; margin:0; padding:0;
+  background:rgba(10,12,24,.55);
+  backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px);
+  border-bottom:1px solid rgba(0,212,255,.35);
+  box-shadow:0 0 0 1px rgba(255,0,127,.25) inset,
+             0 0 20px rgba(0,212,255,.30),
+             0 0 28px rgba(255,0,127,.25);
 }
 
-.footer-text {
-  color: #ff007f;
-  font-size: 0.875rem;
-  text-shadow: 
-    0 0 5px #ff007f, 
-    0 0 10px #ff007f, 
-    0 0 20px #ff007f;
+/* Inner row of links (centered) */
+.navbar-desktop{
+  display:flex; justify-content:center; align-items:center; gap:40px;
+  padding:12px 24px; width:100%;
 }
 
-/* react-responsive-carousel Custom Styles */
-/* Customize carousel navigation arrows */
+/* Link glow */
+.navbar-link{
+  text-decoration:none; color:var(--neon-blue); font-size:1rem; font-weight:600; letter-spacing:.2px;
+  display:flex; align-items:center;
+  transition:color .2s ease, text-shadow .2s ease, transform .15s ease;
+}
+.navbar-link:hover,
+.navbar-link:focus-visible{ color:var(--neon-pink); transform:translateY(-1px); outline:none; }
+
+/* Chakra menu (Artists) tint */
+.chakra-menu__menu-list,
+.chakra-menu__menu-list[role="menu"]{
+  background:rgba(5,8,20,.96) !important;
+  border:1px solid var(--neon-pink) !important;
+  box-shadow:0 0 10px var(--neon-pink), 0 0 15px var(--neon-blue) !important;
+  color:#fff !important;
+}
+
+/* Bottom nav (MOBILE ONLY) */
+.navbar-bottom{
+  display:none; /* hidden by default; shown via media rule below */
+  position:fixed; left:0; right:0; bottom:0; z-index:1000;
+  height:60px; padding:0 8px;
+  background:rgba(7,10,20,.78);
+  backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px);
+  border-top:1px solid rgba(255,0,127,.35);
+  box-shadow:0 -2px 18px rgba(255,0,127,.35), 0 -2px 24px rgba(0,212,255,.25);
+
+  display:flex; justify-content:space-evenly; align-items:center;
+}
+.navbar-bottom a{
+  color:var(--neon-blue); font-size:22px; line-height:1;
+  display:inline-grid; place-items:center; width:36px; height:36px; margin:0 6px;
+  transition:color .2s ease, text-shadow .2s ease, transform .15s ease;
+}
+.navbar-bottom a:hover,
+.navbar-bottom a:focus-visible{ color:var(--neon-pink); transform:translateY(-1px); outline:none; }
+.navbar-bottom button[aria-haspopup="menu"]{ font-size:16px; padding:6px 8px; min-height:36px; }
+
+/* ===========================================================
+   MAIN
+   =========================================================== */
+.main-content{
+  background-color:var(--bg-deep);
+  flex-grow:1; max-width:1200px; width:100%;
+  margin:0 auto; padding:20px 1rem; text-align:center;
+}
+
+/* ===========================================================
+   FOOTER (glassy panel)
+   =========================================================== */
+.footer{
+  background:rgba(10,10,20,.50);
+  border:1px solid rgba(255,0,127,.35); border-radius:16px;
+  padding:20px 1rem; text-align:center;
+  margin:18px auto 72px; /* space for mobile fixed bar */
+  backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px);
+  box-shadow:0 0 0 1px rgba(0,212,255,.25) inset,
+             0 0 22px rgba(255,0,127,.35),
+             0 0 28px rgba(0,212,255,.25);
+}
+.footer-socials{ display:flex; justify-content:center; gap:20px; margin-bottom:10px; }
+.footer-text{
+  color:var(--neon-pink); font-size:.875rem;
+  text-shadow:0 0 5px var(--neon-pink), 0 0 12px var(--neon-blue);
+}
+
+/* ===========================================================
+   Media & Components
+   =========================================================== */
+.responsive-video{ position:relative; padding-bottom:56.25%; height:0; overflow:hidden; }
+.responsive-video iframe{ position:absolute; inset:0; width:100%; height:100%; border:0; }
+.slick-prev:before, .slick-next:before{ color:#fff; }
+.slick-dots li button:before{ color:#fff; }
 .carousel .control-arrow,
-.carousel.carousel-slider .control-arrow {
-  background: rgba(255, 0, 127, 0.7); /* Semi-transparent neon pink */
-  border-radius: 50%;
+.carousel.carousel-slider .control-arrow{
+  background:rgba(255,0,127,.8); border-radius:50%;
+  box-shadow:0 0 8px var(--neon-pink), 0 0 16px var(--neon-blue);
+}
+.carousel .control-arrow:hover{ background:rgba(0,212,255,.8); }
+.carousel .control-arrow:before{
+  border:solid #fff; border-width:0 2px 2px 0; display:inline-block; padding:4px;
+}
+.carousel .control-prev.control-arrow:before{ transform:rotate(135deg); -webkit-transform:rotate(135deg); }
+.carousel .control-next.control-arrow:before{ transform:rotate(-45deg); -webkit-transform:rotate(-45deg); }
+.carousel .control-arrow{ width:40px; height:40px; }
+.carousel .carousel-dots li button{ background:var(--neon-pink); }
+.carousel .carousel-dots li.active button{ background:var(--neon-blue); }
+
+/* Links & focus */
+a,button{ cursor:pointer; background:transparent; border:none; }
+a:focus-visible,button:focus-visible{
+  outline:2px dashed var(--focus-outline); outline-offset:3px; border-radius:10px;
 }
 
-.carousel .control-arrow:hover {
-  background: rgba(0, 212, 255, 0.7); /* Semi-transparent neon blue on hover */
+/* ===========================================================
+   RESPONSIVE BEHAVIOUR (unchanged logic; visual only)
+   =========================================================== */
+@media (max-width:1024px){
+  .header-title{ font-size:1.75rem; }
+  .navbar-desktop{ gap:30px; }
+  .navbar-link{ font-size:.95rem; }
+}
+@media (max-width:768px){
+  .header-title{ font-size:1.5rem; }
+  .navbar-desktop{ display:none; }   /* hide desktop nav on mobile */
+  .navbar-bottom{ display:flex; }    /* show bottom bar on mobile */
+  .main-content{ padding:15px 1rem; }
+}
+@media (min-width:769px){
+  .navbar-desktop{ display:flex; }   /* show desktop nav on tablet/desktop */
+  .navbar-bottom{ display:none; }    /* hide bottom bar off mobile */
+}
+@media (max-width:480px){
+  .header-title{ font-size:1.25rem; }
+  .navbar-link{ font-size:1rem; gap:5px; }
+  .footer-text{ font-size:.75rem; }
 }
 
-.carousel .control-arrow:before {
-  border: solid #ffffff; /* Changed to white for better visibility */
-  border-width: 0 2px 2px 0;
-  display: inline-block;
-  padding: 4px;
+/* Media assets */
+img,video{ max-width:100%; height:auto; display:block; }
+/* Bigger NeonLogo */
+.logo-container .neon-text {
+  font-size: clamp(3rem, 10vw, 8rem); /* responsive: ~3rem on small, up to 8rem on big screens */
+  margin: 0 auto;
+  line-height: 1.1;
+  text-align: center;
+
+  /* stronger buzzing neon glow */
+  text-shadow:
+    0 0 4px var(--core-white),
+    0 0 10px var(--neon-pink),
+    0 0 18px var(--neon-pink),
+    0 0 28px var(--neon-blue),
+    0 0 42px rgba(0,212,255,0.9),
+    0 0 60px rgba(255,0,127,0.8);
+  animation: neon-flicker 3s infinite steps(80, end);
 }
 
-.carousel .control-prev.control-arrow:before {
-  transform: rotate(135deg);
-  -webkit-transform: rotate(135deg);
-}
+/* Apply VanillaWhale font to all h1s, including NeonLogo */
+h1, .neon-text {
+  font-family: 'VanillaWhale', sans-serif !important;
+  font-size: clamp(3rem, 10vw, 8rem); /* responsive scaling */
+  line-height: 1.1;
+  text-align: center;
+  margin: 0 auto;
 
-.carousel .control-next.control-arrow:before {
-  transform: rotate(-45deg);
-  -webkit-transform: rotate(-45deg);
-}
-
-/* Adjust arrow size if necessary */
-.carousel .control-arrow {
-  width: 40px;
-  height: 40px;
-}
-
-/* Customize the dots/pagination */
-.carousel .carousel-dots li button {
-  background: #ff007f;
-}
-
-.carousel .carousel-dots li.active button {
-  background: #00d4ff;
-}
-
-/* Bottom Navbar for Mobile */
-.navbar-bottom {
-  display: none;
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  /* Apply the gradient background */
-  background: linear-gradient(to right, #000000, #2E0854); /* Black to dark purple */
-  border-top: 2px solid #ff007f;
-  padding: 10px 0;
-  z-index: 1000;
-}
-
-.navbar-bottom a {
-  color: #00d4ff;
-  font-size: 1.5rem;
-  margin: 0 20px;
-  transition: color 0.3s ease, text-shadow 0.3s ease;
-}
-
-.navbar-bottom a:hover {
-  color: #ff007f;
-  text-shadow: 
-    0 0 10px #ff007f, 
-    0 0 20px #ff007f, 
-    0 0 30px #ff007f;
-}
-
-/* Responsive Styles */
-@media (max-width: 1024px) {
-  .header-title {
-    font-size: 1.75rem;
-  }
-  
-  .navbar-desktop {
-    gap: 30px;
-  }
-  
-  .navbar-link {
-    font-size: 0.95rem;
-  }
-}
-
-@media (max-width: 768px) {
-  .header-title {
-    font-size: 1.5rem;
-  }
-  
-  .navbar-desktop {
-    display: none;
-  }
-  
-  .navbar-bottom {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-  
-  .navbar-link {
-    font-size: 1.1rem;
-  }
-  
-  .main-content {
-    padding: 15px 1rem;
-  }
-}
-
-@media (max-width: 480px) {
-  .header-title {
-    font-size: 1.25rem;
-  }
-
-  .navbar-link {
-    font-size: 1rem;
-    gap: 5px;
-  }
-
-  .footer-text {
-    font-size: 0.75rem;
-  }
-}
-
-/* Ensure images and videos are responsive */
-img, video {
-  max-width: 100%;
-  height: auto;
+  /* Neon buzzing glow */
+  text-shadow:
+    0 0 4px var(--core-white),
+    0 0 10px var(--neon-pink),
+    0 0 18px var(--neon-pink),
+    0 0 28px var(--neon-blue),
+    0 0 42px rgba(0,212,255,0.9),
+    0 0 60px rgba(255,0,127,0.8);
+  animation: neon-flicker 3s infinite steps(80, end);
 }

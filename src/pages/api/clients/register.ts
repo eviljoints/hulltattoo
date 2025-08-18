@@ -1,123 +1,65 @@
-// File: pages/api/clients/register.ts
-import type { NextApiRequest, NextApiResponse } from "next";
-import nodemailer from "nodemailer";
-import prisma from "../../../../lib/prisma"; // Adjust path to your prisma client
+// ./src/pages/api/clients/register.ts
+import type { NextApiRequest, NextApiResponse } from 'next';
+import { prisma } from '~/lib/prisma';
 
-/**
- * Generates a random integer between 1 and 10,000,
- * checks if it's already taken as a clientId, and repeats if so.
- */
-async function generateUniqueClientId(): Promise<string> {
-  while (true) {
-    const randomNum = Math.floor(Math.random() * 10000) + 1;
-    const candidateId = randomNum.toString();
-
-    // Check if this ID is already in use
-    const existing = await prisma.client.findUnique({
-      where: { clientId: candidateId },
-    });
-    if (!existing) {
-      return candidateId;
-    }
-    // Otherwise, loop again
-  }
-}
-
-export default async function registerClientHandler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
-  if (req.method !== "POST") {
-    return res.status(405).json({ error: "Method not allowed. Use POST." });
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+  if (req.method !== 'POST') {
+    res.setHeader('Allow', 'POST');
+    return res.status(405).json({ error: 'Method Not Allowed' });
   }
 
   try {
-    const { name, email } = req.body;
+    const { name, email } = req.body || {};
+    if (!email) return res.status(400).json({ error: 'email is required' });
 
-    // Basic validation
-    if (!name) {
-      return res.status(400).json({
-        error: "Please provide a 'name' in the request body.",
+    // Reuse by email if exists, and ensure role = CUSTOMER
+    const existing = await prisma.user.findUnique({
+      where: { email },
+      select: { id: true, name: true, email: true, role: true, createdAt: true, updatedAt: true },
+    });
+
+    if (existing) {
+      if (existing.role !== 'CUSTOMER') {
+        await prisma.user.update({ where: { id: existing.id }, data: { role: 'CUSTOMER' } });
+      }
+      return res.status(200).json({
+        created: false,
+        item: {
+          id: existing.id,
+          clientId: existing.id, // compatibility alias
+          name: existing.name,
+          email: existing.email,
+          role: 'CUSTOMER',
+          createdAt: existing.createdAt,
+          updatedAt: existing.updatedAt,
+        },
       });
     }
-    if (!email) {
-      return res.status(400).json({
-        error: "Please provide an 'email' in the request body.",
-      });
-    }
 
-    // Optional email format check
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      return res.status(400).json({ error: "Invalid email address." });
-    }
+    // Create new customer
+    const user = await prisma.user.create({
+      data: { name: name || null, email, role: 'CUSTOMER' },
+      select: { id: true, name: true, email: true, role: true, createdAt: true, updatedAt: true },
+    });
 
-    // Generate a unique ID from 1-10000
-    const clientId = await generateUniqueClientId();
-
-    // Create the client in the DB
-    const newClient = await prisma.client.create({
-      data: {
-        name,
-        email,
-        clientId, // e.g. "1234"
+    return res.status(201).json({
+      created: true,
+      item: {
+        id: user.id,
+        clientId: user.id, // expose as clientId if your frontend expects that name
+        name: user.name,
+        email: user.email,
+        role: user.role,
+        createdAt: user.createdAt,
+        updatedAt: user.updatedAt,
       },
     });
-
-    // Send a welcome email to the user
-    const transporter = nodemailer.createTransport({
-      host: "smtppro.zoho.eu",
-      port: 465,
-      secure: true,
-      auth: {
-        user: process.env.EMAIL_USER, // e.g. "myaccount@zoho.eu"
-        pass: process.env.EMAIL_PASS,
-      },
-    });
-
-    // In the email, list all requested details:
-    const mailOptions = {
-      from: process.env.EMAIL_USER,
-      to: email,
-      subject: "Welcome to Hull Tattoo Studio Loyalty Program",
-      text: `Hello ${name},
-
-Thank you for signing up for our Loyalty Program!
-Here are your details:
-
-Username: ${name}
-Client ID: ${clientId}
-Email Address Registered: ${email}
-
-Keep track of your hours to earn free sessions. 
-We look forward to seeing you soon!
-
-Best regards,
-Hull Tattoo Studio`,
-    };
-
-    await transporter.sendMail(mailOptions);
-
-    return res.status(200).json({
-      message: "Client registered successfully.",
-      client: {
-        id: newClient.id,
-        name: newClient.name,
-        email: newClient.email,
-        clientId: newClient.clientId,
-      },
-    });
-  } catch (error: any) {
-    // Check for unique constraint conflict (e.g., email is unique in schema)
-    if (error.code === "P2002" && error.meta?.target?.includes("email")) {
-      return res
-        .status(400)
-        .json({ error: "This email is already registered. Please use another email." });
+  } catch (err: any) {
+    // Unique email violation, etc.
+    if (err?.code === 'P2002') {
+      return res.status(409).json({ error: 'Email already exists' });
     }
-
-    console.error("[registerClientHandler] Error registering client:", error);
-    return res.status(500).json({
-      error: "An unexpected error occurred. Please try again later.",
-    });
+    console.error('/api/clients/register error', err?.message || err);
+    return res.status(500).json({ error: 'Internal Server Error', detail: err?.message });
   }
 }

@@ -3,7 +3,7 @@
 import fs from "fs/promises";
 import path from "path";
 import matter from "gray-matter";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import NextLink from "next/link";
 import Head from "next/head";
 import {
@@ -12,10 +12,8 @@ import {
   Text,
   Link as ChakraLink,
   Select,
-  Spinner,
 } from "@chakra-ui/react";
 import Image from "next/image"; // Using Next.js Image for better performance
-import prisma from "../../../lib/prisma";
 
 interface PostMeta {
   slug: string;
@@ -23,7 +21,7 @@ interface PostMeta {
   date: string;
   excerpt?: string;
   coverImage?: string;
-  views: number;
+  views: number; // retained in type but no longer used (always 0)
 }
 
 interface BlogIndexProps {
@@ -33,28 +31,6 @@ interface BlogIndexProps {
 const BlogIndex: React.FC<BlogIndexProps> = ({ posts }) => {
   const [sortedPosts, setSortedPosts] = useState<PostMeta[]>(posts);
   const [sortOption, setSortOption] = useState<string>("date-desc");
-  const [views, setViews] = useState<Record<string, number>>({});
-  const [loadingViews, setLoadingViews] = useState<boolean>(true);
-
-  useEffect(() => {
-    const fetchViews = async () => {
-      try {
-        const response = await fetch("/api/get-views");
-        if (response.ok) {
-          const data = await response.json();
-          setViews(data);
-        } else {
-          console.error("Failed to fetch views:", await response.text());
-        }
-      } catch (error) {
-        console.error("Error fetching views:", error);
-      } finally {
-        setLoadingViews(false);
-      }
-    };
-
-    fetchViews();
-  }, []);
 
   const handleSortChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const option = e.target.value;
@@ -76,27 +52,6 @@ const BlogIndex: React.FC<BlogIndexProps> = ({ posts }) => {
     setSortedPosts(sorted);
   };
 
-  const handlePostClick = async (slug: string) => {
-    try {
-      const response = await fetch("/api/update-views", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ slug }),
-      });
-
-      if (!response.ok) {
-        console.error(`Failed to update views for ${slug}:`, await response.json());
-      } else {
-        setViews((prev) => ({
-          ...prev,
-          [slug]: (prev[slug] || 0) + 1,
-        }));
-      }
-    } catch (error) {
-      console.error("Error updating views:", error);
-    }
-  };
-
   // Updated SEO variables targeting additional search terms
   const seoTitle =
     "Hull Tattoo Studio Tattoo Blog | Tattoo Apprentice & Tattoo Information";
@@ -105,13 +60,24 @@ const BlogIndex: React.FC<BlogIndexProps> = ({ posts }) => {
   const seoImage = "/images/og-image.webp";
   const siteUrl = "https://www.hulltattoostudio.com/blog";
 
-  // JSON‑LD Structured Data for the Blog page
+  // JSON-LD for Blog + ItemList of posts
   const blogStructuredData = {
     "@context": "http://schema.org",
     "@type": "Blog",
-    "name": "Hull Tattoo Studio Tattoo Blog",
-    "url": siteUrl,
-    "description": seoDescription,
+    name: "Hull Tattoo Studio Tattoo Blog",
+    url: siteUrl,
+    description: seoDescription,
+  };
+
+  const itemListStructuredData = {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    itemListElement: posts.map((p, i) => ({
+      "@type": "ListItem",
+      position: i + 1,
+      url: `https://www.hulltattoostudio.com/blog/${p.slug}`,
+      name: p.title,
+    })),
   };
 
   return (
@@ -150,12 +116,14 @@ const BlogIndex: React.FC<BlogIndexProps> = ({ posts }) => {
 
         <link rel="canonical" href={siteUrl} />
 
-        {/* JSON‑LD Structured Data */}
+        {/* JSON-LD Structured Data */}
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify(blogStructuredData),
-          }}
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(blogStructuredData) }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListStructuredData) }}
         />
       </Head>
 
@@ -195,6 +163,7 @@ const BlogIndex: React.FC<BlogIndexProps> = ({ posts }) => {
               boxShadow="0 0 10px #ff007f, 0 0 20px #00d4ff"
               _hover={{ borderColor: "#ff007f" }}
               fontWeight="bold"
+              aria-label="Sort posts"
             >
               <option value="date-desc">Date Descending</option>
               <option value="date-asc">Date Ascending</option>
@@ -205,10 +174,7 @@ const BlogIndex: React.FC<BlogIndexProps> = ({ posts }) => {
 
           {sortedPosts.map((post) => (
             <NextLink href={`/blog/${post.slug}`} key={post.slug} passHref>
-              <ChakraLink
-                _hover={{ textDecoration: "none" }}
-                onClick={() => handlePostClick(post.slug)}
-              >
+              <ChakraLink _hover={{ textDecoration: "none" }} aria-label={`Read ${post.title}`}>
                 <Box
                   mb={8}
                   p={4}
@@ -217,10 +183,7 @@ const BlogIndex: React.FC<BlogIndexProps> = ({ posts }) => {
                   boxShadow="0 0 10px #ff007f, 0 0 20px #00d4ff"
                   transition="transform 0.2s"
                   _hover={{ transform: "scale(1.02)" }}
-                  sx={{
-                    ul: { ml: 6 },
-                    ol: { ml: 6 },
-                  }}
+                  sx={{ ul: { ml: 6 }, ol: { ml: 6 } }}
                 >
                   {post.coverImage && (
                     <Box display="flex" justifyContent="center" mb={4}>
@@ -229,7 +192,7 @@ const BlogIndex: React.FC<BlogIndexProps> = ({ posts }) => {
                         width="100%"
                         maxWidth="500px"
                         height="0"
-                        pb="40%" // 16:9 aspect ratio
+                        pb="40%" // ~16:9 aspect ratio
                         overflow="hidden"
                         borderRadius="md"
                         boxShadow="0 0 10px #ff007f, 0 0 20px #00d4ff"
@@ -240,6 +203,7 @@ const BlogIndex: React.FC<BlogIndexProps> = ({ posts }) => {
                           layout="fill"
                           style={{ objectFit: "cover" }}
                           sizes="(max-width: 800px) 40vw, 500px"
+                          priority={post.slug === sortedPosts[0]?.slug} // minor LCP boost for first card
                         />
                       </Box>
                     </Box>
@@ -260,18 +224,10 @@ const BlogIndex: React.FC<BlogIndexProps> = ({ posts }) => {
                   </Text>
 
                   {post.excerpt && (
-                    <Text color="white" fontSize="md" mb={2}>
+                    <Text color="white" fontSize="md" mb={0}>
                       {post.excerpt}
                     </Text>
                   )}
-
-                  <Text color="gray.400" fontSize="sm">
-                    {loadingViews ? (
-                      <Spinner size="xs" />
-                    ) : (
-                      `Views: ${views[post.slug] || post.views}`
-                    )}
-                  </Text>
                 </Box>
               </ChakraLink>
             </NextLink>
@@ -298,19 +254,13 @@ export async function getStaticProps() {
 
         const slug = filename.replace(/\.mdx?$/, "");
 
-        // Fetch view counts for each post
-        const postView = await prisma.postView.findUnique({
-          where: { slug },
-          select: { views: true },
-        });
-
         return {
           slug,
           title: data.title || "Untitled",
           date: data.date || "",
           excerpt: data.excerpt || "",
           coverImage: data.coverImage || "",
-          views: postView?.views || 0,
+          views: 0, // views removed
         };
       })
     );
@@ -321,17 +271,13 @@ export async function getStaticProps() {
     );
 
     return {
-      props: {
-        posts,
-      },
-      revalidate: 60, // Revalidate every 60 seconds
+      props: { posts },
+      revalidate: 60, // ISR: refresh every 60s
     };
   } catch (error) {
     console.error("Error reading posts:", error);
     return {
-      props: {
-        posts: [],
-      },
+      props: { posts: [] },
       revalidate: 60,
     };
   }
