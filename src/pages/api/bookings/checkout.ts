@@ -1,11 +1,10 @@
-// ./src/pages/api/bookings/checkout.ts
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { prisma } from '~/lib/prisma';
 import { stripe } from '~/lib/stripe';
 
 type Iso = string;
 const LONDON_TZ = 'Europe/London';
-const HOLD_MINUTES = Number(process.env.BOOKING_HOLD_MINUTES || 20); // fresh-hold window
+const HOLD_MINUTES = Number(process.env.BOOKING_HOLD_MINUTES || 20); // fresh pending holds block for 20 min
 
 function addMinutes(iso: Iso, m: number) {
   return new Date(new Date(iso).getTime() + m * 60000).toISOString();
@@ -13,7 +12,7 @@ function addMinutes(iso: Iso, m: number) {
 
 function siteOriginFromReq(req: NextApiRequest) {
   const env = process.env.NEXT_PUBLIC_SITE_URL;
-  if (env && /^https?:\/\//i.test(env)) return env.replace(/\/+$/,'');
+  if (env && /^https?:\/\//i.test(env)) return env.replace(/\/+$/, '');
   const host = req.headers.host || 'localhost:3000';
   const proto = host.includes('localhost') ? 'http' : 'https';
   return `${proto}://${host}`;
@@ -30,10 +29,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   try {
-    // Stripe sanity (server key must be set, must start with sk_)
+    // Basic Stripe sanity
     const secret = process.env.STRIPE_SECRET_KEY || '';
     if (!secret || !secret.startsWith('sk_')) {
-      console.error('[checkout] Misconfigured STRIPE_SECRET_KEY (must start with sk_)');
+      console.error('[checkout] Misconfigured STRIPE_SECRET_KEY');
       return res.status(500).json({ error: 'Payment configuration error' });
     }
 
@@ -46,6 +45,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return res.status(400).json({ error: 'artistId, serviceId, startISO, customerEmail required' });
     }
 
+    // Fetch artist + service
     const [artist, service] = await Promise.all([
       prisma.artist.findUnique({ where: { id: String(artistId) }, select: { id: true, name: true, isActive: true } }),
       prisma.service.findUnique({
@@ -61,6 +61,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     if (!artist?.isActive) return res.status(404).json({ error: 'Artist not found or inactive' });
     if (!service?.active) return res.status(404).json({ error: 'Service not found or inactive' });
 
+    // Effective price (per-artist override, else base)
     let unitAmount = Number(service.priceGBP || 0);
     const soa = await prisma.serviceOnArtist.findUnique({
       where: { artistId_serviceId: { artistId: artist.id, serviceId: service.id } },
@@ -75,11 +76,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return res.status(400).json({ error: 'Invalid price for service' });
     }
 
-    // Duration + end time
+    // Times
     const duration = Number(service.durationMin || 60);
     const endISO = addMinutes(startISO, duration);
 
-    // Quick double-booking guard
+    // Double-booking guard:
+    //  - CONFIRMED always blocks
+    //  - PENDING only blocks if created in the last HOLD_MINUTES
     const pendingFreshAfter = new Date(Date.now() - HOLD_MINUTES * 60_000);
     const clash = await prisma.booking.findFirst({
       where: {
@@ -87,17 +90,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         AND: [{ start: { lt: new Date(endISO) } }, { end: { gt: new Date(startISO) } }],
         OR: [
           { status: 'CONFIRMED' },
-          { status: 'PENDING', createdAt: { gt: pendingFreshAfter } }, // only fresh PENDING blocks
+          { status: 'PENDING', createdAt: { gt: pendingFreshAfter } },
         ],
       },
-      select: { id: true, status: true, createdAt: true },
+      select: { id: true },
     });
-
     if (clash) {
       return res.status(409).json({ error: 'That time has just been taken. Please pick another slot.' });
     }
 
-    // Store form details in notes as JSON
+    // Store form details in notes JSON
     const details = {
       name: customerName || null,
       email: customerEmail,
@@ -108,7 +110,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     };
     const notes = JSON.stringify(details);
 
-    // Hold slot (PENDING)
+    // Create pending booking (hold)
     const booking = await prisma.booking.create({
       data: {
         artistId: artist.id,
@@ -116,7 +118,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         start: new Date(startISO),
         end: new Date(endISO),
         status: 'PENDING',
-        totalAmount: unitAmount,   // per your schema
+        totalAmount: unitAmount,
         currency: 'GBP',
         notes,
         customerEmail: String(customerEmail),
@@ -125,59 +127,40 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       include: { service: true, artist: true },
     });
 
+    // Simple/old Checkout Session (cards/Revolut Pay etc. as you had before)
     const origin = siteOriginFromReq(req);
-    const successUrl = `${origin}/booking/success?bookingId=${booking.id}`;
-    const cancelUrl  = `${origin}/booking/cancelled?bookingId=${booking.id}`;
-
-    // Stripe Checkout — show all eligible methods you enabled in Dashboard
     const session = await stripe.checkout.sessions.create({
       mode: 'payment',
-      locale: 'auto',
-      automatic_payment_methods: { enabled: true }, // let Stripe render Apple/Google Pay, Klarna, Clearpay, Revolut Pay, etc.
-
-      billing_address_collection: 'auto',
-
-      client_reference_id: booking.id,
+      customer_email: booking.customerEmail || undefined,
       metadata: {
         bookingId: booking.id,
-        artistId: artist.id,
-        serviceId: service.id,
-        startISO, endISO,
+        artistId: booking.artist.id,
+        serviceId: booking.service.id,
+        startISO,
+        endISO,
         placement: (placement || '').slice(0, 200),
         image: Array.isArray(imageUrls) && imageUrls[0] ? String(imageUrls[0]) : '',
       },
-      payment_intent_data: {
-        metadata: {
-          bookingId: booking.id,
-          artistId: artist.id,
-          serviceId: service.id,
-        },
-      },
-
-      customer_email: customerEmail,
       line_items: [
         {
+          quantity: 1,
           price_data: {
             currency: 'gbp',
             unit_amount: unitAmount,
             product_data: {
-              name: `${service.title} with ${artist.name}`,
-              description: new Date(startISO).toLocaleString('en-GB', {
-                timeZone: LONDON_TZ, weekday: 'short', year: 'numeric', month: 'short', day: '2-digit',
-                hour: '2-digit', minute: '2-digit'
-              }),
+              name: booking.service.title,
+              description: `Artist: ${booking.artist.name} • ${duration} min • ${new Date(startISO).toLocaleString('en-GB', { timeZone: LONDON_TZ })}`,
             },
           },
-          quantity: 1,
         },
       ],
-      success_url: successUrl,
-      cancel_url: cancelUrl,
-      // Expire session (Stripe will emit checkout.session.expired for your webhook to cancel the PENDING hold)
-      expires_at: Math.floor(Date.now() / 1000) + 30 * 60, // 30 minutes
+      success_url: `${origin}/booking/success?bookingId=${booking.id}`,
+      cancel_url: `${origin}/booking/cancelled?bookingId=${booking.id}`,
+      // If this type causes type errors for your Stripe typings, remove it:
+      // expires_at: Math.floor(Date.now() / 1000) + 30 * 60, // 30 minutes
     });
 
-    // Keep a reference to the session (handy in dashboard & cross-checks)
+    // Save Checkout session ID (helpful for debugging)
     await prisma.booking.update({
       where: { id: booking.id },
       data: { stripeCheckoutId: session.id },
