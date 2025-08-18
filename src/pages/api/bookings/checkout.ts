@@ -14,7 +14,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   try {
-    // 1) Stripe env sanity (server-side secret must start with sk_)
+    // Ensure proper server key
     const secret = process.env.STRIPE_SECRET_KEY || '';
     if (!secret || !secret.startsWith('sk_')) {
       console.error('[checkout] Misconfigured STRIPE_SECRET_KEY (must start with sk_)');
@@ -29,7 +29,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const start = new Date(startISO);
     if (isNaN(start.getTime())) return res.status(400).json({ error: 'Invalid startISO' });
 
-    // 2) fetch artist + service
+    // Fetch artist + service
     const [artist, service] = await Promise.all([
       prisma.artist.findUnique({ where: { id: String(artistId) } }),
       prisma.service.findUnique({ where: { id: String(serviceId) } }),
@@ -37,11 +37,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     if (!artist?.isActive) return res.status(400).json({ error: 'Artist not active or not found' });
     if (!service?.active) return res.status(400).json({ error: 'Service not active or not found' });
 
-    // duration + end time
+    // Duration and end time
     const durationMin = service.durationMin ?? 60;
     const end = new Date(start.getTime() + durationMin * 60_000);
 
-    // 3) price with per-artist override (ServiceOnArtist)
+    // Price with per-artist override (ServiceOnArtist)
     let unitAmount = service.priceGBP || 0;
     const link = await prisma.serviceOnArtist.findUnique({
       where: { artistId_serviceId: { artistId: artist.id, serviceId: service.id } },
@@ -56,7 +56,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return res.status(400).json({ error: 'Invalid service price' });
     }
 
-    // 4) quick double-booking guard
+    // Quick double-booking guard
     const clash = await prisma.booking.findFirst({
       where: {
         artistId: artist.id,
@@ -66,7 +66,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     });
     if (clash) return res.status(409).json({ error: 'Time slot just taken. Pick another slot.' });
 
-    // 5) create pending booking (NOTE: use totalAmount, not priceGBP)
+    // Create pending booking (note: totalAmount per your schema)
     const booking = await prisma.booking.create({
       data: {
         artistId: artist.id,
@@ -74,7 +74,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         start,
         end,
         status: 'PENDING',
-        totalAmount: unitAmount,   // <-- correct field from your schema
+        totalAmount: unitAmount,
         currency: 'GBP',
         customerEmail: String(customerEmail),
         customerName: customerName ? String(customerName) : null,
@@ -83,12 +83,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       include: { service: true, artist: true },
     });
 
-    // 6) Stripe Checkout — show all eligible & enabled methods
+    // Stripe Checkout — show all eligible & enabled methods
     const site = process.env.NEXT_PUBLIC_SITE_URL || `https://${req.headers.host}`;
     const session = await stripe.checkout.sessions.create({
       mode: 'payment',
       locale: 'auto',
-      automatic_payment_methods: { enabled: true, allow_redirects: 'always' },
+      automatic_payment_methods: { enabled: true }, // ✅ lets Stripe render all eligible, enabled methods
 
       billing_address_collection: 'auto',
 
