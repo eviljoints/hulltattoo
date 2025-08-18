@@ -1,12 +1,10 @@
+// ./src/pages/api/bookings/checkout.ts
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { prisma } from '~/lib/prisma';
-import { stripe } from '~/lib/stripe';
+import { prisma } from '@/lib/prisma';
+import { stripe } from '@/lib/stripe';
 
-type Iso = string;
-const LONDON_TZ = 'Europe/London';
-
-function addMinutes(iso: Iso, m: number) {
-  return new Date(new Date(iso).getTime() + m * 60000).toISOString();
+function required(v?: string) {
+  return typeof v === 'string' && v.trim().length > 0;
 }
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
@@ -16,131 +14,126 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   try {
-    const {
-      artistId, serviceId, startISO, customerEmail, customerName,
-      placement, brief, imageUrls // string[]
-    } = req.body || {};
-
-    if (!artistId || !serviceId || !startISO || !customerEmail) {
-      return res.status(400).json({ error: 'artistId, serviceId, startISO, customerEmail required' });
+    // 1) Stripe env sanity (server-side secret must start with sk_)
+    const secret = process.env.STRIPE_SECRET_KEY || '';
+    if (!secret || !secret.startsWith('sk_')) {
+      console.error('[checkout] Misconfigured STRIPE_SECRET_KEY (must start with sk_)');
+      return res.status(500).json({ error: 'Payment configuration error' });
     }
 
+    const { artistId, serviceId, startISO, customerEmail, customerName, notes } = req.body || {};
+    if (!required(artistId) || !required(serviceId) || !required(startISO) || !required(customerEmail)) {
+      return res.status(400).json({ error: 'artistId, serviceId, startISO, customerEmail are required' });
+    }
+
+    const start = new Date(startISO);
+    if (isNaN(start.getTime())) return res.status(400).json({ error: 'Invalid startISO' });
+
+    // 2) fetch artist + service
     const [artist, service] = await Promise.all([
-      prisma.artist.findUnique({ where: { id: artistId }, select: { id: true, name: true } }),
-      prisma.service.findUnique({
-        where: { id: serviceId },
-        select: {
-          id: true, slug: true, title: true,
-          durationMin: true, bufferBeforeMin: true, bufferAfterMin: true,
-          priceGBP: true, active: true
-        }
-      }),
+      prisma.artist.findUnique({ where: { id: String(artistId) } }),
+      prisma.service.findUnique({ where: { id: String(serviceId) } }),
     ]);
+    if (!artist?.isActive) return res.status(400).json({ error: 'Artist not active or not found' });
+    if (!service?.active) return res.status(400).json({ error: 'Service not active or not found' });
 
-    if (!artist) return res.status(404).json({ error: 'Artist not found' });
-    if (!service || !service.active) return res.status(404).json({ error: 'Service not found or inactive' });
+    // duration + end time
+    const durationMin = service.durationMin ?? 60;
+    const end = new Date(start.getTime() + durationMin * 60_000);
 
-    // Effective price: per-artist override via ServiceOnArtist, else base Service.priceGBP
-    let unitAmount = Number(service.priceGBP || 0);
-    const soa = await prisma.serviceOnArtist.findUnique({
-      where: { artistId_serviceId: { artistId, serviceId } },
+    // 3) price with per-artist override (ServiceOnArtist)
+    let unitAmount = service.priceGBP || 0;
+    const link = await prisma.serviceOnArtist.findUnique({
+      where: { artistId_serviceId: { artistId: artist.id, serviceId: service.id } },
       select: { priceGBP: true, active: true },
-    }).catch(() => null);
-
-    if (soa && soa.active && soa.priceGBP != null) {
-      unitAmount = Number(soa.priceGBP);
-    }
-
-    if (!Number.isFinite(unitAmount) || unitAmount <= 0) {
-      return res.status(400).json({ error: 'Invalid price for service' });
-    }
-
-    const duration = Number(service.durationMin || 60);
-    const endISO = addMinutes(startISO, duration);
-
-    // Prevent double-booking
-    const conflict = await prisma.booking.findFirst({
-      where: {
-        artistId,
-        start: { lt: new Date(endISO) },
-        end: { gt: new Date(startISO) },
-        status: { in: ['PENDING', 'CONFIRMED'] },
-      },
-      select: { id: true },
     });
-    if (conflict) {
-      return res.status(409).json({ error: 'That time has just been taken. Please pick another slot.' });
+    if (link) {
+      if (link.active === false) return res.status(400).json({ error: 'Service not offered by this artist' });
+      if (typeof link.priceGBP === 'number' && link.priceGBP >= 0) unitAmount = link.priceGBP;
+    }
+    if (!unitAmount || unitAmount < 50) {
+      console.error('[checkout] Invalid amount (pence):', unitAmount);
+      return res.status(400).json({ error: 'Invalid service price' });
     }
 
-    // Store form details in notes as JSON
-    const details = {
-      name: customerName || null,
-      email: customerEmail,
-      placement: placement || null,
-      brief: brief || null,
-      images: Array.isArray(imageUrls) ? imageUrls.slice(0, 3) : [],
-      tz: LONDON_TZ,
-    };
-    const notes = JSON.stringify(details);
+    // 4) quick double-booking guard
+    const clash = await prisma.booking.findFirst({
+      where: {
+        artistId: artist.id,
+        status: { in: ['PENDING', 'CONFIRMED'] },
+        AND: [{ start: { lt: end } }, { end: { gt: start } }],
+      },
+    });
+    if (clash) return res.status(409).json({ error: 'Time slot just taken. Pick another slot.' });
 
-    // Hold slot (PENDING)
+    // 5) create pending booking
     const booking = await prisma.booking.create({
       data: {
-        artistId,
-        serviceId,
-        start: new Date(startISO),
-        end: new Date(endISO),
+        artistId: artist.id,
+        serviceId: service.id,
+        start,
+        end,
         status: 'PENDING',
-        totalAmount: unitAmount,   // matches your schema
+        priceGBP: unitAmount,
         currency: 'GBP',
-        notes,
-        customerEmail: customerEmail || null,
-        customerName: customerName || null,
+        customerEmail: String(customerEmail),
+        customerName: customerName ? String(customerName) : null,
+        notes: notes ? String(notes) : null,
       },
-      select: { id: true },
+      include: { service: true, artist: true },
     });
 
-    const successUrl = `${process.env.NEXT_PUBLIC_SITE_URL}/book?success=1&bid=${booking.id}`;
-    const cancelUrl  = `${process.env.NEXT_PUBLIC_SITE_URL}/book?canceled=1&bid=${booking.id}`;
-
+    // 6) Stripe Checkout (show all eligible, enabled methods)
+    // - Stripe will render every payment method you have enabled in Dashboard that's eligible for GBP/UK and this amount.
+    // - Apple Pay/Google Pay appear via "card" automatically on Stripe-hosted Checkout when eligible.
+    const site = process.env.NEXT_PUBLIC_SITE_URL || `https://${req.headers.host}`;
     const session = await stripe.checkout.sessions.create({
       mode: 'payment',
-      customer_email: customerEmail,
+      locale: 'auto',
+      // Let Stripe include all eligible payment methods you’ve enabled in the Dashboard
+      automatic_payment_methods: { enabled: true, allow_redirects: 'always' },
+
+      // Collect billing details when certain methods (e.g., Klarna/Clearpay) need it
+      billing_address_collection: 'auto',
+
+      // Helpful metadata
+      client_reference_id: booking.id,
+      metadata: { bookingId: booking.id, artistId: artist.id, serviceId: service.id },
+
+      // Improve reconciliation: also set on the underlying PaymentIntent
+      payment_intent_data: {
+        metadata: { bookingId: booking.id, artistId: artist.id, serviceId: service.id },
+      },
+
+      customer_email: booking.customerEmail || undefined,
       line_items: [
         {
+          quantity: 1,
           price_data: {
             currency: 'gbp',
             unit_amount: unitAmount,
             product_data: {
-              name: `${service.title} with ${artist.name}`,
-              description: new Date(startISO).toLocaleString('en-GB', {
-                timeZone: LONDON_TZ, weekday: 'short', year: 'numeric', month: 'short', day: '2-digit',
-                hour: '2-digit', minute: '2-digit'
-              }),
+              name: booking.service.title,
+              // Keep it short; some redirect methods truncate long descriptions
+              description: `Artist: ${booking.artist.name} • ${durationMin} min • ${start.toLocaleString('en-GB', { timeZone: 'Europe/London' })}`,
             },
           },
-          quantity: 1,
         },
       ],
-      metadata: {
-        bookingId: booking.id,
-        artistId, serviceId, startISO, endISO,
-        placement: (placement || '').slice(0, 200),
-        image: Array.isArray(imageUrls) && imageUrls[0] ? imageUrls[0] : '',
-      },
-      success_url: successUrl,
-      cancel_url: cancelUrl,
-      expires_at: Math.floor(Date.now() / 1000) + 30 * 60,
-    });
-
-    await prisma.booking.update({
-      where: { id: booking.id },
-      data: { stripeCheckoutId: session.id },
+      success_url: `${site}/booking/success?bookingId=${booking.id}`,
+      cancel_url: `${site}/booking/cancelled?bookingId=${booking.id}`,
     });
 
     return res.status(200).json({ url: session.url });
-  } catch (e: any) {
-    console.error('/api/bookings/checkout error', e?.message || e, e?.stack);
-    return res.status(500).json({ error: 'Internal Server Error', detail: e?.message || String(e) });
+  } catch (err: any) {
+    // Stripe errors often include type/code; log them for Vercel Functions
+    const details = {
+      message: err?.message,
+      type: err?.type,
+      code: err?.code,
+      stack: err?.stack,
+    };
+    console.error('[checkout] error', details);
+    return res.status(500).json({ error: 'Internal Server Error' });
   }
 }
