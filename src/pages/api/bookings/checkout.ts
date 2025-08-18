@@ -66,7 +66,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     });
     if (clash) return res.status(409).json({ error: 'Time slot just taken. Pick another slot.' });
 
-    // 5) create pending booking
+    // 5) create pending booking (NOTE: use totalAmount, not priceGBP)
     const booking = await prisma.booking.create({
       data: {
         artistId: artist.id,
@@ -74,7 +74,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         start,
         end,
         status: 'PENDING',
-        priceGBP: unitAmount,
+        totalAmount: unitAmount,   // <-- correct field from your schema
         currency: 'GBP',
         customerEmail: String(customerEmail),
         customerName: customerName ? String(customerName) : null,
@@ -83,24 +83,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       include: { service: true, artist: true },
     });
 
-    // 6) Stripe Checkout (show all eligible, enabled methods)
-    // - Stripe will render every payment method you have enabled in Dashboard that's eligible for GBP/UK and this amount.
-    // - Apple Pay/Google Pay appear via "card" automatically on Stripe-hosted Checkout when eligible.
+    // 6) Stripe Checkout — show all eligible & enabled methods
     const site = process.env.NEXT_PUBLIC_SITE_URL || `https://${req.headers.host}`;
     const session = await stripe.checkout.sessions.create({
       mode: 'payment',
       locale: 'auto',
-      // Let Stripe include all eligible payment methods you’ve enabled in the Dashboard
       automatic_payment_methods: { enabled: true, allow_redirects: 'always' },
 
-      // Collect billing details when certain methods (e.g., Klarna/Clearpay) need it
       billing_address_collection: 'auto',
 
-      // Helpful metadata
       client_reference_id: booking.id,
       metadata: { bookingId: booking.id, artistId: artist.id, serviceId: service.id },
-
-      // Improve reconciliation: also set on the underlying PaymentIntent
       payment_intent_data: {
         metadata: { bookingId: booking.id, artistId: artist.id, serviceId: service.id },
       },
@@ -114,7 +107,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             unit_amount: unitAmount,
             product_data: {
               name: booking.service.title,
-              // Keep it short; some redirect methods truncate long descriptions
               description: `Artist: ${booking.artist.name} • ${durationMin} min • ${start.toLocaleString('en-GB', { timeZone: 'Europe/London' })}`,
             },
           },
@@ -126,14 +118,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     return res.status(200).json({ url: session.url });
   } catch (err: any) {
-    // Stripe errors often include type/code; log them for Vercel Functions
-    const details = {
+    console.error('[checkout] error', {
       message: err?.message,
       type: err?.type,
       code: err?.code,
       stack: err?.stack,
-    };
-    console.error('[checkout] error', details);
+    });
     return res.status(500).json({ error: 'Internal Server Error' });
   }
 }
