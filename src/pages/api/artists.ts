@@ -53,8 +53,8 @@ const artists: Artist[] = [
     role: "Apprentice of full colour neo traditional",
     description:
       "Developing artist focusing on Neo Trad and full colour work.",
-    image: "/images/mike.webp",
-    gallery: "/images/mike-gallery.webp",
+    image: "images/jen/display.webp",
+    gallery: "/images/jen-gallery.webp",
     facebook: "https://www.facebook.com/profile.php?id=61575953590191",
     instagram: "https://www.instagram.com/theplanetthieftattoo/",
     artsPage: "/jen",

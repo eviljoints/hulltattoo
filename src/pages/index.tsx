@@ -223,12 +223,12 @@ const HomePage: React.FC<HomePageProps> = ({ artists, error }) => {
             <p><em>Open 7 days — Mon–Fri 09:30–17:00; Sat–Sun 11:30–19:00.</em></p>
             <h2 style="color:#ff007f; margin-top: 15px;">Our Services</h2>
             <ul>
-              <li>🎨 <strong>Custom Designs</strong> — One‑of‑a‑kind tattoos tailored to you.</li>
-              <li>🖤 <strong>Black & Grey Realism</strong> — Depth, shading and intricate detail.</li>
-              <li>⚡ <strong>Blackwork & Fine Line</strong> — High‑contrast or delicate precision.</li>
-              <li>🖌 <strong>Anime & Traditional</strong> — Bold colour and classic styles.</li>
-              <li>🛠 <a href="blog/coverup" style="color:#00d4ff;"><strong>Cover‑Ups & Refreshes</strong></a> — Transform old tattoos.</li>
-              <li>📚 <a href="/blog/Apprenticeship" style="color:#00d4ff;"><strong>Tattoo Apprenticeships</strong></a> — Learn with experienced artists.</li>
+              <li> <strong>Custom Designs</strong> — One‑of‑a‑kind tattoos tailored to you.</li>
+              <li> <strong>Black & Grey Realism</strong> — Depth, shading and intricate detail.</li>
+              <li> <strong>Blackwork & Fine Line</strong> — High‑contrast or delicate precision.</li>
+              <li> <strong>Anime & Traditional</strong> — Bold colour and classic styles.</li>
+              <li> <a href="blog/coverup" style="color:#00d4ff;"><strong>Cover‑Ups & Refreshes</strong></a> — Transform old tattoos.</li>
+              <li> <a href="/blog/Apprenticeship" style="color:#00d4ff;"><strong>Tattoo Apprenticeships</strong></a> — Learn with experienced artists.</li>
             </ul>
             <p style="text-align:center; margin-top: 10px;">
               <a href="/mike" style="display:inline-block; padding:10px 20px; background-color:#ff007f; color:white; text-decoration:none; border-radius:5px; font-weight:bold;">
@@ -353,7 +353,7 @@ export const getStaticProps = async () => {
     console.error(err);
     return {
       props: { artists: [], error: "Failed to load artist data." },
-      revalidate: 3600,
+      revalidate: 600,
     };
   }
 };

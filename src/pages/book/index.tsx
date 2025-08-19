@@ -4,12 +4,26 @@ import {
   Box, Select, Button, Heading, Text, SimpleGrid, HStack, IconButton, Spinner,
   useToast, Divider, Tag, TagLabel, Modal, ModalOverlay, ModalContent, ModalHeader,
   ModalCloseButton, ModalBody, ModalFooter, FormControl, FormLabel, Input, Textarea,
-  Image, Flex, Progress
+  Image, Progress
 } from '@chakra-ui/react';
 import { ChevronLeftIcon, ChevronRightIcon } from '@chakra-ui/icons';
 
 type Slot = { start: string; end: string };
 type DayInfo = { free: Slot[]; busy: Slot[] };
+
+type Artist = { id: string; name?: string; displayName?: string };
+type ArtistService = {
+  id: string;                 // service id
+  title: string;
+  slug: string;
+  priceGBP: number;           // effective price (override if present)
+  basePriceGBP: number;       // base price
+  overridePriceGBP: number | null;
+  durationMin: number;
+  depositGBP?: number | null;
+  bufferBeforeMin?: number | null;
+  bufferAfterMin?: number | null;
+};
 
 function startOfMonth(d: Date) { return new Date(d.getFullYear(), d.getMonth(), 1); }
 function endOfMonth(d: Date)   { return new Date(d.getFullYear(), d.getMonth() + 1, 0, 23, 59, 59, 999); }
@@ -23,9 +37,9 @@ function ymd(d: Date) {
 
 export default function Book() {
   const toast = useToast();
-  const [artists, setArtists] = useState<any[]>([]);
-  const [services, setServices] = useState<any[]>([]);
+  const [artists, setArtists] = useState<Artist[]>([]);
   const [artistId, setArtistId] = useState('');
+  const [servicesForArtist, setServicesForArtist] = useState<ArtistService[]>([]);
   const [serviceId, setServiceId] = useState('');
 
   const [currentMonth, setCurrentMonth] = useState<Date>(startOfMonth(new Date()));
@@ -48,22 +62,82 @@ export default function Book() {
   const [quoting, setQuoting] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
-  // Limit nav: now .. now + 5 months (6 months including current)
   const minMonth = useMemo(() => startOfMonth(new Date()), []);
   const maxMonth = useMemo(() => startOfMonth(addMonths(new Date(), 5)), []);
 
+  // Load artists (public, active list)
   useEffect(() => {
     (async () => {
       try {
-        const a = await fetch('/api/admin/artists?active=1').then(r => r.json()).catch(() => ({ items: [] }));
-        const s = await fetch('/api/admin/services?active=1').then(r => r.json()).catch(() => ({ items: [] }));
+        const a = await fetch('/api/admin/artists?active=1')
+          .then(r => r.json())
+          .catch(() => ({ items: [] }));
         setArtists(a.items || []);
-        setServices(s.items || []);
       } catch {
-        setArtists([]); setServices([]);
+        setArtists([]);
       }
     })();
   }, []);
+
+  // When artist changes, fetch ONLY that artist's services
+  useEffect(() => {
+    setServicesForArtist([]);
+    setServiceId('');
+    setSelectedDay('');
+    setDays({});
+    if (!artistId) return;
+
+    (async () => {
+      try {
+        const qs = new URLSearchParams({ artistId, active: '1' });
+        const j = await fetch(`/api/services/for-artist?${qs.toString()}`).then(r => r.json());
+        const items: ArtistService[] = j.items || [];
+        setServicesForArtist(items);
+        if (items.length > 0) setServiceId(items[0].id);
+      } catch (e: any) {
+        setServicesForArtist([]);
+        toast({
+          title: 'Could not load services for artist',
+          description: e?.message || 'Endpoint unavailable',
+          status: 'warning',
+        });
+      }
+    })();
+  }, [artistId, toast]);
+
+  function nextMonth() {
+    const next = addMonths(currentMonth, 1);
+    if (next > maxMonth) return;
+    setCurrentMonth(next);
+  }
+  function prevMonth() {
+    const prev = addMonths(currentMonth, -1);
+    if (prev < minMonth) return;
+    setCurrentMonth(prev);
+  }
+
+  const calendarDays = useMemo(() => {
+    const first = startOfMonth(currentMonth);
+    const startOffset = first.getDay(); // 0=Sun..6=Sat
+    const gridStart = new Date(first);
+    gridStart.setDate(first.getDate() - startOffset);
+
+    const cells: { key: string; date: Date; inMonth: boolean; freeCount: number; busyCount: number }[] = [];
+    for (let i = 0; i < 42; i++) {
+      const dt = new Date(gridStart);
+      dt.setDate(gridStart.getDate() + i);
+      const key = ymd(dt);
+      const info = days[key];
+      cells.push({
+        key,
+        date: dt,
+        inMonth: dt.getMonth() === currentMonth.getMonth(),
+        freeCount: info?.free?.length || 0,
+        busyCount: info?.busy?.length || 0,
+      });
+    }
+    return cells;
+  }, [currentMonth, days]);
 
   async function loadMonthAvailability() {
     if (!artistId || !serviceId) {
@@ -93,41 +167,6 @@ export default function Book() {
     }
   }
 
-  function nextMonth() {
-    const next = addMonths(currentMonth, 1);
-    if (next > maxMonth) return;
-    setCurrentMonth(next);
-  }
-  function prevMonth() {
-    const prev = addMonths(currentMonth, -1);
-    if (prev < minMonth) return;
-    setCurrentMonth(prev);
-  }
-
-  // Build calendar grid (Sun..Sat, 6 rows)
-  const calendarDays = useMemo(() => {
-    const first = startOfMonth(currentMonth);
-    const startOffset = first.getDay(); // 0=Sun..6=Sat
-    const gridStart = new Date(first);
-    gridStart.setDate(first.getDate() - startOffset);
-
-    const cells: { key: string; date: Date; inMonth: boolean; freeCount: number; busyCount: number }[] = [];
-    for (let i = 0; i < 42; i++) {
-      const dt = new Date(gridStart);
-      dt.setDate(gridStart.getDate() + i);
-      const key = ymd(dt);
-      const info = days[key];
-      cells.push({
-        key,
-        date: dt,
-        inMonth: dt.getMonth() === currentMonth.getMonth(),
-        freeCount: info?.free?.length || 0,
-        busyCount: info?.busy?.length || 0,
-      });
-    }
-    return cells;
-  }, [currentMonth, days]);
-
   async function openForm(startISO: string) {
     if (!artistId || !serviceId) return;
     setSelectedStartISO(startISO);
@@ -154,7 +193,7 @@ export default function Book() {
   function handleChooseFile(e: React.ChangeEvent<HTMLInputElement>) {
     const files = Array.from(e.target.files || []).slice(0, 3);
     setImages(files);
-    setImageUrls([]); // reset previews (we’ll show blob URLs after upload)
+    setImageUrls([]);
   }
 
   async function uploadImages() {
@@ -231,7 +270,6 @@ export default function Book() {
   // Reset day selection when these change
   useEffect(() => { setSelectedDay(''); setDays({}); }, [artistId, serviceId, currentMonth]);
 
-  const selectedDaySlots = selectedDay ? (days[selectedDay]?.free || []) : [];
   const selectedDayBusy = selectedDay ? (days[selectedDay]?.busy || []) : [];
 
   return (
@@ -244,19 +282,41 @@ export default function Book() {
 
       <Heading mb={4}>Book an Appointment</Heading>
 
-      {/* Pick artist & service */}
+      {/* Pick artist & service (service list comes from the *selected artist* only) */}
       <Box display="grid" gap={4} gridTemplateColumns={{ base: '1fr', md: '1fr 1fr' }}>
         <Box>
           <Text mb={2}>Artist</Text>
-          <Select placeholder="Choose artist" value={artistId} onChange={e => setArtistId(e.target.value)}>
-            {artists.map(a => <option key={a.id} value={a.id}>{a.name ?? a.displayName}</option>)}
+          <Select
+            placeholder="Choose artist"
+            value={artistId}
+            onChange={e => setArtistId(e.target.value)}
+          >
+            {artists.map(a => (
+              <option key={a.id} value={a.id}>
+                {a.name ?? a.displayName}
+              </option>
+            ))}
           </Select>
         </Box>
         <Box>
           <Text mb={2}>Service</Text>
-          <Select placeholder="Choose service" value={serviceId} onChange={e => setServiceId(e.target.value)}>
-            {services.map(s => <option key={s.id} value={s.id}>{s.title} — £{(s.priceGBP / 100).toFixed(2)}</option>)}
+          <Select
+            placeholder={artistId ? 'Choose service' : 'Pick an artist first'}
+            value={serviceId}
+            onChange={e => setServiceId(e.target.value)}
+            isDisabled={!artistId || servicesForArtist.length === 0}
+          >
+            {servicesForArtist.map(s => (
+              <option key={s.id} value={s.id}>
+                {s.title} — £{(s.priceGBP / 100).toFixed(2)}
+              </option>
+            ))}
           </Select>
+          {artistId && servicesForArtist.length === 0 && (
+            <Text mt={2} fontSize="sm" opacity={0.8}>
+              No services are configured for this artist yet.
+            </Text>
+          )}
         </Box>
       </Box>
 
@@ -283,12 +343,22 @@ export default function Book() {
           ))}
         </SimpleGrid>
         <SimpleGrid columns={7} spacing={2}>
-          {calendarDays.map(({ key, date, inMonth, freeCount, busyCount }) => {
+          {Array.from({ length: 42 }).map((_, i) => {
+            const first = startOfMonth(currentMonth);
+            const startOffset = first.getDay();
+            const gridStart = new Date(first);
+            gridStart.setDate(first.getDate() - startOffset);
+            const dt = new Date(gridStart);
+            dt.setDate(gridStart.getDate() + i);
+            const key = ymd(dt);
+            const info = days[key];
+            const freeCount = info?.free?.length || 0;
+            const busyCount = info?.busy?.length || 0;
             const isSelected = selectedDay === key;
             let colorScheme: any = 'gray';
             if (freeCount > 0) colorScheme = 'green';
             else if (busyCount > 0) colorScheme = 'red';
-            const isPast = ymd(date) < ymd(new Date());
+            const isPast = ymd(dt) < ymd(new Date());
             return (
               <Button
                 key={key}
@@ -296,11 +366,11 @@ export default function Book() {
                 variant={isSelected ? 'solid' : freeCount ? 'outline' : busyCount ? 'outline' : 'ghost'}
                 colorScheme={colorScheme}
                 onClick={() => { if (freeCount || busyCount) setSelectedDay(key); }}
-                isDisabled={!inMonth || isPast}
+                isDisabled={dt.getMonth() !== currentMonth.getMonth() || isPast}
                 height="40px"
                 title={`${freeCount} free / ${busyCount} busy`}
               >
-                {date.getDate()}
+                {dt.getDate()}
               </Button>
             );
           })}
@@ -383,7 +453,11 @@ export default function Book() {
             </FormControl>
             <FormControl mb={3}>
               <FormLabel>Reference images (up to 3)</FormLabel>
-              <Input type="file" accept="image/*" multiple onChange={handleChooseFile} />
+              <Input type="file" accept="image/*" multiple onChange={e => {
+                const files = Array.from(e.target.files || []).slice(0, 3);
+                setImages(files);
+                setImageUrls([]);
+              }} />
               {uploading && <Progress value={uploadProgress} size="sm" mt={2} />}
               {imageUrls.length > 0 && (
                 <HStack mt={3} spacing={3}>

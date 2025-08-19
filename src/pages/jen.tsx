@@ -91,7 +91,7 @@ const JenPage: React.FC = () => {
           property="og:description"
           content="Jen is developing her craft in full-colour Neo Traditional at Hull Tattoo Studio. Explore her growing portfolio."
         />
-        <meta property="og:image" content="/images/jen.webp" />
+        <meta property="og:image" content="/images/jen/jen.webp" />
         <meta property="og:url" content="https://www.hulltattoostudio.com/jen" />
         <meta property="og:type" content="profile" />
         {/* Canonical + hreflang */}
@@ -156,20 +156,19 @@ const JenPage: React.FC = () => {
             </Text>
 
             <Box mb={8} textAlign="center">
-              <Image
-                src="/images/jen.webp"
-                alt="Portrait of Jen"
-                width={220}
-                height={220}
-                quality={80}
-                sizes="220px"
-                style={{
-                  borderRadius: "50%",
-                  boxShadow: "0 0 12px #ff007f, 0 0 20px #00d4ff",
-                  border: "4px solid #ff007f",
-                }}
-              />
-            </Box>
+                          <Image
+                            src="/images/jen/display.webp"
+                            alt="Portrait of Jen, a tattoo apprentice artist at Hull Tattoo Studio"
+                            width={200}
+                            height={200}
+                            priority={true}
+                            style={{
+                              borderRadius: "50%",
+                              boxShadow: "0 0 15px #ff007f, 0 0 25px #00d4ff",
+                              border: "4px solid #ff007f",
+                            }}
+                          />
+                        </Box>
 
             <TextCard
               title="About Jen"
