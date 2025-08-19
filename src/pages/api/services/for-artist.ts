@@ -1,13 +1,24 @@
-// /src/pages/api/services/for-artist.ts
 import type { NextApiRequest, NextApiResponse } from "next";
 import { prisma } from "~/lib/prisma";
 
 /**
- * Public, read-only endpoint that returns ONLY the services linked to an artist.
- * - Filters ServiceOnArtist.active === true
- * - Filters Service.active === true (unless active=0 is passed)
- * - Applies per-artist price override (if present), else uses base price
- * Response shape: { items: Array<{ id, title, priceGBP, basePriceGBP, overridePriceGBP, durationMin, depositGBP, bufferBeforeMin, bufferAfterMin, slug }> }
+ * GET /api/services/for-artist
+ * Query:
+ *   - artistId?: string
+ *   - artistSlug?: string
+ *   - artistName?: string   (case-insensitive exact match)
+ *   - active?: "0" | "1"    (default "1")
+ *
+ * Returns only services linked to the artist (ServiceOnArtist.active = true by default)
+ * with effective price (override if set, else base).
+ * Response:
+ * {
+ *   artist: { id, name, slug } | null,
+ *   items: Array<{
+ *     id, title, slug, priceGBP, basePriceGBP, overridePriceGBP,
+ *     durationMin, depositGBP, bufferBeforeMin, bufferAfterMin
+ *   }>
+ * }
  */
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== "GET") {
@@ -16,14 +27,45 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   try {
-    const artistId = (req.query.artistId as string | undefined)?.trim();
-    if (!artistId) return res.status(400).json({ error: "artistId is required" });
-
+    const artistIdQ = (req.query.artistId as string | undefined)?.trim();
+    const artistSlugQ = (req.query.artistSlug as string | undefined)?.trim();
+    const artistNameQ = (req.query.artistName as string | undefined)?.trim();
     const activeOnly = (req.query.active as string | undefined) !== "0";
 
+    // Resolve artist
+    let artist = null as null | { id: string; name: string; slug: string | null };
+
+    if (artistIdQ) {
+      const a = await prisma.artist.findUnique({
+        where: { id: artistIdQ },
+        select: { id: true, name: true, slug: true },
+      });
+      if (a) artist = a;
+    } else if (artistSlugQ || artistNameQ) {
+      const a = await prisma.artist.findFirst({
+        where: {
+          AND: [
+            artistSlugQ
+              ? { slug: { equals: artistSlugQ, mode: "insensitive" } }
+              : {},
+            artistNameQ
+              ? { name: { equals: artistNameQ, mode: "insensitive" } }
+              : {},
+          ],
+        },
+        select: { id: true, name: true, slug: true },
+      });
+      if (a) artist = a;
+    }
+
+    if (!artist) {
+      return res.status(404).json({ error: "Artist not found", artist: null, items: [] });
+    }
+
+    // Pull linked services for this artist
     const links = await prisma.serviceOnArtist.findMany({
       where: {
-        artistId,
+        artistId: artist.id,
         ...(activeOnly ? { active: true } : {}),
         ...(activeOnly ? { service: { active: true } } : {}),
       },
@@ -46,8 +88,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     });
 
     const items = links
-      .filter(l => l.service) // safety
-      .map(l => {
+      .filter((l) => l.service)
+      .map((l) => {
         const base = l.service!.priceGBP;
         const override = l.priceGBP ?? null;
         const effective = override != null ? override : base;
@@ -55,9 +97,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           id: l.service!.id,
           title: l.service!.title,
           slug: l.service!.slug,
-          priceGBP: effective,             // effective price (used by UI)
-          basePriceGBP: base,              // for transparency if needed
-          overridePriceGBP: override,      // null means no override
+          priceGBP: effective,
+          basePriceGBP: base,
+          overridePriceGBP: override,
           durationMin: l.service!.durationMin,
           depositGBP: l.service!.depositGBP,
           bufferBeforeMin: l.service!.bufferBeforeMin,
@@ -65,9 +107,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         };
       });
 
-    return res.status(200).json({ items });
+    return res.status(200).json({ artist, items });
   } catch (err: any) {
     console.error("/api/services/for-artist error", err?.message || err);
-    return res.status(500).json({ error: "Internal Server Error", detail: err?.message });
+    return res.status(500).json({ error: "Internal Server Error", detail: err?.message, artist: null, items: [] });
   }
 }

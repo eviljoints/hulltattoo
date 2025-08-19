@@ -101,6 +101,9 @@ const AdminDashboard: React.FC = () => {
         <NextLink href="/admin/reviews" passHref>
           <Button as="a" w="100%">Manage Reviews</Button>
         </NextLink>
+        <NextLink href="/admin/pending" passHref>
+  <Button as="a" w="100%">Pending Bookings</Button>
+</NextLink>
 
         {/* NEW: CRM sections */}
         <NextLink href="/admin/artists" passHref>
