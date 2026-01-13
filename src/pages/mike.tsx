@@ -25,6 +25,9 @@ const TextCard = dynamic(() => import("../components/TextCard"), { ssr: true });
 const ARTIST_CANDIDATE_SLUGS = ["eggtattooer", "mike", "egg"]; // preselect-only; no UI to change
 const LONDON_TZ = "Europe/London";
 
+const ACUITY_SRC =
+  "https://app.acuityscheduling.com/schedule.php?owner=34239595&location=255%20hedon%20road%20HU9%201NQ&ref=embedded_csp";
+
 type Slot = { start: string; end: string };
 type DayInfo = { free: Slot[]; busy: Slot[] };
 
@@ -666,7 +669,7 @@ const MikePage: React.FC = () => {
         <meta property="og:site_name" content="Hull Tattoo Studio" />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content="Mike (Eggtattooer) | Tattoo Artist Hull" />
-        <meta name="twitter:description" content="Realism, bespoke realism, neotrad & cover-ups at Hull Tattoo Studio." />
+        <meta name="twitter:description" content="Realism, bespoke realism, neotrad & cover-ups." />
         <meta name="twitter:image" content={OG_IMAGE} />
         <link rel="preconnect" href="https://app.acuityscheduling.com" crossOrigin="anonymous" />
         <link rel="preconnect" href="https://embed.acuityscheduling.com" crossOrigin="anonymous" />
@@ -787,10 +790,31 @@ const MikePage: React.FC = () => {
             </Tabs>
           </MotionBox>
 
-          {/* Booking Block (Acuity replaced) */}
+          {/* Booking Block (Acuity embed) */}
           <Box ref={acuityRef} mb={16} as="section">
             {disclaimerAccepted ? (
-              <BookingWidget />
+              <>
+                <Box
+                  border="1px solid rgba(255,0,127,0.35)"
+                  borderRadius="lg"
+                  overflow="hidden"
+                  boxShadow="0 0 20px rgba(255,0,127,0.35), 0 0 28px rgba(0,212,255,0.25)"
+                >
+                  <iframe
+                    src={ACUITY_SRC}
+                    title="Schedule Appointment"
+                    width="100%"
+                    height="800"
+                    frameBorder={0}
+                    allow="payment"
+                  />
+                </Box>
+
+                <Script
+                  src="https://embed.acuityscheduling.com/js/embed.js"
+                  strategy="afterInteractive"
+                />
+              </>
             ) : (
               <Box p={4} textAlign="center">
                 <Text fontSize="lg" fontWeight="medium" mb={2}>
