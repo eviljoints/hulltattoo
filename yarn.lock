@@ -54,6 +54,11 @@
   dependencies:
     regenerator-runtime "^0.14.0"
 
+"@babel/runtime@^7.26.0", "@babel/runtime@^7.28.2":
+  version "7.28.6"
+  resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.28.6.tgz#d267a43cb1836dc4d182cce93ae75ba954ef6d2b"
+  integrity sha512-05WQkdpL9COIMz4LjTxGpPNCdlpyimKppYNoJ5Di5EUObifl8t4tuLuUBBZEpoLYOmfvIWrsp9fCl0HoPRVTdA==
+
 "@babel/template@^7.25.9":
   version "7.25.9"
   resolved "https://registry.yarnpkg.com/@babel/template/-/template-7.25.9.tgz#ecb62d81a8a6f5dc5fe8abfc3901fc52ddf15016"
@@ -1178,6 +1183,314 @@
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/@vercel/speed-insights/-/speed-insights-1.1.0.tgz#d48bce27b38a35da86805cc316656344a2230108"
   integrity sha512-rAXxuhhO4mlRGC9noa5F7HLMtGg8YF1zAN6Pjd1Ny4pII4cerhtwSG4vympbCl+pWkH7nBS9kVXRD4FAn54dlg==
+
+"@wix/auto_sdk_bookings_attendance@1.0.10":
+  version "1.0.10"
+  resolved "https://registry.yarnpkg.com/@wix/auto_sdk_bookings_attendance/-/auto_sdk_bookings_attendance-1.0.10.tgz#bd3f5b7a52322c373019e2a11490fa02027d0807"
+  integrity sha512-jafMbse/2DmVCsSxTCGznIIPFg5I60CuxiHslkFux3wSVF6xtjbZPw4KW/6lV4L84SKFYjmRyC7sfhpxTvc4iw==
+  dependencies:
+    "@wix/sdk-runtime" "^0.3.49"
+    "@wix/sdk-types" "^1.13.21"
+
+"@wix/auto_sdk_bookings_availability-calendar@1.0.105":
+  version "1.0.105"
+  resolved "https://registry.yarnpkg.com/@wix/auto_sdk_bookings_availability-calendar/-/auto_sdk_bookings_availability-calendar-1.0.105.tgz#2114305e0cc6ae93fb9446efa7bef5a517aacf2a"
+  integrity sha512-iAuTA72P9shw/Jpa4FvF9qylhaJGpEBAbLvzj3nuvrDEVAnxZ3gDT67pVHqvBG59QnA+KTr5G0Tnu7+TjQEZNw==
+  dependencies:
+    "@wix/sdk-runtime" "^0.3.49"
+    "@wix/sdk-types" "^1.13.21"
+
+"@wix/auto_sdk_bookings_availability-time-slots@1.0.111":
+  version "1.0.111"
+  resolved "https://registry.yarnpkg.com/@wix/auto_sdk_bookings_availability-time-slots/-/auto_sdk_bookings_availability-time-slots-1.0.111.tgz#7ebf7045daffe7495085d339ccd63fd76bd42c7e"
+  integrity sha512-703Hrt67pO/un1PYLeS1cpPj9laMBHeNOH9M9Cvq1r72uHK4X1fkskqiFPBFaT+hj/NafBP9AQ8UtL0HZsbdqQ==
+  dependencies:
+    "@wix/sdk-runtime" "^0.3.49"
+    "@wix/sdk-types" "^1.13.21"
+
+"@wix/auto_sdk_bookings_booking-fees@1.0.12":
+  version "1.0.12"
+  resolved "https://registry.yarnpkg.com/@wix/auto_sdk_bookings_booking-fees/-/auto_sdk_bookings_booking-fees-1.0.12.tgz#cab62163ccf857146ce78fdcbf7a6c86900f05e1"
+  integrity sha512-KrL8Yiqi4RiAlLZjruiE+g0JokqV8Zbm8xNX0x3E1f4Ly4ConSIb8QiIzCkz2ClDhBScxj/oFG7nicNl6zxRgA==
+  dependencies:
+    "@wix/sdk-runtime" "^0.3.49"
+    "@wix/sdk-types" "^1.13.21"
+
+"@wix/auto_sdk_bookings_booking-policies@1.0.21":
+  version "1.0.21"
+  resolved "https://registry.yarnpkg.com/@wix/auto_sdk_bookings_booking-policies/-/auto_sdk_bookings_booking-policies-1.0.21.tgz#cc9288640b0dcfb908db55e72572a376f0f851a0"
+  integrity sha512-kEPiOH1J7tmDleSGS5SnfJSyLnmdbJ8Pww7oJFPxNnCGafQeYnx8Da8ppcP63VnsllVFupiO4bVqz2HNYiK4rA==
+  dependencies:
+    "@wix/sdk-runtime" "^0.3.49"
+    "@wix/sdk-types" "^1.13.21"
+
+"@wix/auto_sdk_bookings_booking-policy-snapshots@1.0.9":
+  version "1.0.9"
+  resolved "https://registry.yarnpkg.com/@wix/auto_sdk_bookings_booking-policy-snapshots/-/auto_sdk_bookings_booking-policy-snapshots-1.0.9.tgz#409948d1e8d78e57b0a3534152da29a0d9aaacd1"
+  integrity sha512-WHMPXUsIkkeXL6NMdnhILiyiISmg4x8Vx/V/TvYThId5hfAzb1el1C5mudNs0jRaJfmAPMPQ6es4y3JaDEbHfA==
+  dependencies:
+    "@wix/sdk-runtime" "^0.3.49"
+    "@wix/sdk-types" "^1.13.21"
+
+"@wix/auto_sdk_bookings_bookings@1.0.22":
+  version "1.0.22"
+  resolved "https://registry.yarnpkg.com/@wix/auto_sdk_bookings_bookings/-/auto_sdk_bookings_bookings-1.0.22.tgz#a8e23754f493ee254b02c09aaa7b95309f4b1499"
+  integrity sha512-tHoRkSCEUMMZDOyoX1TNcVn14cyXXRoPm7P9VjpKVYmHFO+tGsnqIQOC0QBCIYDnNB/sBtpMwNMLGNqLQWvsGg==
+  dependencies:
+    "@wix/sdk-runtime" "^0.3.49"
+    "@wix/sdk-types" "^1.13.21"
+
+"@wix/auto_sdk_bookings_categories@1.0.13":
+  version "1.0.13"
+  resolved "https://registry.yarnpkg.com/@wix/auto_sdk_bookings_categories/-/auto_sdk_bookings_categories-1.0.13.tgz#481b3f85e29678154fc7ef192888e95ecb529635"
+  integrity sha512-+vuRY1iLrT+H4xixljH3fEeIh/RbRdQiijnQE9Dl6hYkONj75X6+KEBbg6Of+zG+3Y4mOtPfTq7H+cGj6T9FXw==
+  dependencies:
+    "@wix/sdk-runtime" "^0.3.49"
+    "@wix/sdk-types" "^1.13.21"
+
+"@wix/auto_sdk_bookings_extended-bookings@1.0.19":
+  version "1.0.19"
+  resolved "https://registry.yarnpkg.com/@wix/auto_sdk_bookings_extended-bookings/-/auto_sdk_bookings_extended-bookings-1.0.19.tgz#9c3bcd56f5559f0126f34fa108d2c13af75dc943"
+  integrity sha512-c1h0S9MKtc7jfOIgx8dc6k5k9izITJCI5tV6Pt9hIWPPAc6mS/6vMwws121GQgSrOg95vmP1ex75fG8meMazDQ==
+  dependencies:
+    "@wix/sdk-runtime" "^0.3.49"
+    "@wix/sdk-types" "^1.13.21"
+
+"@wix/auto_sdk_bookings_external-calendars@1.0.15":
+  version "1.0.15"
+  resolved "https://registry.yarnpkg.com/@wix/auto_sdk_bookings_external-calendars/-/auto_sdk_bookings_external-calendars-1.0.15.tgz#6413777baf6cf4f1490b86123b6d312f394aa739"
+  integrity sha512-+ckqkVkbTYD1x1WzKwc1Ne0iT/YmHse4AiR/k48FB5Q8R3mpS9GgE06SW4WVvxfus01EQKn0TVNPn4PSLggMKw==
+  dependencies:
+    "@wix/sdk-runtime" "^0.3.49"
+    "@wix/sdk-types" "^1.13.21"
+
+"@wix/auto_sdk_bookings_multi-service-availability-time-slots@1.0.111":
+  version "1.0.111"
+  resolved "https://registry.yarnpkg.com/@wix/auto_sdk_bookings_multi-service-availability-time-slots/-/auto_sdk_bookings_multi-service-availability-time-slots-1.0.111.tgz#0ad59e61a749910457abef4205d8c7560aadb8c7"
+  integrity sha512-oM0/9EjZOJvf8h9LrR8hDYzqtSVv7bAofUwDj5f0XBILtn2xphHGnuOd5LO7mTrbffs4a/Yk2qo2wakzTBySIQ==
+  dependencies:
+    "@wix/sdk-runtime" "^0.3.49"
+    "@wix/sdk-types" "^1.13.21"
+
+"@wix/auto_sdk_bookings_pricing@1.0.16":
+  version "1.0.16"
+  resolved "https://registry.yarnpkg.com/@wix/auto_sdk_bookings_pricing/-/auto_sdk_bookings_pricing-1.0.16.tgz#4405f9f29f397f975a517af069f51ad22d26f186"
+  integrity sha512-nI8/sAbIbvzXYaDdWzDYMgAGW9TrBPRNhstVhf71NYfJfcS7HD7AEqxiXS6H2tykg5H3HMP19retpEKiA3km0Q==
+  dependencies:
+    "@wix/sdk-runtime" "^0.3.49"
+    "@wix/sdk-types" "^1.13.21"
+
+"@wix/auto_sdk_bookings_resource-types@1.0.13":
+  version "1.0.13"
+  resolved "https://registry.yarnpkg.com/@wix/auto_sdk_bookings_resource-types/-/auto_sdk_bookings_resource-types-1.0.13.tgz#af0aea941173e3070c750008d4be53d14eed64f5"
+  integrity sha512-5CEjsWMlJm6pqNwpcmLYR6LkYXO59PjKDP8vRptES84tZzoE3q0Tr5JjAcUAFiLpVv8HxWwMxvE9UHPBNmb8oQ==
+  dependencies:
+    "@wix/sdk-runtime" "^0.3.49"
+    "@wix/sdk-types" "^1.13.21"
+
+"@wix/auto_sdk_bookings_resources@1.0.14":
+  version "1.0.14"
+  resolved "https://registry.yarnpkg.com/@wix/auto_sdk_bookings_resources/-/auto_sdk_bookings_resources-1.0.14.tgz#4d01a694187a05941f64142980a95482ae1e7957"
+  integrity sha512-TF5MZykY1yEJgLxXWbSxAntZEMcQksbTOPzrWTnSs+cmWo2a5AxBEVq+80r1VzGeK6zJ/GXy98QB2mITx1TZ3g==
+  dependencies:
+    "@wix/sdk-runtime" "^0.3.49"
+    "@wix/sdk-types" "^1.13.21"
+
+"@wix/auto_sdk_bookings_service-categories@1.0.9":
+  version "1.0.9"
+  resolved "https://registry.yarnpkg.com/@wix/auto_sdk_bookings_service-categories/-/auto_sdk_bookings_service-categories-1.0.9.tgz#9f618b8d67daec44ddb95aa228e0e6c5ce044fc5"
+  integrity sha512-u/XJ0n1KsBK8XLYIkQkuziky1I8XlPHP3Xepg6ZxCjIrG3MZJZUBsWHIGU608t1X174MrnpC8uom7ws8+31tPQ==
+  dependencies:
+    "@wix/sdk-runtime" "^0.3.49"
+    "@wix/sdk-types" "^1.13.21"
+
+"@wix/auto_sdk_bookings_service-options-and-variants@1.0.18":
+  version "1.0.18"
+  resolved "https://registry.yarnpkg.com/@wix/auto_sdk_bookings_service-options-and-variants/-/auto_sdk_bookings_service-options-and-variants-1.0.18.tgz#c613007b38e29148858573f5e918cd47724d29b2"
+  integrity sha512-roCgwr+7GJfBkZbgrVfTomGfEQ//vwps5ML/9GqwJfEerv0EnhM8wm0vwMyKbWj/VcdfaL0r+LWIb/SmkqZs2A==
+  dependencies:
+    "@wix/sdk-runtime" "^0.3.49"
+    "@wix/sdk-types" "^1.13.21"
+
+"@wix/auto_sdk_bookings_services@1.0.41":
+  version "1.0.41"
+  resolved "https://registry.yarnpkg.com/@wix/auto_sdk_bookings_services/-/auto_sdk_bookings_services-1.0.41.tgz#600ff84705167141c290a3ab451fbf6b8682fe9d"
+  integrity sha512-wqoaJ+1JwzHyUcSK81szxWSHgL/ni/1iMqU7Rlhh085qhH0ZX91i1dooXAlAnVAZ1/8KuKoq4sM6zt7D/4LlkA==
+  dependencies:
+    "@wix/sdk-runtime" "^0.3.49"
+    "@wix/sdk-types" "^1.13.21"
+
+"@wix/auto_sdk_bookings_staff-members@1.0.18":
+  version "1.0.18"
+  resolved "https://registry.yarnpkg.com/@wix/auto_sdk_bookings_staff-members/-/auto_sdk_bookings_staff-members-1.0.18.tgz#e2dcc0f267f6aea4cd92af9c3eed498cdf5cbd7d"
+  integrity sha512-2hvuSLkb94eOrK1SUK+NfhgBjGk6lDZjd/30Z6t5YPOZEALmtEOa3rpJBFYpAwiIJc3YIM734Pl9D+/TdgO75Q==
+  dependencies:
+    "@wix/sdk-runtime" "^0.3.49"
+    "@wix/sdk-types" "^1.13.21"
+
+"@wix/auto_sdk_identity_authentication@1.0.41":
+  version "1.0.41"
+  resolved "https://registry.yarnpkg.com/@wix/auto_sdk_identity_authentication/-/auto_sdk_identity_authentication-1.0.41.tgz#ee73ad0f8191ff04373eca6cba7550aee4808916"
+  integrity sha512-at8Q24UlK5GLAw1IIN7e8LwMuTLJHn3c1hUeBIyj0zqoasocWwyPKdVr6mXxnN63A9+sshLhKGmVq1JuoLS9+Q==
+  dependencies:
+    "@wix/sdk-runtime" "^1.0.0"
+    "@wix/sdk-types" "^1.15.0"
+
+"@wix/auto_sdk_identity_oauth@1.0.32":
+  version "1.0.32"
+  resolved "https://registry.yarnpkg.com/@wix/auto_sdk_identity_oauth/-/auto_sdk_identity_oauth-1.0.32.tgz#5fc60a1974dd7255814fbe196bb97d6c8c13cc2a"
+  integrity sha512-BO+gvllsNAAgbKlp1FDrv1eCQp/3xn75314Jn4TGAcBIjE30LzXPTwiYzGIn7T90jrlzi07GsPf9MtutTxieUg==
+  dependencies:
+    "@wix/sdk-runtime" "^1.0.0"
+    "@wix/sdk-types" "^1.15.0"
+
+"@wix/auto_sdk_identity_recovery@1.0.38":
+  version "1.0.38"
+  resolved "https://registry.yarnpkg.com/@wix/auto_sdk_identity_recovery/-/auto_sdk_identity_recovery-1.0.38.tgz#1dd2f2ffedaa0401c9827dbc09506851f2c9a595"
+  integrity sha512-ak+kwGq8wG1LIxmn2KtLSOJBB23Z1JFjOJrFhbrC7a+zcZ7I1D37W/wNjDynXo8DXwXFVwtqCQ/tAOlsNbovCQ==
+  dependencies:
+    "@wix/sdk-runtime" "^1.0.0"
+    "@wix/sdk-types" "^1.15.0"
+
+"@wix/auto_sdk_identity_verification@1.0.39":
+  version "1.0.39"
+  resolved "https://registry.yarnpkg.com/@wix/auto_sdk_identity_verification/-/auto_sdk_identity_verification-1.0.39.tgz#07600e8089f45c31b48140f19e9a34ae11c54282"
+  integrity sha512-t25mdtp7+8J5LOJehC7yF64px0NA1r1OyFoydXS+CJKuGYyQv4IItEyoOkvCDSfUbnEUvTa+7IfNWvlUzbE9Hw==
+  dependencies:
+    "@wix/sdk-runtime" "^1.0.0"
+    "@wix/sdk-types" "^1.15.0"
+
+"@wix/auto_sdk_redirects_redirects@1.0.37":
+  version "1.0.37"
+  resolved "https://registry.yarnpkg.com/@wix/auto_sdk_redirects_redirects/-/auto_sdk_redirects_redirects-1.0.37.tgz#160e16fdacc38371a8ed93179ccb8024cbd5036e"
+  integrity sha512-NN7EPziOsSHGLBNRo0Czofm9q/zwukoI27+38kLeGg8xdT6PCUFpg/IePdBHQMNFBM/b5jmrwjsoep6mBlO7LQ==
+  dependencies:
+    "@wix/sdk-runtime" "^1.0.0"
+    "@wix/sdk-types" "^1.15.0"
+
+"@wix/bookings@1.0.833":
+  version "1.0.833"
+  resolved "https://registry.yarnpkg.com/@wix/bookings/-/bookings-1.0.833.tgz#070f517740c25cc25706bed4e0f6a106ef88da35"
+  integrity sha512-U4R2YORhG7qpGVrDpCF0FYgvMNZ2NEY14XvPd73lTjt1onYsBeaJI2Ib+lRvMCVbcH9G5724ZjokMn60O+NnpA==
+  dependencies:
+    "@wix/auto_sdk_bookings_attendance" "1.0.10"
+    "@wix/auto_sdk_bookings_availability-calendar" "1.0.105"
+    "@wix/auto_sdk_bookings_availability-time-slots" "1.0.111"
+    "@wix/auto_sdk_bookings_booking-fees" "1.0.12"
+    "@wix/auto_sdk_bookings_booking-policies" "1.0.21"
+    "@wix/auto_sdk_bookings_booking-policy-snapshots" "1.0.9"
+    "@wix/auto_sdk_bookings_bookings" "1.0.22"
+    "@wix/auto_sdk_bookings_categories" "1.0.13"
+    "@wix/auto_sdk_bookings_extended-bookings" "1.0.19"
+    "@wix/auto_sdk_bookings_external-calendars" "1.0.15"
+    "@wix/auto_sdk_bookings_multi-service-availability-time-slots" "1.0.111"
+    "@wix/auto_sdk_bookings_pricing" "1.0.16"
+    "@wix/auto_sdk_bookings_resource-types" "1.0.13"
+    "@wix/auto_sdk_bookings_resources" "1.0.14"
+    "@wix/auto_sdk_bookings_service-categories" "1.0.9"
+    "@wix/auto_sdk_bookings_service-options-and-variants" "1.0.18"
+    "@wix/auto_sdk_bookings_services" "1.0.41"
+    "@wix/auto_sdk_bookings_staff-members" "1.0.18"
+    "@wix/bookings_app-extensions" "1.0.74"
+
+"@wix/bookings_app-extensions@1.0.74":
+  version "1.0.74"
+  resolved "https://registry.yarnpkg.com/@wix/bookings_app-extensions/-/bookings_app-extensions-1.0.74.tgz#de57b465ff3d1ce561ebfa24e5dd589adbec84c6"
+  integrity sha512-RgFdDcuPzukTfUo3rdrt4kQWbeuwW++mb7GYYVhUXcrd8G6MbGzvNcdK+2V6SkJ5p/wE1exvpP52QTba44mVxA==
+  dependencies:
+    "@wix/sdk-runtime" "^0.3.49"
+    "@wix/sdk-types" "^1.13.21"
+
+"@wix/error-handler-types@^1.19.0":
+  version "1.19.0"
+  resolved "https://registry.yarnpkg.com/@wix/error-handler-types/-/error-handler-types-1.19.0.tgz#e183019a812ea52e7f2792149f2979113cdba094"
+  integrity sha512-3z9eURV+VfhNp7tQ7FLOzjbkRvxRJt8bPkq0F9qrGj3/p6VUHB82PStdhPQgJRbqzYrgeiMKu1dQLN/9RXXq1g==
+  dependencies:
+    "@babel/runtime" "^7.28.2"
+
+"@wix/identity@^1.0.104":
+  version "1.0.190"
+  resolved "https://registry.yarnpkg.com/@wix/identity/-/identity-1.0.190.tgz#ba555064bb8da63954defcd10e08cb7690aef682"
+  integrity sha512-mzn4psHc0BK6dGrymp00NbQG12NWIvIMSQYkKN2n3HM065XLTzHrHjRMuK0NVBZzuwS3SxaXQ4++EYDyURZhlg==
+  dependencies:
+    "@wix/auto_sdk_identity_authentication" "1.0.41"
+    "@wix/auto_sdk_identity_oauth" "1.0.32"
+    "@wix/auto_sdk_identity_recovery" "1.0.38"
+    "@wix/auto_sdk_identity_verification" "1.0.39"
+
+"@wix/image-kit@^1.114.0":
+  version "1.119.0"
+  resolved "https://registry.yarnpkg.com/@wix/image-kit/-/image-kit-1.119.0.tgz#90ff4c3d59c31ef829aa7e1500911fbc96ee24cc"
+  integrity sha512-edRzS58wP6W3fVgJE/USwL+bSaTJ0Q5sAj76xbLrnc9lcsgQOJKEEfbTqbXJAxk5L5GsIWaq5sYie6wNSpFVbQ==
+  dependencies:
+    "@babel/runtime" "^7.26.0"
+    tslib "^2.8.1"
+
+"@wix/monitoring-types@^0.12.0":
+  version "0.12.0"
+  resolved "https://registry.yarnpkg.com/@wix/monitoring-types/-/monitoring-types-0.12.0.tgz#3f0e54d363c4b7d99a0ddc9ed9e4bc590dc7f1e6"
+  integrity sha512-nlv4jwQMewjzPIWFF9rnKf9WhVojj67oLtvilYXfi+lnhXyVlYOfqCnL3qLJuKtJ6wT5XIJdt0Fj0su2NM5taQ==
+
+"@wix/redirects@^1.0.70":
+  version "1.0.109"
+  resolved "https://registry.yarnpkg.com/@wix/redirects/-/redirects-1.0.109.tgz#1a6c85c9739138112d50d5e963754a9ca36e41ef"
+  integrity sha512-YrgsKcmE9U5lMPV13eb9PocN9QNX0gk2M48c1o77rr+ZULNsH7OV25Q1wl6/QDrGrEoM6qwjGB3bvvoyw5aWHw==
+  dependencies:
+    "@wix/auto_sdk_redirects_redirects" "1.0.37"
+
+"@wix/sdk-context@0.0.1":
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/@wix/sdk-context/-/sdk-context-0.0.1.tgz#8c1436d382b720f80e72dd0c1c4e0576b6ab3fec"
+  integrity sha512-ziSzrceUC0KFn4IJIVBn1cXXKrZ49ZKG5tQ6fl+TpontyUw5p/Z4VofFUUsnqNl9JYCpYNTzIXpzwok93Vrl8A==
+
+"@wix/sdk-runtime@1.0.4":
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/@wix/sdk-runtime/-/sdk-runtime-1.0.4.tgz#bdc44b04dff2016aa1287afd6c25e6cbbf435583"
+  integrity sha512-i6d7ramcQEnIa9YYhMoEOu1jxhGJAL9qLTP+K34rbVd3gb7557AH1iJUWaeMUucYpeQURV6HNNX/oxMMBbgGuA==
+  dependencies:
+    "@wix/sdk-context" "0.0.1"
+    "@wix/sdk-types" "1.17.2"
+
+"@wix/sdk-runtime@^0.3.49":
+  version "0.3.62"
+  resolved "https://registry.yarnpkg.com/@wix/sdk-runtime/-/sdk-runtime-0.3.62.tgz#65671233ce809cfeae5f4992601b9c64769c721d"
+  integrity sha512-5imt9mSEaceX365iLGzMJ7jS4qr4lJj+2DZox86Ge8P7V9IeuPYLsQ+0PN9wN6XgMfjNLHt4G6hJUIi3bdglGA==
+  dependencies:
+    "@wix/sdk-context" "0.0.1"
+    "@wix/sdk-types" "^1.13.41"
+
+"@wix/sdk-runtime@^1.0.0":
+  version "1.0.5"
+  resolved "https://registry.yarnpkg.com/@wix/sdk-runtime/-/sdk-runtime-1.0.5.tgz#a3e6bb2be8a954a44fc6d97beeac6811cbbaa43c"
+  integrity sha512-G4d+sXgzSPZuGI2g0Dz8LvJdVVT+5q0xcRgxdWsE2cHNnJD+hZMOoIFt9i+XKaA5A17F2PaVLtGkDGck4ckrzg==
+  dependencies:
+    "@wix/sdk-context" "0.0.1"
+    "@wix/sdk-types" "1.17.2"
+
+"@wix/sdk-types@1.17.2", "@wix/sdk-types@^1.13.21", "@wix/sdk-types@^1.13.41", "@wix/sdk-types@^1.15.0":
+  version "1.17.2"
+  resolved "https://registry.yarnpkg.com/@wix/sdk-types/-/sdk-types-1.17.2.tgz#3a9c1e208b2c4b496351c7108eea152c6244c977"
+  integrity sha512-e8XGqos3837jKfR0STyDJOrNp1AMivyw0PD7cG74/+v2Cv5RtHpVNio+4Kd0sT1Ykeo4jqN03ikfjVnD4way+w==
+  dependencies:
+    "@wix/error-handler-types" "^1.19.0"
+    "@wix/monitoring-types" "^0.12.0"
+    type-fest "^4.41.0"
+
+"@wix/sdk@^1.21.2":
+  version "1.21.2"
+  resolved "https://registry.yarnpkg.com/@wix/sdk/-/sdk-1.21.2.tgz#8f8948ead9ed67a3dfc82c638e10fcad03f17a62"
+  integrity sha512-E0kQdUQAh8Sjm0MxMIfcFCbR7TJyyq7EtdPIoRUqg41xUXGU2WNUrt0k62J3qJNNEXXowdINcM+Eu0Tp4ZmL0Q==
+  dependencies:
+    "@wix/identity" "^1.0.104"
+    "@wix/image-kit" "^1.114.0"
+    "@wix/redirects" "^1.0.70"
+    "@wix/sdk-context" "0.0.1"
+    "@wix/sdk-runtime" "1.0.4"
+    "@wix/sdk-types" "1.17.2"
+    jose "^5.10.0"
+    type-fest "^4.41.0"
+  optionalDependencies:
+    graphql "^0.8.0 || ^0.9.0 || ^0.10.0 || ^0.11.0 || ^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0"
 
 "@xmldom/xmldom@^0.8.8":
   version "0.8.10"
@@ -3047,6 +3360,11 @@ graceful-fs@^4.1.6, graceful-fs@^4.2.0:
   resolved "https://registry.yarnpkg.com/graceful-fs/-/graceful-fs-4.2.11.tgz#4183e4e8bf08bb6e05bbb2f7d2e0c8f712ca40e3"
   integrity sha512-RbJ5/jmFcNNCcDV5o9eTnBLJ/HszWV0P73bc+Ff4nS/rJj+YaS6IGyiOL0VoBYX+l1Wrl3k63h/KrH+nhJ0XvQ==
 
+"graphql@^0.8.0 || ^0.9.0 || ^0.10.0 || ^0.11.0 || ^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0":
+  version "16.12.0"
+  resolved "https://registry.yarnpkg.com/graphql/-/graphql-16.12.0.tgz#28cc2462435b1ac3fdc6976d030cef83a0c13ac7"
+  integrity sha512-DKKrynuQRne0PNpEbzuEdHlYOMksHSUI8Zc9Unei5gTsMNA2/vMpoMz/yKba50pejK56qj98qM0SjYxAKi13gQ==
+
 gray-matter@^4.0.3:
   version "4.0.3"
   resolved "https://registry.yarnpkg.com/gray-matter/-/gray-matter-4.0.3.tgz#e893c064825de73ea1f5f7d88c7a9f7274288798"
@@ -3639,6 +3957,11 @@ jose@^4.15.5, jose@^4.15.9:
   version "4.15.9"
   resolved "https://registry.yarnpkg.com/jose/-/jose-4.15.9.tgz#9b68eda29e9a0614c042fa29387196c7dd800100"
   integrity sha512-1vUQX+IdDMVPj4k8kOxgUqlcK518yluMuGZwqlr44FS1ppZB/5GWh4rZG89erpOBOJjU/OBsnCVFfapsRz6nEA==
+
+jose@^5.10.0:
+  version "5.10.0"
+  resolved "https://registry.yarnpkg.com/jose/-/jose-5.10.0.tgz#c37346a099d6467c401351a9a0c2161e0f52c4be"
+  integrity sha512-s+3Al/p9g32Iq+oqXxkW//7jk2Vig6FF1CFqzVXoTUXt2qz89YWbL+OwS17NFYEvxC35n0FKeGO2LGYSxeM2Gg==
 
 js-cookie@^3.0.5:
   version "3.0.5"
@@ -6157,6 +6480,11 @@ type-fest@^2.19.0:
   resolved "https://registry.yarnpkg.com/type-fest/-/type-fest-2.19.0.tgz#88068015bb33036a598b952e55e9311a60fd3a9b"
   integrity sha512-RAH822pAdBgcNMAfWnCBU3CFZcfZ/i1eZjwFU/dsLKumyuuP3niueg2UAukXYF0E2AAoc82ZSSf9J0WQBinzHA==
 
+type-fest@^4.41.0:
+  version "4.41.0"
+  resolved "https://registry.yarnpkg.com/type-fest/-/type-fest-4.41.0.tgz#6ae1c8e5731273c2bf1f58ad39cbae2c91a46c58"
+  integrity sha512-TeTSQ6H5YHvpqVwBRcnLDCBnDOHWYu7IvGbHT6N8AOymcr9PJGjc1GTtiWZTYg0NCgYwvnYWEkVChQAr9bjfwA==
+
 type-is@^2.0.0, type-is@^2.0.1:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/type-is/-/type-is-2.0.1.tgz#64f6cf03f92fce4015c2b224793f6bdd4b068c97"
@@ -6538,6 +6866,11 @@ which@^2.0.1:
   integrity sha512-BLI3Tl1TW3Pvl70l3yq3Y64i+awpwXqsGBYWkkqMtnbXgrMD+yj7rhW0kuEDxzJaYXGjEW5ogapKNMEKNMjibA==
   dependencies:
     isexe "^2.0.0"
+
+wix@^0.1.1:
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/wix/-/wix-0.1.1.tgz#9800a8bc07bd41abd0f2c1d7c0225d9ef5e406dc"
+  integrity sha512-5+xytW5FWYEU7EJy9wDbLGH2BzNg0P+JCb3XoFeJsfAYab+r0nVpJDEVD96orFnuCJP5hZ8nRCBLPJ7nvVa8hw==
 
 word-wrap@^1.2.5:
   version "1.2.5"

@@ -1,16 +1,17 @@
-//src\pages\api\contact.ts
+// src/pages/api/wix-upload-urls.ts
 import type { NextApiRequest, NextApiResponse } from "next";
 
-const WIX_SUBMIT_ENDPOINT = process.env.WIX_SUBMIT_ENDPOINT || "https://hulltattoostudio.co.uk/_functions/contactSubmission";
+const WIX_UPLOAD_URLS_ENDPOINT =
+  process.env.WIX_UPLOAD_URLS_ENDPOINT ||
+  "https://hulltattoostudio.co.uk/_functions/contactUploadUrls";
+
 const WIX_CONTACT_SECRET = process.env.WIX_CONTACT_SECRET || "bob123";
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== "POST") return res.status(405).json({ error: "Method not allowed" });
 
   try {
-    console.log("[contact] Received payload:", JSON.stringify(req.body, null, 2));
-
-    const wixResp = await fetch(WIX_SUBMIT_ENDPOINT, {
+    const wixResp = await fetch(WIX_UPLOAD_URLS_ENDPOINT, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -20,17 +21,20 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     });
 
     const text = await wixResp.text();
+
+    console.log("[wix-upload-urls] status:", wixResp.status);
+    console.log("[wix-upload-urls] body:", text);
+
     let data: any;
     try {
       data = text ? JSON.parse(text) : {};
-      console.log("[contact] Wix response:", data);
     } catch {
-      data = { rawText: text };
+      data = { raw: text };
     }
 
-    res.status(wixResp.status).json(data);
+    return res.status(wixResp.status).json(data);
   } catch (e: any) {
-    console.error("[contact] Proxy error:", e.message);
-    res.status(500).json({ error: e?.message || "Server error" });
+    console.error("[wix-upload-urls] proxy error:", e?.message);
+    return res.status(500).json({ error: e?.message || "Server error" });
   }
 }

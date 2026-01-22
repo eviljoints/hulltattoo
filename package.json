@@ -33,6 +33,8 @@
     "@vercel/analytics": "^1.4.1",
     "@vercel/blob": "^1.1.1",
     "@vercel/speed-insights": "^1.1.0",
+    "@wix/bookings": "1.0.833",
+    "@wix/sdk": "^1.21.2",
     "add": "^2.0.6",
     "axios": "^1.7.8",
     "bcryptjs": "^2.4.3",
@@ -90,6 +92,7 @@
     "stripe": "^18.4.0",
     "swiper": "^11.1.15",
     "twilio": "^5.3.6",
+    "wix": "^0.1.1",
     "yarn": "^1.22.22"
   },
   "devDependencies": {

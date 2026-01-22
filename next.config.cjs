@@ -27,5 +27,15 @@ const nextConfig = {
     ],
   },
 };
+module.exports = {
+  images: {
+    remotePatterns: [
+      { protocol: "https", hostname: "**.wixstatic.com" },
+      { protocol: "https", hostname: "static.wixstatic.com" },
+      { protocol: "https", hostname: "**.wix.com" },
+    ],
+  },
+};
+
 
 module.exports = nextConfig;
