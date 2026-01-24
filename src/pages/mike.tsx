@@ -44,6 +44,8 @@ import Image from "next/image";
 import Head from "next/head";
 import styles from "./artists/MikePage.module.css";
 import { useRouter } from "next/router";
+import GiftVoucherModal from "../components/GiftVoucherModal";
+
 
 // ✅ Client-only booking widget (prevents hydration mismatch)
 const WixArtistBookingWidget = dynamic(
@@ -242,6 +244,16 @@ const MikePage: React.FC = () => {
                 style={{ borderRadius: "50%", boxShadow: "0 0 15px #ff007f, 0 0 25px #00d4ff", border: "4px solid #ff007f" }}
               />
             </Box>
+            
+<GiftVoucherModal
+  artistKey="mike"
+  artistName="Mike"
+  buttonProps={{
+    colorScheme: "pink",
+    variant: "solid",
+  }}
+/>
+
             <TextCard
               title="About Mike"
               subtitle="Tattoo Artist with 10 Years of Experience"
