@@ -77,15 +77,21 @@ export default function CheckoutPage() {
       console.log("payload:", payload);
 
       const redirect = await wix.redirects.createRedirectSession({
-        bookingsCheckout: {
-          slotAvailability: payload.entry,
-          timezone: LONDON_TZ,
-        },
-        callbacks: {
-          // Wix sends user back here after payment flow
-          postFlowUrl: `${window.location.origin}/checkout/return`,
-        },
-      } as any);
+  bookingsCheckout: {
+    slotAvailability: payload.entry,
+    timezone: LONDON_TZ,
+  },
+
+  origin: window.location.origin,
+
+  preferences: {
+    checkIfPublish: true,
+  },
+
+  callbacks: {
+    postFlowUrl: `${window.location.origin}/checkout/return`,
+  },
+} as any);
 
       const url = redirect?.redirectSession?.fullUrl;
       console.log("redirect response:", redirect);

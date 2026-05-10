@@ -244,7 +244,8 @@ const MikePage: React.FC = () => {
                 style={{ borderRadius: "50%", boxShadow: "0 0 15px #ff007f, 0 0 25px #00d4ff", border: "4px solid #ff007f" }}
               />
             </Box>
-            
+            <Box textAlign="center">
+              
 <GiftVoucherModal
   artistKey="mike"
   artistName="Mike"
@@ -252,7 +253,7 @@ const MikePage: React.FC = () => {
     colorScheme: "pink",
     variant: "solid",
   }}
-/>
+/></Box>
 
             <TextCard
               title="About Mike"
