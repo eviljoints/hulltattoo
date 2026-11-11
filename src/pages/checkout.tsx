@@ -94,7 +94,10 @@ export default function CheckoutPage() {
         origin: window.location.origin,
 
         preferences: {
-          checkIfPublish: true,
+          // Keep headless checkout separate from the published Wix website,
+          // whose page layout/header may not fit an external mobile flow.
+          useGenericWixPages: true,
+          checkIfPublish: false,
         },
 
         callbacks: {

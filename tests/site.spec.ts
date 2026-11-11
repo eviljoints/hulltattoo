@@ -126,6 +126,10 @@ test("artist, service and appointment selection reach Wix checkout with the orig
     calls.entry
   );
   expect(calls.checkout[0].bookingsCheckout.timezone).toBe("Europe/London");
+  expect(calls.checkout[0].preferences).toMatchObject({
+    useGenericWixPages: true,
+    checkIfPublish: false,
+  });
   expect(calls.checkout[0].callbacks.postFlowUrl).toBe(
     "http://localhost:3100/checkout/return"
   );
