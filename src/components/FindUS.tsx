@@ -6,10 +6,10 @@ const FindUs: React.FC = () => {
   return (
     <Box
       position="relative"
-      id="find-us"                           /* SEO anchor preserved */
+      id="find-us" /* SEO anchor preserved */
       p={{ base: 6, md: 10 }}
       borderRadius="xl"
-      bg="rgba(10, 12, 24, 0.65)"           /* glassy neon panel */
+      bg="rgba(10, 12, 24, 0.65)" /* glassy neon panel */
       backdropFilter="blur(10px)"
       border="1px solid rgba(255,0,127,0.35)"
       boxShadow="0 0 0 1px rgba(0,212,255,0.25) inset,
@@ -40,7 +40,13 @@ const FindUs: React.FC = () => {
         )"
       />
 
-      <VStack spacing={6} align="center" textAlign="center" position="relative" zIndex={1}>
+      <VStack
+        spacing={6}
+        align="center"
+        textAlign="center"
+        position="relative"
+        zIndex={1}
+      >
         {/* Section Title */}
         <Text
           as="h2"
@@ -64,7 +70,8 @@ const FindUs: React.FC = () => {
           Hull Tattoo Studio <br />
           255 Hedon Road, <br />
           Hull, HU9 1NQ, UK <br />
-          <a href="tel:+447940080790">Tel. 07940080790</a><br />
+          <a href="tel:+447940080790">Tel. 07940080790</a>
+          <br />
           <a
             href="https://www.google.com/maps/dir/?api=1&destination=255%20Hedon%20Road%20Hull%20HU9%201NQ"
             target="_blank"
@@ -85,7 +92,7 @@ const FindUs: React.FC = () => {
           _before={{
             content: '""',
             display: "block",
-            paddingBottom: "56.25%",        /* 16:9 aspect ratio */
+            paddingBottom: "56.25%" /* 16:9 aspect ratio */,
           }}
         >
           <Box

@@ -47,9 +47,21 @@ function moneyGBP(amountStr?: string) {
 }
 
 const ARTISTS = [
-  { key: "jen", label: "Jen", staffResourceId: process.env.NEXT_PUBLIC_WIX_STAFF_JEN_RESOURCE_ID },
-  { key: "harley", label: "Harley", staffResourceId: process.env.NEXT_PUBLIC_WIX_STAFF_HARLEY_RESOURCE_ID },
-  { key: "mike", label: "Mike", staffResourceId: process.env.NEXT_PUBLIC_WIX_STAFF_MIKE_RESOURCE_ID },
+  {
+    key: "jen",
+    label: "Jen",
+    staffResourceId: process.env.NEXT_PUBLIC_WIX_STAFF_JEN_RESOURCE_ID,
+  },
+  {
+    key: "harley",
+    label: "Harley",
+    staffResourceId: process.env.NEXT_PUBLIC_WIX_STAFF_HARLEY_RESOURCE_ID,
+  },
+  {
+    key: "mike",
+    label: "Mike",
+    staffResourceId: process.env.NEXT_PUBLIC_WIX_STAFF_MIKE_RESOURCE_ID,
+  },
 ] as const;
 
 const ServicesPage: React.FC = () => {
@@ -65,11 +77,15 @@ const ServicesPage: React.FC = () => {
   const artistMissingEnv = !artistResourceId;
 
   const sorted = useMemo(() => {
-    const base = [...items].sort((a, b) => serviceLabel(a).localeCompare(serviceLabel(b)));
+    const base = [...items].sort((a, b) =>
+      serviceLabel(a).localeCompare(serviceLabel(b))
+    );
 
     // If we have a chosen artist, show only services assigned to them
-    if (!artistResourceId) return base;
-    return base.filter((s) => (s.staffMemberIds || []).includes(artistResourceId));
+    if (!artistResourceId) return [];
+    return base.filter((s) =>
+      (s.staffMemberIds || []).includes(artistResourceId)
+    );
   }, [items, artistResourceId]);
 
   async function loadServices() {
@@ -84,7 +100,11 @@ const ServicesPage: React.FC = () => {
     } catch (e: any) {
       const msg = e?.message || "Failed to load services";
       setError(msg);
-      toast({ title: "Could not load services", description: msg, status: "error" });
+      toast({
+        title: "Could not load services",
+        description: msg,
+        status: "error",
+      });
     } finally {
       setLoading(false);
     }
@@ -99,9 +119,15 @@ const ServicesPage: React.FC = () => {
     <>
       <Head>
         <title>Services | Hull Tattoo Studio</title>
-        <meta name="description" content="Browse services and start your booking." />
+        <meta
+          name="description"
+          content="Browse services and start your booking."
+        />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="canonical" href="https://www.hulltattoostudio.com/services" />
+        <link
+          rel="canonical"
+          href="https://www.hulltattoostudio.com/services/"
+        />
       </Head>
 
       <Box
@@ -147,7 +173,7 @@ const ServicesPage: React.FC = () => {
             <TextCard
               title="Choose artist + service"
               subtitle="We’ll only show services that artist can provide."
-              description={`Service assignments + artist calendars are managed in Wix, synced automatically.`}
+              description={`Choose an artist to explore their available services. Discuss your idea and appointment length before booking.`}
               stripes={[
                 { left: "12%", width: "18px", color: "#ff007f" },
                 { left: "68%", width: "24px", color: "#00d4ff" },
@@ -157,6 +183,7 @@ const ServicesPage: React.FC = () => {
             <HStack justify="center" mt={6} spacing={3} flexWrap="wrap">
               <Text fontWeight="semibold">Artist:</Text>
               <Select
+                aria-label="Filter services by artist"
                 value={artistKey}
                 onChange={(e) => setArtistKey(e.target.value)}
                 maxW="260px"
@@ -171,30 +198,47 @@ const ServicesPage: React.FC = () => {
                 ))}
               </Select>
 
-              <Button onClick={loadServices} variant="outline" colorScheme="pink">
+              <Button
+                onClick={loadServices}
+                variant="outline"
+                colorScheme="pink"
+              >
                 Refresh
               </Button>
             </HStack>
 
             {artistMissingEnv ? (
-              <Box mt={4} p={3} border="1px solid rgba(255,0,127,0.35)" borderRadius="md">
+              <Box
+                mt={4}
+                p={3}
+                border="1px solid rgba(255,0,127,0.35)"
+                borderRadius="md"
+              >
                 <Text fontSize="sm" opacity={0.9}>
-                  Missing env var for {selectedArtist.label}. Set{" "}
-                  <b>NEXT_PUBLIC_WIX_STAFF_{selectedArtist.key.toUpperCase()}_RESOURCE_ID</b>.
+                  Online booking is temporarily unavailable for{" "}
+                  {selectedArtist.label}. Please contact the studio.
                 </Text>
               </Box>
             ) : null}
           </MotionBox>
 
           {loading ? (
-            <Box p={6} border="1px solid rgba(255,255,255,0.12)" borderRadius="lg">
+            <Box
+              p={6}
+              border="1px solid rgba(255,255,255,0.12)"
+              borderRadius="lg"
+            >
               <HStack>
                 <Spinner />
                 <Text>Loading services…</Text>
               </HStack>
             </Box>
           ) : error ? (
-            <Box p={6} border="1px solid rgba(255,0,127,0.35)" borderRadius="lg">
+            <Box
+              p={6}
+              border="1px solid rgba(255,0,127,0.35)"
+              borderRadius="lg"
+            >
               <Text fontWeight="bold" mb={2}>
                 Couldn’t load services
               </Text>
@@ -206,18 +250,32 @@ const ServicesPage: React.FC = () => {
               </Button>
             </Box>
           ) : sorted.length === 0 ? (
-            <Box p={6} border="1px solid rgba(255,255,255,0.12)" borderRadius="lg">
+            <Box
+              p={6}
+              border="1px solid rgba(255,255,255,0.12)"
+              borderRadius="lg"
+            >
               <Text>
-                No services found for {selectedArtist.label}. Check service staff assignments in Wix.
+                No services found for {selectedArtist.label}. Please contact the
+                studio to discuss your idea.
               </Text>
             </Box>
           ) : (
-            <Grid templateColumns={{ base: "1fr", md: "repeat(2, 1fr)", xl: "repeat(3, 1fr)" }} gap={6}>
+            <Grid
+              templateColumns={{
+                base: "1fr",
+                md: "repeat(2, 1fr)",
+                xl: "repeat(3, 1fr)",
+              }}
+              gap={6}
+            >
               {sorted.map((s) => {
                 const id = serviceUuid(s);
                 const name = serviceLabel(s);
                 const price = moneyGBP(s.price?.amount);
-                const duration = s.schedule?.durationInMinutes ? `${s.schedule.durationInMinutes} mins` : null;
+                const duration = s.schedule?.durationInMinutes
+                  ? `${s.schedule.durationInMinutes} mins`
+                  : null;
                 const imgUrl = s.media?.mainMedia?.image?.url;
 
                 return (
@@ -229,7 +287,8 @@ const ServicesPage: React.FC = () => {
                     boxShadow="0 0 10px rgba(255,0,127,0.18), 0 0 16px rgba(0,212,255,0.12)"
                     _hover={{
                       transform: "translateY(-2px)",
-                      boxShadow: "0 0 16px rgba(255,0,127,0.28), 0 0 22px rgba(0,212,255,0.18)",
+                      boxShadow:
+                        "0 0 16px rgba(255,0,127,0.28), 0 0 22px rgba(0,212,255,0.18)",
                     }}
                     transition="all 0.2s ease"
                     bg="rgba(0,0,0,0.35)"
@@ -259,13 +318,21 @@ const ServicesPage: React.FC = () => {
                     )}
 
                     <VStack align="stretch" spacing={3} p={5}>
-                      <Text fontSize="xl" fontWeight="bold" textShadow="0 0 6px rgba(255,0,127,0.35)">
+                      <Text
+                        fontSize="xl"
+                        fontWeight="bold"
+                        textShadow="0 0 6px rgba(255,0,127,0.35)"
+                      >
                         {name}
                       </Text>
 
                       <HStack spacing={2} flexWrap="wrap">
-                        {price ? <Badge colorScheme="pink">{price}</Badge> : null}
-                        {duration ? <Badge colorScheme="cyan">{duration}</Badge> : null}
+                        {price ? (
+                          <Badge colorScheme="pink">{price}</Badge>
+                        ) : null}
+                        {duration ? (
+                          <Badge colorScheme="cyan">{duration}</Badge>
+                        ) : null}
                         {s.payment?.rateType ? (
                           <Badge variant="outline" colorScheme="gray">
                             {s.payment.rateType}
@@ -286,9 +353,9 @@ const ServicesPage: React.FC = () => {
                         colorScheme="pink"
                         variant="solid"
                         onClick={() => {
-                          window.location.href = `/book?artist=${encodeURIComponent(artistKey)}&serviceId=${encodeURIComponent(
-                            id
-                          )}`;
+                          window.location.href = `/book?artist=${encodeURIComponent(
+                            artistKey
+                          )}&serviceId=${encodeURIComponent(id)}`;
                         }}
                         isDisabled={!id || artistMissingEnv}
                       >

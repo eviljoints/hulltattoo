@@ -45,7 +45,7 @@ const ReviewsModal: React.FC<ReviewsModalProps> = ({ buttonProps }) => {
               colorScheme="pink"
               width="full"
             >
-              Leave a Review 
+              Leave a Review
             </Button>
           </ModalBody>
           <ModalFooter>

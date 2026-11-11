@@ -13,7 +13,12 @@ export function getWixClient() {
   // Wix example uses: JSON.parse(Cookies.get("session") || null)
   // but JSON.parse(null) throws, so we guard safely:
   const rawSession = Cookies.get("session");
-  const tokens = rawSession ? JSON.parse(rawSession) : undefined;
+  let tokens;
+  try {
+    tokens = rawSession ? JSON.parse(rawSession) : undefined;
+  } catch {
+    Cookies.remove("session");
+  }
 
   return createClient({
     modules: { services, availabilityCalendar, redirects },

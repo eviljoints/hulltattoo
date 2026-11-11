@@ -66,7 +66,10 @@ export default function GiftVoucherModal({
 
       <Modal isOpen={isOpen} onClose={onClose} size="6xl" isCentered>
         <ModalOverlay />
-        <ModalContent bg="black" color="white" border="1px solid rgba(255,0,127,0.35)"
+        <ModalContent
+          bg="black"
+          color="white"
+          border="1px solid rgba(255,0,127,0.35)"
           boxShadow="0 0 0 1px rgba(0,212,255,0.25) inset, 0 0 22px rgba(255,0,127,0.35), 0 0 28px rgba(0,212,255,0.25)"
           borderRadius="xl"
         >

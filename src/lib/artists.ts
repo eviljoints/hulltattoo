@@ -48,8 +48,7 @@ export const artists: Artist[] = [
     slug: "jen",
     name: "Jen",
     role: "Apprentice of full colour neo traditional",
-    description:
-      "Developing artist focusing on Neo Trad and full colour work.",
+    description: "Developing artist focusing on Neo Trad and full colour work.",
     image: "/images/jen.webp",
     gallery: "/images/jen-gallery.webp",
     facebook: "https://www.facebook.com/profile.php?id=61575953590191",
@@ -61,4 +60,3 @@ export const artists: Artist[] = [
     ],
   },
 ];
-

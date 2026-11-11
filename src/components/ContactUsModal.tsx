@@ -30,8 +30,10 @@ const MAX_FILE_SIZE_MB = 5;
 const MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024;
 const MAX_FILES = 10;
 
-const isValidEmail = (email: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-const isValidUKMobile = (phone: string) => /^07\d{9}$/.test(phone.replace(/\s+/g, ""));
+const isValidEmail = (email: string) =>
+  /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+const isValidUKMobile = (phone: string) =>
+  /^07\d{9}$/.test(phone.replace(/\s+/g, ""));
 
 type UploadInfo = {
   uploadUrl: string;
@@ -60,13 +62,19 @@ async function getWixUploadUrls(files: File[]): Promise<UploadInfo[]> {
   });
 
   const data = await resp.json().catch(() => ({}));
-  if (!resp.ok) throw new Error(data?.error || `Failed to get upload URLs (${resp.status})`);
-  if (!Array.isArray(data?.uploads)) throw new Error("Invalid upload URLs response from server");
+  if (!resp.ok)
+    throw new Error(
+      data?.error || `Failed to get upload URLs (${resp.status})`
+    );
+  if (!Array.isArray(data?.uploads))
+    throw new Error("Invalid upload URLs response from server");
   return data.uploads as UploadInfo[];
 }
 
 async function putFileToUploadUrl(uploadUrl: string, file: File) {
   const url = new URL(uploadUrl);
+  if (url.protocol !== "https:")
+    throw new Error("The upload link is not secure. Please try again.");
   url.searchParams.set("filename", file.name);
 
   const resp = await fetch(url.toString(), {
@@ -80,7 +88,6 @@ async function putFileToUploadUrl(uploadUrl: string, file: File) {
     throw new Error(`Upload failed: ${resp.status} - ${text}`);
   }
 }
-
 
 const ContactUsModal: React.FC<ContactUsModalProps> = ({ buttonProps }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -131,7 +138,9 @@ const ContactUsModal: React.FC<ContactUsModalProps> = ({ buttonProps }) => {
     });
   };
 
-  const handleFileSelection = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileSelection = async (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
     const newFiles = Array.from(e.target.files || []);
     if (!newFiles.length) return;
 
@@ -142,7 +151,15 @@ const ContactUsModal: React.FC<ContactUsModalProps> = ({ buttonProps }) => {
     }
 
     for (const f of newFiles) {
-      if (!["image/jpeg", "image/png", "image/webp", "image/heic", "image/heif"].includes(f.type)) {
+      if (
+        ![
+          "image/jpeg",
+          "image/png",
+          "image/webp",
+          "image/heic",
+          "image/heif",
+        ].includes(f.type)
+      ) {
         setErrorMessage("Please choose JPG, PNG, WebP or HEIC images.");
         e.target.value = "";
         return;
@@ -154,13 +171,24 @@ const ContactUsModal: React.FC<ContactUsModalProps> = ({ buttonProps }) => {
       }
     }
 
+    const names = new Set(selectedFiles.map((file) => file.name));
+    if (
+      newFiles.some(
+        (file) => names.has(file.name) || (names.add(file.name), false)
+      )
+    ) {
+      setErrorMessage("Please choose images with different filenames.");
+      e.target.value = "";
+      return;
+    }
     setErrorMessage(null);
     setGlobalUploading(true);
     setSelectedFiles((prev) => [...prev, ...newFiles]);
 
     try {
       const uploadInfos = await getWixUploadUrls(newFiles);
-      if (uploadInfos.length !== newFiles.length) throw new Error("Mismatch in upload URLs received");
+      if (uploadInfos.length !== newFiles.length)
+        throw new Error("Mismatch in upload URLs received");
 
       const newlyUploaded: UploadedFile[] = [];
 
@@ -187,7 +215,6 @@ const ContactUsModal: React.FC<ContactUsModalProps> = ({ buttonProps }) => {
 
       setUploadedFiles((prev) => [...prev, ...newlyUploaded]);
     } catch (err: any) {
-      
       setErrorMessage(err?.message || "Upload failed");
 
       const names = new Set(newFiles.map((f) => f.name));
@@ -221,7 +248,9 @@ const ContactUsModal: React.FC<ContactUsModalProps> = ({ buttonProps }) => {
       return;
     }
     if (selectedFiles.length && uploadedFiles.length !== selectedFiles.length) {
-      setErrorMessage("Some files are not uploaded yet. Please wait and try again.");
+      setErrorMessage(
+        "Some files are not uploaded yet. Please wait and try again."
+      );
       return;
     }
 
@@ -252,25 +281,29 @@ const ContactUsModal: React.FC<ContactUsModalProps> = ({ buttonProps }) => {
       const data = await resp.json().catch(() => ({}));
 
       if (resp.ok && data?.ok) {
-  // clear the fields, but keep the success message visible
-  setErrorMessage(null);
-  setSuccessMessage("Thank you for sending us a message — we’ll get back to you as soon as possible!");
+        // clear the fields, but keep the success message visible
+        setErrorMessage(null);
+        setSuccessMessage(
+          "Thank you for sending us a message — we’ll get back to you as soon as possible!"
+        );
 
-  setFirstName("");
-  setLastName("");
-  setEmail("");
-  setPhone("");
-  setMessage("");
-  setSelectedFiles([]);
-  setUploadedFiles([]);
-  setUploadingFiles(new Set());
-  setGlobalUploading(false);
-} else {
-  setErrorMessage(data?.error || data?.details || "Failed to send message – check console.");
-}
-
+        setFirstName("");
+        setLastName("");
+        setEmail("");
+        setPhone("");
+        setMessage("");
+        setSelectedFiles([]);
+        setUploadedFiles([]);
+        setUploadingFiles(new Set());
+        setGlobalUploading(false);
+      } else {
+        setErrorMessage(
+          data?.error ||
+            data?.details ||
+            "Failed to send message – check console."
+        );
+      }
     } catch (err: any) {
-      
       setErrorMessage(err?.message || "Network error – please try again.");
     } finally {
       setIsSubmitting(false);
@@ -283,7 +316,13 @@ const ContactUsModal: React.FC<ContactUsModalProps> = ({ buttonProps }) => {
         Contact Us
       </Button>
 
-      <Modal isOpen={isOpen} onClose={handleClose} isCentered size="xl" scrollBehavior="inside">
+      <Modal
+        isOpen={isOpen}
+        onClose={handleClose}
+        isCentered
+        size="xl"
+        scrollBehavior="inside"
+      >
         <ModalOverlay />
         <ModalContent bg="rgba(0,0,0,0.85)" color="white">
           <ModalHeader textAlign="center">Get in Touch</ModalHeader>
@@ -304,31 +343,65 @@ const ContactUsModal: React.FC<ContactUsModalProps> = ({ buttonProps }) => {
 
                 <FormControl mb={4} isRequired>
                   <FormLabel>First Name</FormLabel>
-                  <Input value={firstName} maxLength={100} onChange={(e) => setFirstName(e.target.value)} bg="whiteAlpha.900" color="black" />
+                  <Input
+                    value={firstName}
+                    maxLength={100}
+                    onChange={(e) => setFirstName(e.target.value)}
+                    bg="whiteAlpha.900"
+                    color="black"
+                  />
                 </FormControl>
 
                 <FormControl mb={4} isRequired>
                   <FormLabel>Last Name</FormLabel>
-                  <Input value={lastName} maxLength={100} onChange={(e) => setLastName(e.target.value)} bg="whiteAlpha.900" color="black" />
+                  <Input
+                    value={lastName}
+                    maxLength={100}
+                    onChange={(e) => setLastName(e.target.value)}
+                    bg="whiteAlpha.900"
+                    color="black"
+                  />
                 </FormControl>
 
                 <FormControl mb={4} isRequired>
                   <FormLabel>Email</FormLabel>
-                  <Input type="email" value={email} maxLength={254} onChange={(e) => setEmail(e.target.value)} bg="whiteAlpha.900" color="black" />
+                  <Input
+                    type="email"
+                    value={email}
+                    maxLength={254}
+                    onChange={(e) => setEmail(e.target.value)}
+                    bg="whiteAlpha.900"
+                    color="black"
+                  />
                 </FormControl>
 
                 <FormControl mb={4}>
                   <FormLabel>Mobile (optional – UK format)</FormLabel>
-                  <Input value={phone} onChange={(e) => setPhone(e.target.value)} bg="whiteAlpha.900" color="black" />
+                  <Input
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                    bg="whiteAlpha.900"
+                    color="black"
+                  />
                 </FormControl>
 
                 <FormControl mb={4} isRequired>
                   <FormLabel>Your Message</FormLabel>
-                  <Textarea value={message} onChange={(e) => setMessage(e.target.value)} bg="whiteAlpha.900" color="black" minH="120px" maxLength={10000} />
+                  <Textarea
+                    value={message}
+                    onChange={(e) => setMessage(e.target.value)}
+                    bg="whiteAlpha.900"
+                    color="black"
+                    minH="120px"
+                    maxLength={10000}
+                  />
                 </FormControl>
 
                 <FormControl mb={4}>
-                  <FormLabel>Attach Images (max {MAX_FILE_SIZE_MB} MB each, up to {MAX_FILES})</FormLabel>
+                  <FormLabel>
+                    Attach Images (max {MAX_FILE_SIZE_MB} MB each, up to{" "}
+                    {MAX_FILES})
+                  </FormLabel>
                   <Input
                     type="file"
                     accept="image/*"
@@ -336,26 +409,48 @@ const ContactUsModal: React.FC<ContactUsModalProps> = ({ buttonProps }) => {
                     onChange={handleFileSelection}
                     bg="whiteAlpha.900"
                     color="black"
-                    isDisabled={globalUploading || selectedFiles.length >= MAX_FILES}
+                    isDisabled={
+                      globalUploading || selectedFiles.length >= MAX_FILES
+                    }
                   />
 
                   {selectedFiles.length > 0 && (
                     <HStack mt={3} spacing={3} wrap="wrap">
                       {selectedFiles.map((file) => {
                         const isUploading = uploadingFiles.has(file.name);
-                        const isUploaded = uploadedFiles.some((uf) => uf.fileName === file.name);
+                        const isUploaded = uploadedFiles.some(
+                          (uf) => uf.fileName === file.name
+                        );
 
                         return (
-                          <HStack key={file.name} bg="whiteAlpha.200" px={3} py={1} borderRadius="full" spacing={2}>
+                          <HStack
+                            key={file.name}
+                            bg="whiteAlpha.200"
+                            px={3}
+                            py={1}
+                            borderRadius="full"
+                            spacing={2}
+                          >
                             <Badge
-                              colorScheme={isUploading ? "yellow" : isUploaded ? "green" : "gray"}
+                              colorScheme={
+                                isUploading
+                                  ? "yellow"
+                                  : isUploaded
+                                  ? "green"
+                                  : "gray"
+                              }
                               variant={isUploading ? "outline" : "solid"}
                             >
                               {file.name}
                             </Badge>
                             {isUploading && <Spinner size="xs" />}
                             {!isUploading && (
-                              <Button size="xs" variant="ghost" colorScheme="red" onClick={() => removeFile(file.name)}>
+                              <Button
+                                size="xs"
+                                variant="ghost"
+                                colorScheme="red"
+                                onClick={() => removeFile(file.name)}
+                              >
                                 ×
                               </Button>
                             )}

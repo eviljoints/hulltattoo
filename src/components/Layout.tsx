@@ -9,7 +9,6 @@ import {
   FaInstagram,
   FaHome,
   FaFirstAid,
-
   FaNewspaper,
   FaYoutube,
   FaTiktok,
@@ -22,8 +21,8 @@ import {
   MenuButton,
   MenuList,
   MenuItem,
-  MenuGroup,     // ⬅️ added
-  MenuDivider,   // ⬅️ added
+  MenuGroup, // ⬅️ added
+  MenuDivider, // ⬅️ added
   Button,
   Box,
 } from "@chakra-ui/react";
@@ -48,7 +47,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     >
       {/* Global SEO Head Tags */}
       <Head>
-        <meta name="robots" content="index, follow" />
+        <meta name="robots" content="index,follow,max-image-preview:large" />
         <link rel="sitemap" type="application/xml" href="/sitemap.xml" />
         {/* Preload brand font (improves FCP/LCP) */}
         <link
@@ -59,33 +58,22 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           crossOrigin="anonymous"
         />
 
-        {/* Organization + Logo schema (site-wide) */}
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-              "@context": "https://schema.org",
-              "@type": "Organization",
-              name: "Hull Tattoo Studio",
-              url: "https://www.hulltattoostudio.com",
-              logo: {
-                "@type": "ImageObject",
-                url: "https://www.hulltattoostudio.com/images/logo.png",
-                width: 512,
-                height: 512,
-              },
-              sameAs: [
-                "https://www.instagram.com/hull_tattoo_studio/",
-                "https://www.facebook.com/Hulltattoostudio",
-                "https://www.youtube.com/@Hulltattoostudio",
-                "https://www.tiktok.com/@hulltattoostudio_",
-              ],
-            }),
-          }}
+        <meta property="og:site_name" content="Hull Tattoo Studio" />
+        <meta property="og:locale" content="en_GB" />
+        <meta
+          property="og:image"
+          content="https://www.hulltattoostudio.com/images/og-image.webp"
+        />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta
+          name="twitter:image"
+          content="https://www.hulltattoostudio.com/images/og-image.webp"
         />
       </Head>
 
-      <a className="skip-link" href="#main-content">Skip to content</a>
+      <a className="skip-link" href="#main-content">
+        Skip to content
+      </a>
       {/* Header with Logo */}
       <header className="header">
         <div className="logo-container">
@@ -138,7 +126,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       </header>
 
       {/* Navbar - Desktop */}
-      <nav className="navbar">
+      <nav className="navbar" aria-label="Main navigation">
         <div className="navbar-desktop">
           <Link href="/" passHref legacyBehavior>
             <a className="navbar-link">Home</a>
@@ -148,7 +136,11 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             <a className="navbar-link">Aftercare</a>
           </Link>
 
-          <Link href="/book" passHref legacyBehavior><a className="navbar-link" aria-label="Book an appointment">Book</a></Link>
+          <Link href="/book" passHref legacyBehavior>
+            <a className="navbar-link" aria-label="Book an appointment">
+              Book
+            </a>
+          </Link>
           <Link href="/blog" passHref legacyBehavior>
             <a className="navbar-link">Blog</a>
           </Link>
@@ -178,25 +170,34 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
               color="white"
             >
               <MenuGroup title="Artists">
-                <MenuItem bg="transparent" _hover={{ bg: "rgba(255, 7, 131, 0.86)" }}>
-                  <Link href="/mike" passHref legacyBehavior>
-                    <a style={{ textDecoration: "none", color: "inherit" }}>Mike</a>
-                  </Link>
+                <MenuItem
+                  as={Link}
+                  href="/mike"
+                  bg="transparent"
+                  _hover={{ bg: "rgba(255, 7, 131, 0.86)" }}
+                >
+                  Mike
                 </MenuItem>
               </MenuGroup>
 
               <MenuDivider borderColor="#ff007f" />
 
               <MenuGroup title="Apprentices">
-                <MenuItem bg="transparent" _hover={{ bg: "rgba(255, 7, 131, 0.86)" }}>
-                  <Link href="/harley" passHref legacyBehavior>
-                    <a style={{ textDecoration: "none", color: "inherit" }}>Harley</a>
-                  </Link>
+                <MenuItem
+                  as={Link}
+                  href="/harley"
+                  bg="transparent"
+                  _hover={{ bg: "rgba(255, 7, 131, 0.86)" }}
+                >
+                  Harley
                 </MenuItem>
-                <MenuItem bg="transparent" _hover={{ bg: "rgba(255, 7, 131, 0.86)" }}>
-                  <Link href="/jen" passHref legacyBehavior>
-                    <a style={{ textDecoration: "none", color: "inherit" }}>Jen</a>
-                  </Link>
+                <MenuItem
+                  as={Link}
+                  href="/jen"
+                  bg="transparent"
+                  _hover={{ bg: "rgba(255, 7, 131, 0.86)" }}
+                >
+                  Jen
                 </MenuItem>
               </MenuGroup>
             </MenuList>
@@ -205,7 +206,9 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       </nav>
 
       {/* Main Content */}
-      <Box id="main-content">{children}</Box>
+      <Box id="main-content" tabIndex={-1}>
+        {children}
+      </Box>
 
       {/* Footer */}
       <footer className="footer">
@@ -246,13 +249,20 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         </div>
         <p className="footer-text">
           © {currentYear} Hull Tattoo Studio. All rights reserved.
-          <br />255 Hedon Road, Hull, HU9 1NQ.
-          <br /><Link href="/privacy/">Privacy</Link> · <Link href="/terms/">Terms</Link> · <Link href="/#faq-section">FAQ</Link>
+          <br />
+          255 Hedon Road, Hull, HU9 1NQ.
+          <br />
+          <Link href="/privacy/">Privacy</Link> ·{" "}
+          <Link href="/terms/">Terms</Link> ·{" "}
+          <Link href="/#faq-section">FAQ</Link>
         </p>
       </footer>
 
       {/* Bottom Navbar for Mobile */}
-      <nav className="navbar-bottom">
+      <nav className="navbar-bottom" aria-label="Mobile navigation">
+        <Link href="/book/" aria-label="Book an appointment">
+          <FaPaintBrush />
+        </Link>
         <Link href="/" passHref legacyBehavior>
           <a className="navbar-icon" aria-label="Home">
             <FaHome />
@@ -293,25 +303,34 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             color="white"
           >
             <MenuGroup title="Artists">
-              <MenuItem bg="transparent" _hover={{ bg: "rgba(255,0,127,0.2)" }}>
-                <Link href="/mike" passHref legacyBehavior>
-                  <a style={{ textDecoration: "none", color: "inherit" }}>Mike</a>
-                </Link>
+              <MenuItem
+                as={Link}
+                href="/mike"
+                bg="transparent"
+                _hover={{ bg: "rgba(255,0,127,0.2)" }}
+              >
+                Mike
               </MenuItem>
             </MenuGroup>
 
             <MenuDivider borderColor="#ff007f" />
 
             <MenuGroup title="Apprentices">
-              <MenuItem bg="transparent" _hover={{ bg: "rgba(255,0,127,0.2)" }}>
-                <Link href="/harley" passHref legacyBehavior>
-                  <a style={{ textDecoration: "none", color: "inherit" }}>Harley</a>
-                </Link>
+              <MenuItem
+                as={Link}
+                href="/harley"
+                bg="transparent"
+                _hover={{ bg: "rgba(255,0,127,0.2)" }}
+              >
+                Harley
               </MenuItem>
-              <MenuItem bg="transparent" _hover={{ bg: "rgba(255,0,127,0.2)" }}>
-                <Link href="/jen" passHref legacyBehavior>
-                  <a style={{ textDecoration: "none", color: "inherit" }}>Jen</a>
-                </Link>
+              <MenuItem
+                as={Link}
+                href="/jen"
+                bg="transparent"
+                _hover={{ bg: "rgba(255,0,127,0.2)" }}
+              >
+                Jen
               </MenuItem>
             </MenuGroup>
           </MenuList>

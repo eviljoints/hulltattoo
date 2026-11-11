@@ -1,7 +1,11 @@
 import React from "react";
 
 const NeonLogo: React.FC = () => {
-  return <h1 className="neon-text">HTS</h1>;
+  return (
+    <span className="neon-text" aria-hidden="true">
+      HTS
+    </span>
+  );
 };
 
 export default NeonLogo;

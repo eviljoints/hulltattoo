@@ -1,7 +1,6 @@
 // src/pages/_document.tsx
 
 import { Html, Head, Main, NextScript } from "next/document";
-import Script from "next/script";
 
 export default function Document() {
   return (
@@ -15,7 +14,6 @@ export default function Document() {
           type="font/otf"
           crossOrigin="anonymous"
         />
-         
       </Head>
       <body>
         <Main />

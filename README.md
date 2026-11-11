@@ -1,40 +1,36 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/pages/api-reference/create-next-app).
+# Hull Tattoo Studio website
 
-## Getting Started
+Next.js Pages Router, React and Chakra UI. Public portfolios and blog content are local; Wix handles services, availability, booking checkout, gift vouchers, contact enquiries and reference-image storage.
 
-First, run the development server:
+## Local development
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+Use Node 22 and Yarn 1.22.22. Run `yarn install --frozen-lockfile`, then `yarn dev`.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Required public configuration (never put private credentials in NEXT_PUBLIC variables):
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+- `NEXT_PUBLIC_WIX_CLIENT_ID`
+- `NEXT_PUBLIC_WIX_STAFF_MIKE_RESOURCE_ID`
+- `NEXT_PUBLIC_WIX_STAFF_HARLEY_RESOURCE_ID`
+- `NEXT_PUBLIC_WIX_STAFF_JEN_RESOURCE_ID`
+- `NEXT_PUBLIC_WIX_GIFT_CARD_URL` for the existing gift-voucher integration
 
-[API routes](https://nextjs.org/docs/pages/building-your-application/routing/api-routes) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+Server-only: `WIX_CONTACT_SECRET`. Optional endpoint overrides are `WIX_SUBMIT_ENDPOINT` and `WIX_UPLOAD_URLS_ENDPOINT`; otherwise the existing studio Wix functions are used. Configure matching secrets and allowed origins in Wix and Vercel. Local or preview submissions still reach real Wix unless mocked: do not submit test enquiries or bookings against production.
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/pages/building-your-application/routing/api-routes) instead of React pages.
+## Validation
 
-This project uses [`next/font`](https://nextjs.org/docs/pages/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- `yarn typecheck`
+- `yarn lint`
+- `yarn build`
+- `yarn test` — production build plus Playwright checks at localhost:3100, with dummy Wix IDs and all browser external traffic mocked/blocked. Requires installed Chrome. No real booking, payment, upload or enquiry is sent. Screenshots and traces go into ignored `test-results/`.
 
-## Learn More
+The Playwright build contains dummy public Wix IDs; run `yarn build` again with the intended environment before any separately approved release.
 
-To learn more about Next.js, take a look at the following resources:
+## Content and SEO
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn-pages-router) - an interactive Next.js tutorial.
+Artist portfolios live in `public/images`; homepage card content is in `src/lib/artists.ts`. Articles live in `posts/*.mdx`. Keep existing filename slugs and truthful publication dates. Dates accept `DD.MM.YYYY` or ISO `YYYY-MM-DD`; add `modified` only for substantive edits, with the actual edit date. Each article has a title, excerpt, topic and existing cover image. Keep `public/sitemap.xml` in sync when adding/removing pages; tests verify its retained URLs. Checkout is noindex and omitted from the sitemap. Retired pages return 404 except `/Calendar`, which redirects to booking.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Deployment
 
-## Deploy on Vercel
+Deploy as a Next.js application on Vercel with Node 22, `yarn install --frozen-lockfile`, and `yarn build`. Do not use static export: the contact proxies and optimized images need server functions. There is no Prisma generation or migration step. Confirm preview/production Wix origins and return URLs. No deployment was performed as part of streamlining.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/pages/building-your-application/deploying) for more details.
+The preserved Prisma schema and migrations describe historical data, not an active website dependency. `yarn prisma:validate` checks the schema only. See [streamlining notes](docs/streamlining.md) for the booking map, retained data, credentials needing rotation, service retirement and Search Console follow-up.

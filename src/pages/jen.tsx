@@ -1,5 +1,5 @@
 // src/pages/jen.tsx
-import React, { useMemo } from "react";
+import React from "react";
 import {
   Box,
   Text,
@@ -27,15 +27,16 @@ import { useRouter } from "next/router";
 
 // ✅ client-only widget to avoid hydration mismatch
 const WixArtistBookingWidget = dynamic(
-  () => import("~/components/WixArtistBookingWidget").then((m) => m.WixArtistBookingWidget),
+  () =>
+    import("~/components/WixArtistBookingWidget").then(
+      (m) => m.WixArtistBookingWidget
+    ),
   { ssr: false }
 );
 
 // Mike page uses dynamic MotionBox/TextCard in places; here you already import MotionBox normally.
 // Keep as-is:
 import MotionBox from "../components/MotionBox";
-
-
 
 // ✅ Jen-only constants
 const JEN_STAFF_RESOURCE_ID = process.env.NEXT_PUBLIC_WIX_STAFF_JEN_RESOURCE_ID;
@@ -45,13 +46,20 @@ const gallery = {
   neoTraditionalColour: {
     description:
       "Jen is developing her craft in full-colour Neo Traditional — bold lines, rich palettes, and illustrative forms. She’s building a portfolio with vibrant pieces and is available for small to medium designs while she trains.",
-    images: ["jen1.webp", "jen2.webp", "jen3.webp", "jen4.webp", "jen5.webp", "jen6.webp"],
+    images: [
+      "jen1.webp",
+      "jen2.webp",
+      "jen3.webp",
+      "jen4.webp",
+      "jen5.webp",
+      "jen6.webp",
+    ],
   },
 };
 
 // --- JSON-LD Person for Jen ---
 const structuredData = {
-  "@context": "http://schema.org",
+  "@context": "https://schema.org",
   "@type": "Person",
   name: "Jen",
   jobTitle: "Apprentice Tattoo Artist (Full Colour Neo Traditional)",
@@ -82,25 +90,26 @@ const JenPage: React.FC = () => {
         transition: { duration: 0.5 },
       };
 
-  const PAGE_URL = "https://www.hulltattoostudio.com/jen";
+  const PAGE_URL = "https://www.hulltattoostudio.com/jen/";
   const OG_IMAGE = "https://www.hulltattoostudio.com/images/jen.webp";
 
   return (
     <>
       <Head>
-        <title>Jen - Apprentice Neo Traditional (Full Colour) | Hull Tattoo Studio</title>
+        <title>
+          Jen - Apprentice Neo Traditional (Full Colour) | Hull Tattoo Studio
+        </title>
         <meta
           name="description"
           content="Meet Jen, an apprentice at Hull Tattoo Studio focusing on full-colour Neo Traditional tattoos. Bold lines, rich palettes, and illustrative styles."
         />
-        <meta
-          name="keywords"
-          content="Jen, Apprentice Tattoo Artist, Hull Tattoo Studio, Neo Traditional Tattoos, Full Colour Tattoos, Illustrative Tattoos, Hull"
-        />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
 
         {/* Social / OG */}
-        <meta property="og:title" content="Jen - Apprentice Neo Traditional (Full Colour) | Hull Tattoo Studio" />
+        <meta
+          property="og:title"
+          content="Jen - Apprentice Neo Traditional (Full Colour) | Hull Tattoo Studio"
+        />
         <meta
           property="og:description"
           content="Jen is developing her craft in full-colour Neo Traditional at Hull Tattoo Studio. Explore her growing portfolio."
@@ -118,34 +127,9 @@ const JenPage: React.FC = () => {
         <link rel="preload" href="/images/jen.webp" as="image" />
 
         {/* Structured Data (Person) */}
-        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }} />
-
-        {/* LocalBusiness JSON-LD */}
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-              "@context": "https://schema.org",
-              "@type": "LocalBusiness",
-              name: "Hull Tattoo Studio",
-              description:
-                "Hull Tattoo Studio offers professional tattoo services including tattoo coverups and tattoo apprenticeships in Hull. Visit us for custom tattoos and expert advice.",
-              image: "https://www.hulltattoostudio.com/images/og-image.webp",
-              url: "https://www.hulltattoostudio.com",
-              address: {
-                "@type": "PostalAddress",
-                streetAddress: "255 Hedon",
-                addressLocality: "Hull",
-                postalCode: "HU9 1NQ",
-                addressCountry: "GB",
-              },
-              telephone: "07940080790",
-              openingHoursSpecification: [
-                { "@type": "OpeningHoursSpecification", dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"], opens: "09:30", closes: "17:00" },
-                { "@type": "OpeningHoursSpecification", dayOfWeek: ["Saturday", "Sunday"], opens: "11:30", closes: "19:00" },
-              ],
-            }),
-          }}
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
         />
       </Head>
 
@@ -229,19 +213,35 @@ const JenPage: React.FC = () => {
           <MotionBox {...motionProps} mb={16} as="section">
             <Tabs variant="soft-rounded" colorScheme="pink">
               <TabList justifyContent="center" mb={8}>
-                <Tab _selected={{ bg: "#ff007f", color: "white" }} fontWeight="bold" fontSize={{ base: "md", md: "lg" }}>
+                <Tab
+                  _selected={{ bg: "#ff007f", color: "white" }}
+                  fontWeight="bold"
+                  fontSize={{ base: "md", md: "lg" }}
+                >
                   Neo Traditional · Colour
                 </Tab>
               </TabList>
               <TabPanels>
                 <TabPanel>
                   <VStack spacing={4} mb={8}>
-                    <Text fontSize={{ base: "lg", md: "xl" }} textAlign="center" fontWeight="medium" lineHeight="1.8" maxW="800px">
+                    <Text
+                      fontSize={{ base: "lg", md: "xl" }}
+                      textAlign="center"
+                      fontWeight="medium"
+                      lineHeight="1.8"
+                      maxW="800px"
+                    >
                       {gallery.neoTraditionalColour.description}
                     </Text>
                   </VStack>
 
-                  <Grid templateColumns={{ base: "repeat(2, 1fr)", md: "repeat(3, 1fr)" }} gap={6}>
+                  <Grid
+                    templateColumns={{
+                      base: "repeat(2, 1fr)",
+                      md: "repeat(3, 1fr)",
+                    }}
+                    gap={6}
+                  >
                     {gallery.neoTraditionalColour.images.map((img, index) => (
                       <AspectRatio ratio={1} key={index}>
                         <MotionBox
@@ -251,13 +251,17 @@ const JenPage: React.FC = () => {
                           boxShadow="0 0 5px #ff007f, 0 0 10px #00d4ff"
                           whileHover={{ scale: 1.05 }}
                           transition={{ duration: 0.3 }}
-                          _hover={{ boxShadow: "0 0 14px #ff007f, 0 0 18px #00d4ff" }}
+                          _hover={{
+                            boxShadow: "0 0 14px #ff007f, 0 0 18px #00d4ff",
+                          }}
                         >
                           <Image
                             src={`/images/Jen/${img}`}
-                            alt={`Jen Neo Traditional colour piece ${index + 1}`}
-                            layout="fill"
-                            objectFit="cover"
+                            alt={`Jen Neo Traditional colour piece ${
+                              index + 1
+                            }`}
+                            fill
+                            style={{ objectFit: "cover" }}
                             loading="lazy"
                             sizes="(min-width: 768px) 33vw, 50vw"
                           />
@@ -276,7 +280,12 @@ const JenPage: React.FC = () => {
               <Alert status="warning" variant="subtle" borderRadius="lg">
                 <AlertIcon />
                 <Box>
-                  <Text fontWeight="bold">Online booking is temporarily unavailable</Text><Text>Please contact the studio to book with this artist.</Text>
+                  <Text fontWeight="bold">
+                    Online booking is temporarily unavailable
+                  </Text>
+                  <Text>
+                    Please contact the studio to book with this artist.
+                  </Text>
                 </Box>
               </Alert>
             ) : (
@@ -295,7 +304,12 @@ const JenPage: React.FC = () => {
                   hourlyRateGbp={JEN_HOURLY_RATE_GBP}
                   maxMonthsAhead={2}
                   debug={false}
-                  onSelectEntry={({ serviceId, staffResourceId, artistName, entry }) => {
+                  onSelectEntry={({
+                    serviceId,
+                    staffResourceId,
+                    artistName,
+                    entry,
+                  }) => {
                     const payload = {
                       serviceId,
                       staffResourceId,
@@ -303,7 +317,10 @@ const JenPage: React.FC = () => {
                       hourlyRateGbp: JEN_HOURLY_RATE_GBP,
                       entry,
                     };
-                    sessionStorage.setItem("HTS_WIX_CHECKOUT_PAYLOAD", JSON.stringify(payload));
+                    sessionStorage.setItem(
+                      "HTS_WIX_CHECKOUT_PAYLOAD",
+                      JSON.stringify(payload)
+                    );
                     router.push("/checkout");
                   }}
                 />

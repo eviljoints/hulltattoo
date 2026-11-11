@@ -107,8 +107,9 @@ const ArtistCard: React.FC<ArtistCardProps> = ({
             <Image
               src={image}
               alt={alt || name}
-              layout="fill"
-              objectFit="cover"
+              sizes="150px"
+              fill
+              style={{ objectFit: "cover" }}
               loading={priority ? "eager" : "lazy"}
               priority={!!priority}
             />
@@ -131,12 +132,23 @@ const ArtistCard: React.FC<ArtistCardProps> = ({
         </Text>
 
         {/* ROLE */}
-        <Text fontSize="sm" opacity={0.9} textAlign="center" mb={2} color="white">
+        <Text
+          fontSize="sm"
+          opacity={0.9}
+          textAlign="center"
+          mb={2}
+          color="white"
+        >
           {role}
         </Text>
 
         {/* DESCRIPTION */}
-        <Text fontSize="sm" textAlign="center" mb={4} color="rgba(235,235,235,0.95)">
+        <Text
+          fontSize="sm"
+          textAlign="center"
+          mb={4}
+          color="rgba(235,235,235,0.95)"
+        >
           {description}
         </Text>
 
@@ -163,7 +175,8 @@ const ArtistCard: React.FC<ArtistCardProps> = ({
                 transition: "transform .15s ease, box-shadow .2s ease",
               }}
               onMouseEnter={(e) => {
-                (e.currentTarget as HTMLAnchorElement).style.transform = "translateY(-1px)";
+                (e.currentTarget as HTMLAnchorElement).style.transform =
+                  "translateY(-1px)";
                 (e.currentTarget as HTMLAnchorElement).style.boxShadow =
                   "0 0 10px rgba(0,212,255,0.4), inset 0 0 12px rgba(255,0,127,0.3)";
               }}
@@ -197,7 +210,8 @@ const ArtistCard: React.FC<ArtistCardProps> = ({
                 transition: "transform .15s ease, box-shadow .2s ease",
               }}
               onMouseEnter={(e) => {
-                (e.currentTarget as HTMLAnchorElement).style.transform = "translateY(-1px)";
+                (e.currentTarget as HTMLAnchorElement).style.transform =
+                  "translateY(-1px)";
                 (e.currentTarget as HTMLAnchorElement).style.boxShadow =
                   "0 0 10px rgba(255,0,127,0.4), inset 0 0 12px rgba(0,212,255,0.3)";
               }}
@@ -247,10 +261,13 @@ const ArtistCard: React.FC<ArtistCardProps> = ({
             >
               <Image
                 src={gallery}
-                alt={`${name}'s Work`}
-                layout="fill"
-                objectFit="cover"
-                style={{ transition: "transform 0.3s ease" }}
+                alt={`Portfolio of tattoo work by ${name} at Hull Tattoo Studio`}
+                sizes="(max-width:639px) 100vw, (max-width:1023px) 50vw, 33vw"
+                fill
+                style={{
+                  objectFit: "cover",
+                  transition: "transform 0.3s ease",
+                }}
                 loading="lazy"
               />
             </Box>
@@ -258,7 +275,7 @@ const ArtistCard: React.FC<ArtistCardProps> = ({
         </Box>
 
         {/* LINK TO FULL PROFILE (outline → neon fill on hover) */}
-        <Link href={artsPage} passHref>
+        <Link href={artsPage} passHref legacyBehavior>
           <Button
             as="a"
             variant="outline"

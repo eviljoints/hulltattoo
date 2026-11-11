@@ -6,7 +6,10 @@ interface HeroTextCardProps {
   align?: "left" | "center" | "right";
 }
 
-const HeroTextCard: React.FC<HeroTextCardProps> = ({ title, align = "center" }) => {
+const HeroTextCard: React.FC<HeroTextCardProps> = ({
+  title,
+  align = "center",
+}) => {
   return (
     <Box
       maxW="900px"
@@ -42,7 +45,8 @@ const HeroTextCard: React.FC<HeroTextCardProps> = ({ title, align = "center" }) 
         lineHeight="1.7"
         mb={3}
       >
-        Welcome to <strong>Hull Tattoo Studio</strong>, the leading tattoo parlour in Hull where creativity meets precision.
+        Welcome to <strong>Hull Tattoo Studio</strong>, our studio at 255 Hedon
+        Road, Hull, HU9 1NQ.
       </Text>
       <Text
         fontSize={{ base: "md", md: "lg" }}
@@ -51,14 +55,18 @@ const HeroTextCard: React.FC<HeroTextCardProps> = ({ title, align = "center" }) 
         mb={3}
       >
         Our expert tattooists specialize in{" "}
-        <strong>black and grey realism, blackwork, fine line tattoos, anime tattoos, and custom designs</strong>.
+        <strong>
+          realism, cover-ups, dotwork and full-colour neo traditional work
+        </strong>
+        .
       </Text>
       <Text
         fontSize={{ base: "md", md: "lg" }}
         color="rgba(220,220,220,0.85)"
         textAlign={align}
       >
-        Looking for the <strong>best tattoo shops in Hull</strong>? Look no further.
+        Browse each artist’s portfolio and discuss your design, placement and
+        appointment length before booking.
       </Text>
 
       <Box textAlign="center" mt={6}>

@@ -5,7 +5,6 @@ import { useRouter } from "next/router";
 import {
   Alert,
   AlertIcon,
-  Badge,
   Box,
   Button,
   Divider,
@@ -55,8 +54,18 @@ export default function CheckoutPage() {
       const saved = raw ? JSON.parse(raw) : null;
       const start = Date.parse(saved?.entry?.slot?.startDate);
       const end = Date.parse(saved?.entry?.slot?.endDate);
-      if (saved?.serviceId && saved?.staffResourceId && saved?.artistName && Number.isFinite(start) && end > start && start > Date.now()) setPayload(saved);
-    } catch { /* Expired or invalid selections require a fresh slot. */ }
+      if (
+        saved?.serviceId &&
+        saved?.staffResourceId &&
+        saved?.artistName &&
+        Number.isFinite(start) &&
+        end > start &&
+        start > Date.now()
+      )
+        setPayload(saved);
+    } catch {
+      /* Expired or invalid selections require a fresh slot. */
+    }
     setReady(true);
   }, []);
 
@@ -77,30 +86,30 @@ export default function CheckoutPage() {
       const wix = getWixClient();
 
       const redirect = await wix.redirects.createRedirectSession({
-  bookingsCheckout: {
-    slotAvailability: payload.entry,
-    timezone: LONDON_TZ,
-  },
+        bookingsCheckout: {
+          slotAvailability: payload.entry,
+          timezone: LONDON_TZ,
+        },
 
-  origin: window.location.origin,
+        origin: window.location.origin,
 
-  preferences: {
-    checkIfPublish: true,
-  },
+        preferences: {
+          checkIfPublish: true,
+        },
 
-  callbacks: {
-    postFlowUrl: `${window.location.origin}/checkout/return`,
-  },
-} as any);
+        callbacks: {
+          postFlowUrl: `${window.location.origin}/checkout/return`,
+        },
+      } as any);
 
       const url = redirect?.redirectSession?.fullUrl;
 
-      if (!url || new URL(url).protocol !== "https:") throw new Error("No secure checkout URL returned from Wix");
+      if (!url || new URL(url).protocol !== "https:")
+        throw new Error("No secure checkout URL returned from Wix");
 
       // ✅ Most reliable: redirect in same tab
       window.location.assign(url);
     } catch (e: any) {
-      console.error("[WixCheckout] error:", e);
       toast({
         title: "Could not start checkout",
         description: e?.message || "Wix checkout failed",
@@ -114,7 +123,10 @@ export default function CheckoutPage() {
     <>
       <Head>
         <title>Checkout | Hull Tattoo Studio</title>
-        <meta name="description" content="Confirm your booking details and pay securely." />
+        <meta
+          name="description"
+          content="Confirm your booking details and pay securely."
+        />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta name="robots" content="noindex,nofollow" />
       </Head>
@@ -155,20 +167,32 @@ export default function CheckoutPage() {
             Checkout
           </Text>
 
-          {!ready ? <Text role="status">Loading your selection…</Text> : !payload ? (
+          {!ready ? (
+            <Text role="status">Loading your selection…</Text>
+          ) : !payload ? (
             <Alert status="warning" variant="subtle" borderRadius="lg">
               <AlertIcon />
               <Box>
                 <Text fontWeight="bold">No booking selected</Text>
-                <Text opacity={0.9}>Please go back and pick an artist, service, and time slot.</Text>
-                <Button mt={4} colorScheme="pink" onClick={() => router.push("/book")}>
+                <Text opacity={0.9}>
+                  Please go back and pick an artist, service, and time slot.
+                </Text>
+                <Button
+                  mt={4}
+                  colorScheme="pink"
+                  onClick={() => router.push("/book")}
+                >
                   Back to booking
                 </Button>
               </Box>
             </Alert>
           ) : (
             <VStack align="stretch" spacing={4}>
-              <Box p={4} border="1px solid rgba(255,255,255,0.12)" borderRadius="lg">
+              <Box
+                p={4}
+                border="1px solid rgba(255,255,255,0.12)"
+                borderRadius="lg"
+              >
                 <Text fontWeight="bold" mb={2}>
                   Booking details
                 </Text>
@@ -180,7 +204,9 @@ export default function CheckoutPage() {
 
                 <HStack justify="space-between" gap={4} flexWrap="wrap" mt={2}>
                   <Text opacity={0.85}>Time</Text>
-                  <Text fontWeight="semibold">{fmtDateTime(payload.entry?.slot?.startDate)}</Text>
+                  <Text fontWeight="semibold">
+                    {fmtDateTime(payload.entry?.slot?.startDate)}
+                  </Text>
                 </HStack>
 
                 <Divider my={3} />
@@ -188,12 +214,15 @@ export default function CheckoutPage() {
                 <HStack justify="space-between" gap={4} flexWrap="wrap">
                   <Text opacity={0.85}>Rate</Text>
                   <Text fontWeight="bold" fontSize="xl">
-                    {typeof payload.hourlyRateGbp === "number" ? `£${payload.hourlyRateGbp}/hour` : "—"}
+                    {typeof payload.hourlyRateGbp === "number"
+                      ? `£${payload.hourlyRateGbp}/hour`
+                      : "—"}
                   </Text>
                 </HStack>
 
                 <Text opacity={0.7} fontSize="sm" mt={3}>
-                  Final price is calculated in Wix checkout based on the selected service + duration.
+                  Final price is calculated in Wix checkout based on the
+                  selected service + duration.
                 </Text>
               </Box>
 
@@ -202,7 +231,11 @@ export default function CheckoutPage() {
                   Change selection
                 </Button>
 
-                <Button colorScheme="pink" onClick={startWixCheckoutRedirect} isLoading={paying}>
+                <Button
+                  colorScheme="pink"
+                  onClick={startWixCheckoutRedirect}
+                  isLoading={paying}
+                >
                   Continue to payment
                 </Button>
               </HStack>

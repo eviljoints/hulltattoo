@@ -29,12 +29,16 @@ import { useRouter } from "next/router";
 
 // ✅ client-only widget (prevents hydration mismatch)
 const WixArtistBookingWidget = dynamic(
-  () => import("~/components/WixArtistBookingWidget").then((m) => m.WixArtistBookingWidget),
+  () =>
+    import("~/components/WixArtistBookingWidget").then(
+      (m) => m.WixArtistBookingWidget
+    ),
   { ssr: false }
 );
 
 // ✅ Harley-only constants
-const HARLEY_STAFF_RESOURCE_ID = process.env.NEXT_PUBLIC_WIX_STAFF_HARLEY_RESOURCE_ID;
+const HARLEY_STAFF_RESOURCE_ID =
+  process.env.NEXT_PUBLIC_WIX_STAFF_HARLEY_RESOURCE_ID;
 const HARLEY_HOURLY_RATE_GBP = 35;
 
 // Define the gallery for Harley
@@ -53,7 +57,7 @@ const gallery = {
 };
 
 const structuredData = {
-  "@context": "http://schema.org",
+  "@context": "https://schema.org",
   "@type": "Person",
   name: "Harley",
   jobTitle: "Apprentice Tattoo Artist",
@@ -73,8 +77,16 @@ const HarleyPage: React.FC = () => {
   const [isLargerThan768] = useMediaQuery("(min-width: 768px)");
 
   const motionProps = isLargerThan768
-    ? { initial: { opacity: 0, y: 50 }, animate: { opacity: 1, y: 0 }, transition: { duration: 0.8 } }
-    : { initial: { opacity: 0 }, animate: { opacity: 1 }, transition: { duration: 0.5 } };
+    ? {
+        initial: { opacity: 0, y: 50 },
+        animate: { opacity: 1, y: 0 },
+        transition: { duration: 0.8 },
+      }
+    : {
+        initial: { opacity: 0 },
+        animate: { opacity: 1 },
+        transition: { duration: 0.5 },
+      };
 
   return (
     <>
@@ -84,21 +96,26 @@ const HarleyPage: React.FC = () => {
           name="description"
           content="Meet Harley, our dedicated apprentice at Hull Tattoo Studio. Specializing in dotwork and pointillism, Harley offers affordable tattoos and is always improving her craft."
         />
-        <meta
-          name="keywords"
-          content="Harley, Apprentice Tattoo Artist, Hull Tattoo Studio, Dotwork Tattoos, Pointillism Tattoos, Professional Tattoo Artist, Affordable Tattoos"
-        />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <meta property="og:title" content="Harley - Apprentice Tattoo Artist | Hull Tattoo Studio" />
+        <meta
+          property="og:title"
+          content="Harley - Apprentice Tattoo Artist | Hull Tattoo Studio"
+        />
         <meta
           property="og:description"
           content="Meet Harley, our dedicated apprentice at Hull Tattoo Studio. Specializing in dotwork and pointillism, Harley offers affordable tattoos and is always improving her craft."
         />
-        <meta property="og:image" content="/images/harley.webp" />
-        <meta property="og:url" content="https://www.hulltattoostudio.com/harley" />
+        <meta
+          property="og:image"
+          content="https://www.hulltattoostudio.com/images/harley.webp"
+        />
+        <meta
+          property="og:url"
+          content="https://www.hulltattoostudio.com/harley"
+        />
         <meta property="og:type" content="profile" />
         <link rel="preload" href="/images/harley.webp" as="image" />
-        <link rel="canonical" href="https://www.hulltattoostudio.com/harley" />
+        <link rel="canonical" href="https://www.hulltattoostudio.com/harley/" />
 
         {/* Structured Data (Person) */}
         <script
@@ -133,6 +150,7 @@ const HarleyPage: React.FC = () => {
         >
           <MotionBox {...motionProps} mb={16} as="section">
             <Text
+              as="h1"
               fontSize={{ base: "3xl", md: "5xl" }}
               fontWeight="bold"
               color="white"
@@ -188,7 +206,11 @@ Harley's journey extends beyond practicing on fake skin; she courageously ventur
           <MotionBox {...motionProps} mb={16} as="section">
             <Tabs variant="soft-rounded" colorScheme="pink">
               <TabList justifyContent="center" mb={8}>
-                <Tab _selected={{ bg: "#ff007f", color: "white" }} fontWeight="bold" fontSize={{ base: "md", md: "lg" }}>
+                <Tab
+                  _selected={{ bg: "#ff007f", color: "white" }}
+                  fontWeight="bold"
+                  fontSize={{ base: "md", md: "lg" }}
+                >
                   Apprentice Tattoos
                 </Tab>
               </TabList>
@@ -207,7 +229,10 @@ Harley's journey extends beyond practicing on fake skin; she courageously ventur
                   </VStack>
 
                   <Grid
-                    templateColumns={{ base: "repeat(2, 1fr)", md: "repeat(3, 1fr)" }}
+                    templateColumns={{
+                      base: "repeat(2, 1fr)",
+                      md: "repeat(3, 1fr)",
+                    }}
                     gap={6}
                   >
                     {gallery.apprenticeTattoos.images.map((img, index) => (
@@ -219,13 +244,18 @@ Harley's journey extends beyond practicing on fake skin; she courageously ventur
                           boxShadow="0 0 5px #ff007f, 0 0 10px #00d4ff"
                           whileHover={{ scale: 1.05 }}
                           transition={{ duration: 0.3 }}
-                          _hover={{ boxShadow: "0 0 15px #ff007f, 0 0 20px #00d4ff" }}
+                          _hover={{
+                            boxShadow: "0 0 15px #ff007f, 0 0 20px #00d4ff",
+                          }}
                         >
                           <Image
                             src={`/images/harley/${img}`}
-                            alt={`Apprentice tattoo ${index + 1}`}
-                            layout="fill"
-                            objectFit="cover"
+                            alt={`Dotwork and pointillism portfolio example ${
+                              index + 1
+                            } by Harley at Hull Tattoo Studio`}
+                            sizes="(max-width:768px) 50vw, 33vw"
+                            fill
+                            style={{ objectFit: "cover" }}
                             loading="lazy"
                           />
                         </MotionBox>
@@ -243,7 +273,12 @@ Harley's journey extends beyond practicing on fake skin; she courageously ventur
               <Alert status="warning" variant="subtle" borderRadius="lg">
                 <AlertIcon />
                 <Box>
-                  <Text fontWeight="bold">Online booking is temporarily unavailable</Text><Text>Please contact the studio to book with this artist.</Text>
+                  <Text fontWeight="bold">
+                    Online booking is temporarily unavailable
+                  </Text>
+                  <Text>
+                    Please contact the studio to book with this artist.
+                  </Text>
                 </Box>
               </Alert>
             ) : (
@@ -262,7 +297,12 @@ Harley's journey extends beyond practicing on fake skin; she courageously ventur
                   hourlyRateGbp={HARLEY_HOURLY_RATE_GBP}
                   maxMonthsAhead={2}
                   debug={false}
-                  onSelectEntry={({ serviceId, staffResourceId, artistName, entry }) => {
+                  onSelectEntry={({
+                    serviceId,
+                    staffResourceId,
+                    artistName,
+                    entry,
+                  }) => {
                     const payload = {
                       serviceId,
                       staffResourceId,
@@ -270,7 +310,10 @@ Harley's journey extends beyond practicing on fake skin; she courageously ventur
                       hourlyRateGbp: HARLEY_HOURLY_RATE_GBP,
                       entry,
                     };
-                    sessionStorage.setItem("HTS_WIX_CHECKOUT_PAYLOAD", JSON.stringify(payload));
+                    sessionStorage.setItem(
+                      "HTS_WIX_CHECKOUT_PAYLOAD",
+                      JSON.stringify(payload)
+                    );
                     router.push("/checkout");
                   }}
                 />
