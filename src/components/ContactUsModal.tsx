@@ -54,6 +54,7 @@ async function getWixUploadUrls(files: File[]): Promise<UploadInfo[]> {
       files: files.map((f) => ({
         fileName: f.name,
         fileType: f.type || "application/octet-stream",
+        fileSize: f.size,
       })),
     }),
   });
@@ -141,6 +142,11 @@ const ContactUsModal: React.FC<ContactUsModalProps> = ({ buttonProps }) => {
     }
 
     for (const f of newFiles) {
+      if (!["image/jpeg", "image/png", "image/webp", "image/heic", "image/heif"].includes(f.type)) {
+        setErrorMessage("Please choose JPG, PNG, WebP or HEIC images.");
+        e.target.value = "";
+        return;
+      }
       if (f.size > MAX_FILE_SIZE_BYTES) {
         setErrorMessage(`"${f.name}" exceeds ${MAX_FILE_SIZE_MB} MB limit.`);
         e.target.value = "";
@@ -181,7 +187,7 @@ const ContactUsModal: React.FC<ContactUsModalProps> = ({ buttonProps }) => {
 
       setUploadedFiles((prev) => [...prev, ...newlyUploaded]);
     } catch (err: any) {
-      console.error("Upload failed:", err);
+      
       setErrorMessage(err?.message || "Upload failed");
 
       const names = new Set(newFiles.map((f) => f.name));
@@ -264,7 +270,7 @@ const ContactUsModal: React.FC<ContactUsModalProps> = ({ buttonProps }) => {
 }
 
     } catch (err: any) {
-      console.error("Submit failed:", err);
+      
       setErrorMessage(err?.message || "Network error – please try again.");
     } finally {
       setIsSubmitting(false);
@@ -277,7 +283,7 @@ const ContactUsModal: React.FC<ContactUsModalProps> = ({ buttonProps }) => {
         Contact Us
       </Button>
 
-      <Modal isOpen={isOpen} onClose={handleClose} isCentered size="xl">
+      <Modal isOpen={isOpen} onClose={handleClose} isCentered size="xl" scrollBehavior="inside">
         <ModalOverlay />
         <ModalContent bg="rgba(0,0,0,0.85)" color="white">
           <ModalHeader textAlign="center">Get in Touch</ModalHeader>
@@ -298,17 +304,17 @@ const ContactUsModal: React.FC<ContactUsModalProps> = ({ buttonProps }) => {
 
                 <FormControl mb={4} isRequired>
                   <FormLabel>First Name</FormLabel>
-                  <Input value={firstName} onChange={(e) => setFirstName(e.target.value)} bg="whiteAlpha.900" color="black" />
+                  <Input value={firstName} maxLength={100} onChange={(e) => setFirstName(e.target.value)} bg="whiteAlpha.900" color="black" />
                 </FormControl>
 
                 <FormControl mb={4} isRequired>
                   <FormLabel>Last Name</FormLabel>
-                  <Input value={lastName} onChange={(e) => setLastName(e.target.value)} bg="whiteAlpha.900" color="black" />
+                  <Input value={lastName} maxLength={100} onChange={(e) => setLastName(e.target.value)} bg="whiteAlpha.900" color="black" />
                 </FormControl>
 
                 <FormControl mb={4} isRequired>
                   <FormLabel>Email</FormLabel>
-                  <Input type="email" value={email} onChange={(e) => setEmail(e.target.value)} bg="whiteAlpha.900" color="black" />
+                  <Input type="email" value={email} maxLength={254} onChange={(e) => setEmail(e.target.value)} bg="whiteAlpha.900" color="black" />
                 </FormControl>
 
                 <FormControl mb={4}>
@@ -318,7 +324,7 @@ const ContactUsModal: React.FC<ContactUsModalProps> = ({ buttonProps }) => {
 
                 <FormControl mb={4} isRequired>
                   <FormLabel>Your Message</FormLabel>
-                  <Textarea value={message} onChange={(e) => setMessage(e.target.value)} bg="whiteAlpha.900" color="black" minH="120px" />
+                  <Textarea value={message} onChange={(e) => setMessage(e.target.value)} bg="whiteAlpha.900" color="black" minH="120px" maxLength={10000} />
                 </FormControl>
 
                 <FormControl mb={4}>

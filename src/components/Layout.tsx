@@ -9,7 +9,7 @@ import {
   FaInstagram,
   FaHome,
   FaFirstAid,
-  FaStar,
+
   FaNewspaper,
   FaYoutube,
   FaTiktok,
@@ -85,6 +85,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         />
       </Head>
 
+      <a className="skip-link" href="#main-content">Skip to content</a>
       {/* Header with Logo */}
       <header className="header">
         <div className="logo-container">
@@ -147,10 +148,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             <a className="navbar-link">Aftercare</a>
           </Link>
 
-          <Link href="/loyalty" passHref legacyBehavior>
-            <a className="navbar-link">Loyalty</a>
-          </Link>
-
+          <Link href="/book" passHref legacyBehavior><a className="navbar-link" aria-label="Book an appointment">Book</a></Link>
           <Link href="/blog" passHref legacyBehavior>
             <a className="navbar-link">Blog</a>
           </Link>
@@ -207,7 +205,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       </nav>
 
       {/* Main Content */}
-      <Box as="main">{children}</Box>
+      <Box id="main-content">{children}</Box>
 
       {/* Footer */}
       <footer className="footer">
@@ -249,6 +247,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         <p className="footer-text">
           © {currentYear} Hull Tattoo Studio. All rights reserved.
           <br />255 Hedon Road, Hull, HU9 1NQ.
+          <br /><Link href="/privacy/">Privacy</Link> · <Link href="/terms/">Terms</Link> · <Link href="/#faq-section">FAQ</Link>
         </p>
       </footer>
 
@@ -263,12 +262,6 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         <Link href="/aftercare" passHref legacyBehavior>
           <a className="navbar-icon" aria-label="Aftercare">
             <FaFirstAid />
-          </a>
-        </Link>
-
-        <Link href="/loyalty" passHref legacyBehavior>
-          <a className="navbar-icon" aria-label="Loyalty">
-            <FaStar />
           </a>
         </Link>
 

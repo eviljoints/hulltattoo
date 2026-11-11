@@ -1,9 +1,5 @@
 /* ./src/styles/globals.css */
 
-/* --- Vendor styles (unchanged) --- */
-@import 'react-responsive-carousel/lib/styles/carousel.min.css';
-@import 'react-datepicker/dist/react-datepicker.css';
-
 /* --- Fonts (kept paths; tolerant to either /public or /fonts) --- */
 @font-face{
   font-family:'Ryzes';

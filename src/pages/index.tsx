@@ -1,3 +1,4 @@
+import { artists as studioArtists } from "~/lib/artists";
 // ./src/pages/index.tsx
 
 import React from "react";
@@ -340,22 +341,6 @@ const HomePage: React.FC<HomePageProps> = ({ artists, error }) => {
   );
 };
 
-export const getStaticProps = async () => {
-  try {
-    const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
-    const res = await fetch(`${baseUrl}/api/artists`, { headers: { "cache-control": "no-cache" } });
-    const data = await res.json();
-    return {
-      props: { artists: data?.artists ?? [] },
-      revalidate: 60,
-    };
-  } catch (err) {
-    console.error(err);
-    return {
-      props: { artists: [], error: "Failed to load artist data." },
-      revalidate: 600,
-    };
-  }
-};
+export const getStaticProps = async () => ({ props: { artists: studioArtists } });
 
 export default HomePage;
