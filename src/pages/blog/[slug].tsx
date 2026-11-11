@@ -110,7 +110,9 @@ export default function BlogPost({
         />
       </Head>
       <Box
-        className="blog-page"
+        className={`blog-page${
+          post.slug === "TattooAftercare" ? " aftercare-content" : ""
+        }`}
         as="main"
         maxW="1040px"
         mx="auto"

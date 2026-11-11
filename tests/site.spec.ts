@@ -229,13 +229,11 @@ test("contact attachment and enquiry keep the Wix contracts using local mocks", 
     .getByRole("textbox", { name: "Email", exact: true })
     .fill("test@example.test");
   await page.getByLabel("Your Message").fill("Mock enquiry only");
-  await page
-    .getByLabel(/Attach Images/)
-    .setInputFiles({
-      name: "reference.png",
-      mimeType: "image/png",
-      buffer: Buffer.from("mock-image"),
-    });
+  await page.getByLabel(/Attach Images/).setInputFiles({
+    name: "reference.png",
+    mimeType: "image/png",
+    buffer: Buffer.from("mock-image"),
+  });
   await page.getByRole("button", { name: "Send Message", exact: true }).click();
   await expect(
     page.getByText(/Thank you for sending us a message/)
@@ -369,4 +367,49 @@ test("checkout errors allow retry without reporting success", async ({
     page.getByRole("button", { name: "Continue to payment" })
   ).toBeEnabled();
   expect(page.url()).toContain("/checkout/");
+});
+
+test("aftercare stays in house with centred text and mobile layouts", async ({
+  page,
+}, info) => {
+  test.setTimeout(90_000);
+  await mockWix(page);
+  const widths = info.project.name === "mobile" ? [320, 390, 768] : [1440];
+  for (const width of widths) {
+    await page.setViewportSize({ width, height: 900 });
+    for (const path of ["/aftercare/", "/blog/TattooAftercare/"]) {
+      await page.goto(path);
+      const main = page.locator("main.aftercare-content");
+      await expect(main).toBeVisible();
+      await expect(main.locator(".article-body")).toHaveCSS(
+        "text-align",
+        "center"
+      );
+      await expect(main.locator(".article-body h2").first()).toHaveCSS(
+        "text-align",
+        "center"
+      );
+      await expect(main.locator('a[href*="torbay.gov.uk"]')).toHaveCount(0);
+      await expect(main.locator('.article-body a[href^="http"]')).toHaveCount(
+        0
+      );
+      expect(
+        await page.evaluate(
+          () => document.documentElement.scrollWidth <= innerWidth
+        )
+      ).toBe(true);
+      const overflowing = await main
+        .locator(".article-body p, .article-body h2, h1")
+        .evaluateAll((nodes) =>
+          nodes.some((node) => node.scrollWidth > node.clientWidth + 1)
+        );
+      expect(overflowing).toBe(false);
+      await page.screenshot({
+        path: info.outputPath(
+          `aftercare-${width}-${path.includes("blog") ? "article" : "page"}.png`
+        ),
+        fullPage: true,
+      });
+    }
+  }
 });

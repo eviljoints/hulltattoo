@@ -12,7 +12,14 @@ export default function Aftercare() {
         path="/aftercare/"
         image="/images/blog/Aftercare.webp"
       />
-      <Box as="main" maxW="900px" mx="auto" px={{ base: 4, md: 8 }} py={10}>
+      <Box
+        className="aftercare-content"
+        as="main"
+        maxW="900px"
+        mx="auto"
+        px={{ base: 4, md: 8 }}
+        py={10}
+      >
         <Box className="glass-card" p={{ base: 5, md: 10 }}>
           <Heading as="h1" fontSize={{ base: "3xl", md: "5xl" }} mb={8}>
             Tattoo aftercare
@@ -55,11 +62,7 @@ export default function Aftercare() {
               do not stop prescribed medication on the basis of tattoo advice.
             </p>
             <p>
-              Read{" "}
-              <a href="https://www.torbay.gov.uk/business/licensing/skin-piercing-acupuncture-and-tattooing/tattoo-aftercare/">
-                Torbay Council’s tattoo aftercare guidance
-              </a>{" "}
-              and our{" "}
+              Read our{" "}
               <NextLink href="/blog/TattooAftercare/">
                 aftercare questions article
               </NextLink>

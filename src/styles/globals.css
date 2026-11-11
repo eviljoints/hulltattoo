@@ -827,3 +827,30 @@ main nav a {
 .article-toc a {
   font-weight: normal;
 }
+
+/* Centre studio aftercare guidance without changing other article layouts. */
+.aftercare-content,
+.aftercare-content .article-body,
+.aftercare-content .article-toc,
+.aftercare-content aside,
+.aftercare-content [aria-labelledby="related-heading"] .glass-card {
+  text-align: center;
+}
+.aftercare-content h1 {
+  font-size: clamp(2rem, 7vw, 3rem);
+  overflow-wrap: anywhere;
+}
+.aftercare-content .article-body {
+  max-width: 62ch;
+  line-height: 1.85;
+}
+.aftercare-content .article-body a {
+  text-transform: none;
+  letter-spacing: normal;
+  text-shadow: none;
+  animation: none;
+}
+.aftercare-content .article-toc ul {
+  list-style: none;
+  padding: 0;
+}
