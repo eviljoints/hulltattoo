@@ -1,6 +1,8 @@
 // src/components/WixArtistBookingWidget.tsx
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
+  Alert,
+  AlertIcon,
   Badge,
   Box,
   Divider,
@@ -136,12 +138,15 @@ export const WixArtistBookingWidget: React.FC<WixArtistBookingWidgetProps> = ({
   staffResourceId,
   title,
   maxMonthsAhead = 2,
-  debug = true,
+  debug = false,
   hourlyRateGbp,
   onSelectEntry,
 }) => {
   const toast = useToast();
 
+  const [serviceRetry, setServiceRetry] = useState(0);
+  const [serviceError, setServiceError] = useState(false);
+  const [availabilityError, setAvailabilityError] = useState(false);
   const [allServices, setAllServices] = useState<WixService[]>([]);
   const [serviceId, setServiceId] = useState<string>("");
   const [loadingServices, setLoadingServices] = useState(true);
@@ -166,6 +171,7 @@ export const WixArtistBookingWidget: React.FC<WixArtistBookingWidgetProps> = ({
     (async () => {
       try {
         setLoadingServices(true);
+        setServiceError(false);
         const wix = getWixClient();
         const res = await wix.services.queryServices().find();
         const raw = (res?.items || []) as WixServiceRaw[];
@@ -177,6 +183,7 @@ export const WixArtistBookingWidget: React.FC<WixArtistBookingWidgetProps> = ({
 
         setAllServices(normalized);
       } catch (e: any) {
+        setServiceError(true);
         toast({
           title: "Could not load services",
           description: e?.message || "Wix services query failed",
@@ -187,10 +194,10 @@ export const WixArtistBookingWidget: React.FC<WixArtistBookingWidgetProps> = ({
       }
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [serviceRetry]);
 
   const servicesForArtist = useMemo(() => {
-    if (!staffResourceId) return allServices;
+    if (!staffResourceId) return [];
     return allServices.filter((s) => (s.staffMemberIds || []).includes(staffResourceId));
   }, [allServices, staffResourceId]);
 
@@ -240,7 +247,9 @@ export const WixArtistBookingWidget: React.FC<WixArtistBookingWidgetProps> = ({
   }, [currentMonth, days]);
 
   async function loadMonthAvailability() {
-    if (!serviceId) {
+    const mySeq = ++reqSeq.current;
+    if (!serviceId || !staffResourceId) {
+      setLoadingAvail(false);
       setDays({});
       setSelectedDay("");
       return;
@@ -254,7 +263,7 @@ export const WixArtistBookingWidget: React.FC<WixArtistBookingWidgetProps> = ({
       return;
     }
 
-    const mySeq = ++reqSeq.current;
+    setAvailabilityError(false);
     setLoadingAvail(true);
     setDays({});
     setSelectedDay("");
@@ -303,7 +312,7 @@ export const WixArtistBookingWidget: React.FC<WixArtistBookingWidgetProps> = ({
         if (!startIso || !endIso) continue;
 
         const dayKey = ymdInTz(startIso, LONDON_TZ);
-        if (dayKey < todayLondon) continue;
+        if (dayKey < todayLondon || new Date(startIso).getTime() <= Date.now()) continue;
         if (dayKey > maxLondon) continue;
 
         if (!nextDays[dayKey]) nextDays[dayKey] = [];
@@ -326,6 +335,7 @@ export const WixArtistBookingWidget: React.FC<WixArtistBookingWidgetProps> = ({
       if (debug) console.error("[WixAvailability] error:", e);
       if (mySeq !== reqSeq.current) return;
 
+      setAvailabilityError(true);
       toast({
         title: "Failed to load availability",
         description: e?.message || "Availability query failed",
@@ -350,7 +360,8 @@ export const WixArtistBookingWidget: React.FC<WixArtistBookingWidgetProps> = ({
 
   return (
     <Box
-      p={4}
+      p={{ base: 2, md: 4 }}
+      minW={0}
       border="1px solid rgba(255,0,127,0.35)"
       borderRadius="lg"
       boxShadow="0 0 20px rgba(255,0,127,0.35), 0 0 28px rgba(0,212,255,0.25)"
@@ -366,11 +377,15 @@ export const WixArtistBookingWidget: React.FC<WixArtistBookingWidgetProps> = ({
 
       {/* Service */}
       <Box mb={4}>
-        <Text mb={1} fontWeight="semibold">
+        <Text as="label" htmlFor={`service-${staffResourceId}`} display="block" mb={1} fontWeight="semibold">
           Service
         </Text>
 
-        {loadingServices ? (
+        {!staffResourceId ? (
+          <Alert status="warning"><AlertIcon />Online booking is temporarily unavailable for this artist. Please contact the studio.</Alert>
+        ) : serviceError ? (
+          <Alert status="error"><AlertIcon /><Box>Services could not be loaded. <Button onClick={() => setServiceRetry(n => n + 1)}>Try again</Button></Box></Alert>
+        ) : loadingServices ? (
           <HStack>
             <Spinner size="sm" />
             <Text>Loading services…</Text>
@@ -382,7 +397,7 @@ export const WixArtistBookingWidget: React.FC<WixArtistBookingWidgetProps> = ({
         ) : (
           <>
             <Select
-              placeholder="Choose a service"
+              id={`service-${staffResourceId}`} placeholder="Choose a service"
               value={serviceId}
               onChange={(e) => setServiceId(e.target.value)}
               bg="black"
@@ -420,7 +435,7 @@ export const WixArtistBookingWidget: React.FC<WixArtistBookingWidgetProps> = ({
       </Box>
 
       {/* Month nav */}
-      <HStack justify="space-between" mb={4}>
+      <HStack justify="space-between" mb={4} flexWrap="wrap" spacing={2}>
         <HStack>
           <IconButton
             aria-label="Previous month"
@@ -446,8 +461,8 @@ export const WixArtistBookingWidget: React.FC<WixArtistBookingWidgetProps> = ({
       </HStack>
 
       {/* Calendar */}
-      <Box border="1px solid rgba(255,255,255,0.12)" borderRadius="md" p={3}>
-        <SimpleGrid columns={7} spacing={2} mb={2}>
+      <Box border="1px solid rgba(255,255,255,0.12)" borderRadius="md" p={{ base: 1, md: 3 }}>
+        <SimpleGrid columns={7} spacing={{ base: 0.5, md: 2 }} mb={2}>
           {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((d) => (
             <Text key={d} textAlign="center" opacity={0.8} fontSize="sm">
               {d}
@@ -455,7 +470,7 @@ export const WixArtistBookingWidget: React.FC<WixArtistBookingWidgetProps> = ({
           ))}
         </SimpleGrid>
 
-        <SimpleGrid columns={7} spacing={2}>
+        <SimpleGrid columns={7} spacing={{ base: 0.5, md: 2 }}>
           {calendarDays.map((cell) => {
             const isSelected = selectedDay === cell.key;
             const isPast = cell.key < todayYmdLondon();
@@ -468,12 +483,16 @@ export const WixArtistBookingWidget: React.FC<WixArtistBookingWidgetProps> = ({
             return (
               <Button
                 key={cell.key}
+                minW={0}
+                px={0}
+                aria-label={`${cell.key}, ${cell.freeCount} available appointments`}
+                aria-pressed={isSelected}
                 size="sm"
                 variant={isSelected ? "solid" : hasSlots ? "outline" : "ghost"}
                 colorScheme={scheme}
                 onClick={() => !disabled && setSelectedDay(cell.key)}
                 isDisabled={disabled}
-                height="40px"
+                height="44px"
                 title={
                   !serviceId
                     ? "Choose a service first"
@@ -490,10 +509,11 @@ export const WixArtistBookingWidget: React.FC<WixArtistBookingWidgetProps> = ({
           })}
         </SimpleGrid>
 
+        {availabilityError && serviceId ? <Alert status="error" mt={3}><AlertIcon />Availability could not be loaded. Please use Refresh to try again.</Alert> : null}
         {loadingAvail ? (
           <HStack mt={3}>
             <Spinner size="sm" />
-            <Text opacity={0.85}>Loading availability…</Text>
+            <Text opacity={0.85} role="status">Loading availability…</Text>
           </HStack>
         ) : null}
 
@@ -501,7 +521,7 @@ export const WixArtistBookingWidget: React.FC<WixArtistBookingWidgetProps> = ({
           <Text mt={3} opacity={0.8}>
             Choose a service to see available dates.
           </Text>
-        ) : !loadingAvail && Object.keys(days).length === 0 ? (
+        ) : !loadingAvail && !availabilityError && Object.keys(days).length === 0 ? (
           <Text mt={3} opacity={0.8}>
             No availability found for this month.
           </Text>
@@ -522,7 +542,7 @@ export const WixArtistBookingWidget: React.FC<WixArtistBookingWidgetProps> = ({
         ) : selectedEntries.length === 0 ? (
           <Text>No available slots for this day.</Text>
         ) : (
-          <SimpleGrid columns={{ base: 2, md: 4, lg: 6 }} gap={3}>
+          <SimpleGrid columns={{ base: 2, md: 4, lg: 6 }} gap={{ base: 1, md: 3 }}>
             {selectedEntries.map((entry) => {
               const start = entry?.slot?.startDate;
               return (

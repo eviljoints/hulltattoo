@@ -1,5 +1,5 @@
 // src/pages/book.tsx
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useMemo } from "react";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import dynamic from "next/dynamic";
@@ -42,46 +42,16 @@ function asString(v: unknown): string | undefined {
 export default function BookPage() {
   const router = useRouter();
 
-  const [artistKey, setArtistKey] = useState<ArtistKey>("jen");
-  const returnFlag = useMemo(() => asString(router.query.return) === "1", [router.query.return]);
-
-  useEffect(() => {
-    if (!router.isReady) return;
-    const qArtist = asString(router.query.artist)?.toLowerCase();
-    const validArtist = (ARTISTS.find((a) => a.key === qArtist) ? qArtist : undefined) as
-      | ArtistKey
-      | undefined;
-    setArtistKey(validArtist || "jen");
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [router.isReady]);
-
-  const selectedArtist = useMemo(
-    () => ARTISTS.find((a) => a.key === artistKey) || ARTISTS[0],
-    [artistKey]
-  );
-
-  const missingEnv = useMemo(() => {
-    return ARTISTS.filter((a) => !a.staffResourceId).map((a) => a.key);
-  }, []);
-
-  useEffect(() => {
-    if (!router.isReady) return;
-    const currentArtist = asString(router.query.artist)?.toLowerCase();
-    if (currentArtist === artistKey) return;
-
-    router.replace(
-      { pathname: "/book", query: { ...router.query, artist: artistKey } },
-      undefined,
-      { shallow: true }
-    );
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [artistKey, router.isReady]);
+  const artistKey = asString(router.query.artist)?.toLowerCase() || 'jen';
+  const returnFlag = asString(router.query.return) === '1';
+  const selectedArtist = ARTISTS.find(a => a.key === artistKey) || ARTISTS[0];
 
   return (
     <>
       <Head>
         <title>Book | Hull Tattoo Studio</title>
-        <meta name="description" content="Book your tattoo appointment." />
+        <meta name="description" content="Choose Mike, Harley or Jen and view tattoo appointments at Hull Tattoo Studio, 255 Hedon Road. Continue securely to Wix checkout." />
+        <link rel="canonical" href="https://www.hulltattoostudio.com/book/" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
 
@@ -104,7 +74,7 @@ export default function BookPage() {
           border="1px solid rgba(255,0,127,0.35)"
           boxShadow="0 0 0 1px rgba(0,212,255,0.25) inset, 0 0 22px rgba(255,0,127,0.35), 0 0 28px rgba(0,212,255,0.25)"
           borderRadius="xl"
-          p={{ base: 6, md: 8 }}
+          p={{ base: 3, md: 8 }}
           position="relative"
           zIndex="1"
         >
@@ -121,36 +91,24 @@ export default function BookPage() {
 
           <VStack spacing={4} mb={8}>
             {returnFlag ? (
-              <Alert status="success" variant="subtle" borderRadius="lg">
+              <Alert status="info" variant="subtle" borderRadius="lg">
                 <AlertIcon />
                 <Box>
                   <AlertTitle>You&apos;re back from checkout</AlertTitle>
                   <AlertDescription>
-                    If you completed payment, your booking should now be confirmed in Wix Bookings.
+                    Returning here does not confirm payment or reserve an appointment. Check your Wix confirmation email, or contact the studio if you are unsure.
                   </AlertDescription>
                 </Box>
               </Alert>
             ) : null}
 
-            {missingEnv.length > 0 ? (
-              <Alert status="warning" variant="subtle" borderRadius="lg">
-                <AlertIcon />
-                <Box>
-                  <AlertTitle>Missing staff resource IDs</AlertTitle>
-                  <AlertDescription>
-                    These env vars are missing, so availability filtering may not work:{" "}
-                    <b>{missingEnv.join(", ")}</b>
-                  </AlertDescription>
-                </Box>
-              </Alert>
-            ) : null}
           </VStack>
 
           <HStack justify="center" mb={8} spacing={3} flexWrap="wrap">
-            <Text fontWeight="semibold">Artist:</Text>
+            <Text as="label" htmlFor="booking-artist" fontWeight="semibold">Artist:</Text>
             <Select
-              value={artistKey}
-              onChange={(e) => setArtistKey(e.target.value as ArtistKey)}
+              id="booking-artist" value={selectedArtist.key}
+              onChange={(e) => router.replace({ pathname: "/book", query: { artist: e.target.value } }, undefined, { shallow: true })}
               maxW="260px"
               bg="black"
               color="white"
@@ -164,12 +122,13 @@ export default function BookPage() {
             </Select>
           </HStack>
 
-          <WixArtistBookingWidget
+          {router.isReady && <WixArtistBookingWidget
+            key={selectedArtist.key}
             artistName={selectedArtist.name}
             staffResourceId={selectedArtist.staffResourceId}
             hourlyRateGbp={selectedArtist.hourlyRateGbp}
             maxMonthsAhead={2}
-            debug={true}
+            debug={false}
             onSelectEntry={({ serviceId, staffResourceId, artistName, entry }) => {
               const payload = {
   serviceId,
@@ -179,17 +138,10 @@ export default function BookPage() {
   entry,
 };
 
-              console.log("[BookPage] Selected slot -> checkout payload:", {
-                artistName,
-                staffResourceId,
-                serviceId,
-                slotStart: entry?.slot?.startDate,
-              });
-
               sessionStorage.setItem("HTS_WIX_CHECKOUT_PAYLOAD", JSON.stringify(payload));
               router.push("/checkout");
             }}
-          />
+          />}
         </Box>
       </Box>
     </>

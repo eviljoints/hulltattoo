@@ -1,56 +1,17 @@
-// src/pages/checkout/return.tsx
-import React, { useEffect } from "react";
-import Head from "next/head";
-import { Box, Button, Text, VStack } from "@chakra-ui/react";
-
+import React, { useEffect } from 'react';
+import Head from 'next/head';
+import NextLink from 'next/link';
+import { Box, Button, Text, VStack } from '@chakra-ui/react';
 export default function CheckoutReturnPage() {
-  useEffect(() => {
-    try {
-      // If opened as a popup, refresh opener
-      if (window.opener && !window.opener.closed) {
-        window.opener.location.href = `${window.location.origin}/book?return=1`;
-      }
-      // Attempt to close popup
-      window.close();
-    } catch {
-      // ignore
-    }
-  }, []);
-
-  return (
-    <>
-      <Head>
-        <title>Returning… | Hull Tattoo Studio</title>
-        <meta name="robots" content="noindex,nofollow" />
-      </Head>
-
-      <Box minH="100vh" display="flex" alignItems="center" justifyContent="center" bg="black" color="white">
-        <VStack spacing={4} p={6} border="1px solid rgba(255,255,255,0.12)" borderRadius="xl">
-          <Text fontSize="xl" fontWeight="bold">
-            Returning to Hull Tattoo Studio…
-          </Text>
-          <Text opacity={0.85} textAlign="center">
-            If this window doesn&apos;t close automatically, click below.
-          </Text>
-          <Button
-            colorScheme="pink"
-            onClick={() => {
-              try {
-                if (window.opener && !window.opener.closed) {
-                  window.opener.location.href = `${window.location.origin}/book?return=1`;
-                } else {
-                  window.location.href = "/book?return=1";
-                }
-                window.close();
-              } catch {
-                window.location.href = "/book?return=1";
-              }
-            }}
-          >
-            Close
-          </Button>
-        </VStack>
-      </Box>
-    </>
-  );
+  useEffect(() => { try { sessionStorage.removeItem('HTS_WIX_CHECKOUT_PAYLOAD'); } catch {} }, []);
+  return <><Head><title>Back from checkout | Hull Tattoo Studio</title><meta name="robots" content="noindex,nofollow" /></Head>
+    <Box minH="65vh" display="flex" alignItems="center" justifyContent="center" px={4}>
+      <VStack spacing={5} p={{base:5,md:8}} maxW="650px" className="glass-card" textAlign="center">
+        <Text as="h1" fontSize={{base:'2xl',md:'4xl'}}>Back from Wix checkout</Text>
+        <Text>Returning here does not confirm payment or reserve an appointment. Please check your Wix booking confirmation email.</Text>
+        <Text>If you are unsure whether payment completed, contact the studio before trying again to avoid a duplicate booking.</Text>
+        <Button as="a" href="tel:+447940080790" colorScheme="pink">Call the studio</Button>
+        <NextLink href="/book/" passHref><Button as="a" variant="outline">Back to appointments</Button></NextLink>
+      </VStack>
+    </Box></>;
 }

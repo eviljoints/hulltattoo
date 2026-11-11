@@ -60,7 +60,7 @@ const TextCard = dynamic(() => import("../components/TextCard"), { ssr: true });
 /** ---------------------------
  *  Constants / Helpers
  * --------------------------- */
-const LONDON_TZ = "Europe/London";
+
 
 // ✅ Mike-only booking constants
 const MIKE_STAFF_RESOURCE_ID = process.env.NEXT_PUBLIC_WIX_STAFF_MIKE_RESOURCE_ID;
@@ -155,10 +155,9 @@ const MikePage: React.FC = () => {
       { threshold: 0.5 }
     );
 
-    if (bookingRef.current) observer.observe(bookingRef.current);
-    return () => {
-      if (bookingRef.current) observer.unobserve(bookingRef.current);
-    };
+    const bookingElement = bookingRef.current;
+    if (bookingElement) observer.observe(bookingElement);
+    return () => observer.disconnect();
   }, [disclaimerAccepted]);
 
   const PAGE_URL = "https://www.hulltattoostudio.com/mike";
@@ -314,10 +313,7 @@ const MikePage: React.FC = () => {
               <Alert status="warning" variant="subtle" borderRadius="lg">
                 <AlertIcon />
                 <Box>
-                  <Text fontWeight="bold">Missing Wix staff resource ID</Text>
-                  <Text opacity={0.9}>
-                    Set <b>NEXT_PUBLIC_WIX_STAFF_MIKE_RESOURCE_ID</b> so this page shows Mike’s diary only.
-                  </Text>
+                  <Text fontWeight="bold">Online booking is temporarily unavailable</Text><Text>Please contact the studio to book with this artist.</Text>
                 </Box>
               </Alert>
             ) : disclaimerAccepted ? (
@@ -335,7 +331,7 @@ const MikePage: React.FC = () => {
                   staffResourceId={MIKE_STAFF_RESOURCE_ID}
                   hourlyRateGbp={MIKE_HOURLY_RATE_GBP}
                   maxMonthsAhead={2}
-                  debug={true}
+                  debug={false}
                   onSelectEntry={({ serviceId, staffResourceId, artistName, entry }) => {
                     const payload = {
                       serviceId,

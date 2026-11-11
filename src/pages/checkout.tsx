@@ -1,5 +1,5 @@
 // src/pages/checkout.tsx
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import {
@@ -47,14 +47,17 @@ export default function CheckoutPage() {
 
   const [paying, setPaying] = useState(false);
 
-  const payload: CheckoutPayload | null = useMemo(() => {
-    if (typeof window === "undefined") return null;
+  const [payload, setPayload] = useState<CheckoutPayload | null>(null);
+  const [ready, setReady] = useState(false);
+  useEffect(() => {
     try {
       const raw = sessionStorage.getItem("HTS_WIX_CHECKOUT_PAYLOAD");
-      return raw ? (JSON.parse(raw) as CheckoutPayload) : null;
-    } catch {
-      return null;
-    }
+      const saved = raw ? JSON.parse(raw) : null;
+      const start = Date.parse(saved?.entry?.slot?.startDate);
+      const end = Date.parse(saved?.entry?.slot?.endDate);
+      if (saved?.serviceId && saved?.staffResourceId && saved?.artistName && Number.isFinite(start) && end > start && start > Date.now()) setPayload(saved);
+    } catch { /* Expired or invalid selections require a fresh slot. */ }
+    setReady(true);
   }, []);
 
   async function startWixCheckoutRedirect() {
@@ -72,9 +75,6 @@ export default function CheckoutPage() {
 
     try {
       const wix = getWixClient();
-
-      console.groupCollapsed("[WixCheckout] createRedirectSession");
-      console.log("payload:", payload);
 
       const redirect = await wix.redirects.createRedirectSession({
   bookingsCheckout: {
@@ -94,11 +94,8 @@ export default function CheckoutPage() {
 } as any);
 
       const url = redirect?.redirectSession?.fullUrl;
-      console.log("redirect response:", redirect);
-      console.log("redirect URL:", url);
-      console.groupEnd();
 
-      if (!url) throw new Error("No checkout URL returned from Wix");
+      if (!url || new URL(url).protocol !== "https:") throw new Error("No secure checkout URL returned from Wix");
 
       // ✅ Most reliable: redirect in same tab
       window.location.assign(url);
@@ -112,16 +109,6 @@ export default function CheckoutPage() {
       setPaying(false);
     }
   }
-
-  // Optional: auto-start if user lands here with a payload
-  useEffect(() => {
-    // If you DON'T want auto redirect, delete this effect.
-    if (payload?.serviceId && payload?.entry) {
-      // comment this out if you want user to click instead
-      // startWixCheckoutRedirect();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   return (
     <>
@@ -168,7 +155,7 @@ export default function CheckoutPage() {
             Checkout
           </Text>
 
-          {!payload ? (
+          {!ready ? <Text role="status">Loading your selection…</Text> : !payload ? (
             <Alert status="warning" variant="subtle" borderRadius="lg">
               <AlertIcon />
               <Box>

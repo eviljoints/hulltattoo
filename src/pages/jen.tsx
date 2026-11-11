@@ -35,7 +35,7 @@ const WixArtistBookingWidget = dynamic(
 // Keep as-is:
 import MotionBox from "../components/MotionBox";
 
-const LONDON_TZ = "Europe/London";
+
 
 // ✅ Jen-only constants
 const JEN_STAFF_RESOURCE_ID = process.env.NEXT_PUBLIC_WIX_STAFF_JEN_RESOURCE_ID;
@@ -276,10 +276,7 @@ const JenPage: React.FC = () => {
               <Alert status="warning" variant="subtle" borderRadius="lg">
                 <AlertIcon />
                 <Box>
-                  <Text fontWeight="bold">Missing Wix staff resource ID</Text>
-                  <Text opacity={0.9}>
-                    Set <b>NEXT_PUBLIC_WIX_STAFF_JEN_RESOURCE_ID</b> so this page shows Jen’s diary only.
-                  </Text>
+                  <Text fontWeight="bold">Online booking is temporarily unavailable</Text><Text>Please contact the studio to book with this artist.</Text>
                 </Box>
               </Alert>
             ) : (
@@ -297,7 +294,7 @@ const JenPage: React.FC = () => {
                   staffResourceId={JEN_STAFF_RESOURCE_ID}
                   hourlyRateGbp={JEN_HOURLY_RATE_GBP}
                   maxMonthsAhead={2}
-                  debug={true}
+                  debug={false}
                   onSelectEntry={({ serviceId, staffResourceId, artistName, entry }) => {
                     const payload = {
                       serviceId,

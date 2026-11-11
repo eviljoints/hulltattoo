@@ -243,10 +243,7 @@ Harley's journey extends beyond practicing on fake skin; she courageously ventur
               <Alert status="warning" variant="subtle" borderRadius="lg">
                 <AlertIcon />
                 <Box>
-                  <Text fontWeight="bold">Missing Wix staff resource ID</Text>
-                  <Text opacity={0.9}>
-                    Set <b>NEXT_PUBLIC_WIX_STAFF_HARLEY_RESOURCE_ID</b> so this page shows Harley’s diary only.
-                  </Text>
+                  <Text fontWeight="bold">Online booking is temporarily unavailable</Text><Text>Please contact the studio to book with this artist.</Text>
                 </Box>
               </Alert>
             ) : (
@@ -264,7 +261,7 @@ Harley's journey extends beyond practicing on fake skin; she courageously ventur
                   staffResourceId={HARLEY_STAFF_RESOURCE_ID}
                   hourlyRateGbp={HARLEY_HOURLY_RATE_GBP}
                   maxMonthsAhead={2}
-                  debug={true}
+                  debug={false}
                   onSelectEntry={({ serviceId, staffResourceId, artistName, entry }) => {
                     const payload = {
                       serviceId,

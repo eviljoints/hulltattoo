@@ -52,7 +52,7 @@ export default function GiftVoucherModal({
           Gift vouchers unavailable
         </Button>
         <Text fontSize="sm" opacity={0.8} mt={2}>
-          Missing <code>NEXT_PUBLIC_WIX_GIFT_CARD_URL</code>
+          Please contact the studio about gift vouchers.
         </Text>
       </Box>
     );
