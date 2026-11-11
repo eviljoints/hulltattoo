@@ -3,6 +3,35 @@ import contact from "../src/pages/api/contact";
 import uploadUrls from "../src/pages/api/wix-upload-urls";
 import { allowContactRequest } from "../src/lib/wixProxy";
 import { publicationDate } from "../src/lib/dates";
+import {
+  earliestBookingDay,
+  meetsBookingNotice,
+} from "../src/lib/bookingPolicy";
+
+test("three calendar days notice uses London dates across midnight, DST and year end", () => {
+  expect(earliestBookingDay(new Date("2026-11-09T12:00:00Z"))).toBe(
+    "2026-11-12"
+  );
+  expect(earliestBookingDay(new Date("2026-11-10T12:00:00Z"))).toBe(
+    "2026-11-13"
+  );
+  const monday = new Date("2026-11-09T23:59:00Z");
+  expect(meetsBookingNotice("2026-11-11T23:59:00Z", monday)).toBe(false);
+  expect(meetsBookingNotice("2026-11-12T00:00:00Z", monday)).toBe(true);
+  expect(earliestBookingDay(new Date("2026-07-06T23:30:00Z"))).toBe(
+    "2026-07-10"
+  );
+  expect(earliestBookingDay(new Date("2026-03-27T23:30:00Z"))).toBe(
+    "2026-03-30"
+  );
+  expect(earliestBookingDay(new Date("2026-10-23T23:30:00Z"))).toBe(
+    "2026-10-27"
+  );
+  expect(earliestBookingDay(new Date("2026-12-30T12:00:00Z"))).toBe(
+    "2027-01-02"
+  );
+  expect(meetsBookingNotice("invalid", monday)).toBe(false);
+});
 
 test("editorial dates preserve day/month meaning and reject invalid dates", () => {
   expect(publicationDate("02.01.2025")).toBe("2025-01-02");

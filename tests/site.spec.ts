@@ -15,7 +15,7 @@ async function mockWix(
     blocked: string[] = [];
   let serviceRequests = 0;
   const day = new Date();
-  day.setUTCDate(day.getUTCDate() + 1);
+  day.setUTCDate(day.getUTCDate() + 4);
   day.setUTCHours(10, 0, 0, 0);
   const entry = {
     slot: {
@@ -453,4 +453,57 @@ test("navigation omits booking and artist menu rows do not overlap", async ({
   await page.screenshot({ path: info.outputPath("artists-menu.png") });
   await jen.click();
   await expect(page).toHaveURL(/\/jen\/$/);
+});
+
+test("three-day notice blocks early Wix slots and stale checkout selections", async ({
+  page,
+}) => {
+  await page.clock.setFixedTime(new Date("2026-11-09T12:00:00Z"));
+  const calls = await mockWix(page);
+  await page.route(
+    (url) => /availability/i.test(url.pathname),
+    async (route) => {
+      const entry = (day: number) => ({
+        slot: {
+          serviceId,
+          startDate: `2026-11-${day}T10:00:00Z`,
+          endDate: `2026-11-${day}T11:00:00Z`,
+        },
+        bookable: true,
+      });
+      await route.fulfill({
+        json: { availabilityEntries: [entry(11), entry(12)] },
+      });
+    }
+  );
+  await page.goto("/book/?artist=mike");
+  await page.getByLabel("Service", { exact: true }).selectOption(serviceId);
+  await expect(
+    page.getByRole("button", {
+      name: "2026-11-11, 0 available appointments",
+      exact: true,
+    })
+  ).toBeDisabled();
+  await expect(
+    page.getByRole("button", {
+      name: "2026-11-12, 1 available appointments",
+      exact: true,
+    })
+  ).toBeEnabled();
+  await page.getByRole("button", { name: "10:00", exact: true }).click();
+  await expect(page).toHaveURL(/\/checkout\/$/);
+  // The visitor leaves checkout open overnight: Thursday is now too early.
+  await page.clock.setFixedTime(new Date("2026-11-10T00:01:00Z"));
+  await page
+    .getByRole("button", { name: "Continue to payment", exact: true })
+    .click();
+  await expect(
+    page.getByText("No booking selected", { exact: true })
+  ).toBeVisible();
+  expect(calls.checkout).toHaveLength(0);
+  expect(
+    await page.evaluate(() =>
+      sessionStorage.getItem("HTS_WIX_CHECKOUT_PAYLOAD")
+    )
+  ).toBeNull();
 });

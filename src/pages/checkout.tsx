@@ -17,6 +17,8 @@ import {
 import styles from "./artists/MikePage.module.css";
 import { getWixClient } from "~/lib/wixClient";
 
+import { meetsBookingNotice } from "~/lib/bookingPolicy";
+
 const LONDON_TZ = "Europe/London";
 
 type CheckoutPayload = {
@@ -60,7 +62,7 @@ export default function CheckoutPage() {
         saved?.artistName &&
         Number.isFinite(start) &&
         end > start &&
-        start > Date.now()
+        meetsBookingNotice(saved.entry.slot.startDate)
       )
         setPayload(saved);
     } catch {
@@ -77,6 +79,18 @@ export default function CheckoutPage() {
         status: "warning",
       });
       router.push("/book");
+      return;
+    }
+
+    if (!meetsBookingNotice(payload.entry?.slot?.startDate)) {
+      sessionStorage.removeItem("HTS_WIX_CHECKOUT_PAYLOAD");
+      setPayload(null);
+      toast({
+        title: "Please choose a later appointment",
+        description:
+          "Online bookings require 3 calendar days’ notice (UK time).",
+        status: "warning",
+      });
       return;
     }
 
@@ -178,7 +192,8 @@ export default function CheckoutPage() {
               <Box>
                 <Text fontWeight="bold">No booking selected</Text>
                 <Text opacity={0.9}>
-                  Please go back and pick an artist, service, and time slot.
+                  Please pick an artist, service, and time slot at least 3
+                  calendar days ahead (UK time).
                 </Text>
                 <Button
                   mt={4}

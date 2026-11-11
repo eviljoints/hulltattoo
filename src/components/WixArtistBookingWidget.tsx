@@ -19,6 +19,8 @@ import {
 import { ChevronLeftIcon, ChevronRightIcon } from "@chakra-ui/icons";
 import { getWixClient } from "../lib/wixClient";
 
+import { earliestBookingDay, meetsBookingNotice } from "~/lib/bookingPolicy";
+
 const LONDON_TZ = "Europe/London";
 
 type WixServiceRaw = {
@@ -75,9 +77,6 @@ function ymdInTz(dateOrIso: Date | string, tz = LONDON_TZ) {
   const m = parts.find((p) => p.type === "month")?.value || "00";
   const day = parts.find((p) => p.type === "day")?.value || "00";
   return `${y}-${m}-${day}`;
-}
-function todayYmdLondon() {
-  return ymdInTz(new Date(), LONDON_TZ);
 }
 
 function toTime(iso?: string) {
@@ -321,7 +320,7 @@ export const WixArtistBookingWidget: React.FC<WixArtistBookingWidgetProps> = ({
         : [];
 
       const nextDays: DayEntries = {};
-      const todayLondon = todayYmdLondon();
+      const earliestLondon = earliestBookingDay();
       const maxLondon = ymdInTz(maxDate, LONDON_TZ);
 
       for (const entry of entries) {
@@ -330,8 +329,7 @@ export const WixArtistBookingWidget: React.FC<WixArtistBookingWidgetProps> = ({
         if (!startIso || !endIso) continue;
 
         const dayKey = ymdInTz(startIso, LONDON_TZ);
-        if (dayKey < todayLondon || new Date(startIso).getTime() <= Date.now())
-          continue;
+        if (dayKey < earliestLondon || !meetsBookingNotice(startIso)) continue;
         if (dayKey > maxLondon) continue;
 
         if (!nextDays[dayKey]) nextDays[dayKey] = [];
@@ -400,6 +398,10 @@ export const WixArtistBookingWidget: React.FC<WixArtistBookingWidgetProps> = ({
         {/* ✅ Only show the hardcoded hourly rate, no Wix explanations */}
         {rateText ? <Badge colorScheme="pink">{rateText}</Badge> : null}
       </HStack>
+
+      <Text mb={4}>
+        Online bookings require 3 calendar days’ notice (UK time).
+      </Text>
 
       {/* Service */}
       <Box mb={4}>
@@ -535,7 +537,7 @@ export const WixArtistBookingWidget: React.FC<WixArtistBookingWidgetProps> = ({
         <SimpleGrid columns={7} spacing={{ base: 0.5, md: 2 }}>
           {calendarDays.map((cell) => {
             const isSelected = selectedDay === cell.key;
-            const isPast = cell.key < todayYmdLondon();
+            const isPast = cell.key < earliestBookingDay();
             const isBeyondMax = cell.key > ymdInTz(maxDate, LONDON_TZ);
             const hasSlots = cell.freeCount > 0;
 
@@ -559,6 +561,8 @@ export const WixArtistBookingWidget: React.FC<WixArtistBookingWidgetProps> = ({
                 title={
                   !serviceId
                     ? "Choose a service first"
+                    : isPast
+                    ? "Online bookings require 3 calendar days’ notice"
                     : isBeyondMax
                     ? `Bookings open up to ${ymdInTz(maxDate, LONDON_TZ)}`
                     : hasSlots
@@ -626,7 +630,7 @@ export const WixArtistBookingWidget: React.FC<WixArtistBookingWidgetProps> = ({
                   variant="outline"
                   colorScheme="green"
                   onClick={() => {
-                    if (!serviceId) return;
+                    if (!serviceId || !meetsBookingNotice(start)) return;
                     onSelectEntry?.({
                       serviceId,
                       staffResourceId,
