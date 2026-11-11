@@ -139,7 +139,7 @@ const JenPage: React.FC = () => {
         color="white"
         w="100%"
         p={8}
-        px={{ base: 4, md: 8 }}
+        px="5%"
         minH="100vh"
         as="main"
         overflowX="hidden"
@@ -273,96 +273,85 @@ const JenPage: React.FC = () => {
               </TabPanels>
             </Tabs>
           </MotionBox>
-
-          {/* ✅ Jen booking block (Wix) */}
-          <Box as="section" mb={16}>
-            {!JEN_STAFF_RESOURCE_ID ? (
-              <Alert status="warning" variant="subtle" borderRadius="lg">
-                <AlertIcon />
-                <Box>
-                  <Text fontWeight="bold">
-                    Online booking is temporarily unavailable
-                  </Text>
-                  <Text>
-                    Please contact the studio to book with this artist.
-                  </Text>
-                </Box>
-              </Alert>
-            ) : (
-              <Box
-                border="1px solid rgba(255,0,127,0.35)"
-                borderRadius="xl"
-                p={{ base: 4, md: 6 }}
-                boxShadow="0 0 0 1px rgba(0,212,255,0.25) inset, 0 0 22px rgba(255,0,127,0.35), 0 0 28px rgba(0,212,255,0.25)"
-                bg="rgba(0,0,0,0.35)"
-                backdropFilter="blur(8px)"
-              >
-                <WixArtistBookingWidget
-                  title="Book with Jen"
-                  artistName="Jen"
-                  staffResourceId={JEN_STAFF_RESOURCE_ID}
-                  hourlyRateGbp={JEN_HOURLY_RATE_GBP}
-                  maxMonthsAhead={2}
-                  debug={false}
-                  onSelectEntry={({
-                    serviceId,
-                    staffResourceId,
-                    artistName,
-                    entry,
-                  }) => {
-                    const payload = {
-                      serviceId,
-                      staffResourceId,
-                      artistName,
-                      hourlyRateGbp: JEN_HOURLY_RATE_GBP,
-                      entry,
-                    };
-                    sessionStorage.setItem(
-                      "HTS_WIX_CHECKOUT_PAYLOAD",
-                      JSON.stringify(payload)
-                    );
-                    router.push("/checkout");
-                  }}
-                />
-              </Box>
-            )}
-          </Box>
-
-          {/* Socials */}
-          <MotionBox {...motionProps} mb={4} as="section">
-            <Text
-              as="h2"
-              fontSize={{ base: "2xl", md: "3xl" }}
-              fontWeight="bold"
-              color="white"
-              textAlign="center"
-              mb={8}
-              textShadow="0 0 8px #ff007f, 0 0 12px #00d4ff"
-            >
-              Connect with Jen
-            </Text>
-            <HStack spacing={6} justify="center">
-              <ChakraLink
-                href="https://www.facebook.com/profile.php?id=61575953590191"
-                isExternal
-                aria-label="Jen's Facebook"
-                _hover={{ transform: "scale(1.1)", color: "#ff007f" }}
-                transition="all 0.3s ease"
-              >
-                <FaFacebook size={40} color="#00d4ff" />
-              </ChakraLink>
-              <ChakraLink
-                href="https://www.instagram.com/theplanetthieftattoo/"
-                isExternal
-                aria-label="Jen's Instagram"
-                _hover={{ transform: "scale(1.1)", color: "#ff007f" }}
-                transition="all 0.3s ease"
-              >
-                <FaInstagram size={40} color="#ff007f" />
-              </ChakraLink>
-            </HStack>
-          </MotionBox>
         </Box>
+
+        {/* ✅ Jen booking block (Wix) */}
+        <Box mt={8} as="section" mb={16}>
+          {!JEN_STAFF_RESOURCE_ID ? (
+            <Alert status="warning" variant="subtle" borderRadius="lg">
+              <AlertIcon />
+              <Box>
+                <Text fontWeight="bold">
+                  Online booking is temporarily unavailable
+                </Text>
+                <Text>Please contact the studio to book with this artist.</Text>
+              </Box>
+            </Alert>
+          ) : (
+            <WixArtistBookingWidget
+              title="Book with Jen"
+              artistName="Jen"
+              staffResourceId={JEN_STAFF_RESOURCE_ID}
+              hourlyRateGbp={JEN_HOURLY_RATE_GBP}
+              maxMonthsAhead={2}
+              debug={false}
+              onSelectEntry={({
+                serviceId,
+                staffResourceId,
+                artistName,
+                entry,
+              }) => {
+                const payload = {
+                  serviceId,
+                  staffResourceId,
+                  artistName,
+                  hourlyRateGbp: JEN_HOURLY_RATE_GBP,
+                  entry,
+                };
+                sessionStorage.setItem(
+                  "HTS_WIX_CHECKOUT_PAYLOAD",
+                  JSON.stringify(payload)
+                );
+                router.push("/checkout");
+              }}
+            />
+          )}
+        </Box>
+
+        {/* Socials */}
+        <MotionBox {...motionProps} mb={4} as="section">
+          <Text
+            as="h2"
+            fontSize={{ base: "2xl", md: "3xl" }}
+            fontWeight="bold"
+            color="white"
+            textAlign="center"
+            mb={8}
+            textShadow="0 0 8px #ff007f, 0 0 12px #00d4ff"
+          >
+            Connect with Jen
+          </Text>
+          <HStack spacing={6} justify="center">
+            <ChakraLink
+              href="https://www.facebook.com/profile.php?id=61575953590191"
+              isExternal
+              aria-label="Jen's Facebook"
+              _hover={{ transform: "scale(1.1)", color: "#ff007f" }}
+              transition="all 0.3s ease"
+            >
+              <FaFacebook size={40} color="#00d4ff" />
+            </ChakraLink>
+            <ChakraLink
+              href="https://www.instagram.com/theplanetthieftattoo/"
+              isExternal
+              aria-label="Jen's Instagram"
+              _hover={{ transform: "scale(1.1)", color: "#ff007f" }}
+              transition="all 0.3s ease"
+            >
+              <FaInstagram size={40} color="#ff007f" />
+            </ChakraLink>
+          </HStack>
+        </MotionBox>
       </Box>
     </>
   );

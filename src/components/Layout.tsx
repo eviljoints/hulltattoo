@@ -13,7 +13,6 @@ import {
   FaYoutube,
   FaTiktok,
   FaUserFriends,
-  FaPaintBrush,
 } from "react-icons/fa";
 
 import {
@@ -136,11 +135,6 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             <a className="navbar-link">Aftercare</a>
           </Link>
 
-          <Link href="/book" passHref legacyBehavior>
-            <a className="navbar-link" aria-label="Book an appointment">
-              Book
-            </a>
-          </Link>
           <Link href="/blog" passHref legacyBehavior>
             <a className="navbar-link">Blog</a>
           </Link>
@@ -260,9 +254,6 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 
       {/* Bottom Navbar for Mobile */}
       <nav className="navbar-bottom" aria-label="Mobile navigation">
-        <Link href="/book/" aria-label="Book an appointment">
-          <FaPaintBrush />
-        </Link>
         <Link href="/" passHref legacyBehavior>
           <a className="navbar-icon" aria-label="Home">
             <FaHome />
@@ -282,7 +273,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         </Link>
 
         {/* Artists Dropdown for Mobile */}
-        <Menu>
+        <Menu placement="top-end" gutter={12}>
           <MenuButton
             as={Button}
             rightIcon={<ChevronDownIcon />}

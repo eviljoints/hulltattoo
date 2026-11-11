@@ -455,7 +455,7 @@ h6 {
   justify-content: space-evenly;
   align-items: center;
 }
-.navbar-bottom a {
+.navbar-bottom > a {
   color: var(--neon-blue);
   font-size: 22px;
   line-height: 1;
@@ -466,8 +466,8 @@ h6 {
   margin: 0 6px;
   transition: color 0.2s ease, text-shadow 0.2s ease, transform 0.15s ease;
 }
-.navbar-bottom a:hover,
-.navbar-bottom a:focus-visible {
+.navbar-bottom > a:hover,
+.navbar-bottom > a:focus-visible {
   color: var(--neon-pink);
   transform: translateY(-1px);
   outline: none;
@@ -705,7 +705,7 @@ h1,
     padding-bottom: env(safe-area-inset-bottom);
     height: calc(64px + env(safe-area-inset-bottom));
   }
-  .navbar-bottom a {
+  .navbar-bottom > a {
     width: 44px;
     height: 44px;
     margin: 0 2px;
@@ -853,4 +853,15 @@ main nav a {
 .aftercare-content .article-toc ul {
   list-style: none;
   padding: 0;
+}
+
+/* Artist menu links are full-width rows, separate from navigation icons. */
+.navbar-bottom .chakra-menu__menuitem {
+  display: flex;
+  width: 100%;
+  min-height: 44px;
+  margin: 0;
+  padding: 10px 16px;
+  font-size: 1rem;
+  line-height: 1.5;
 }

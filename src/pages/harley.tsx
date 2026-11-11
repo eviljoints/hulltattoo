@@ -130,7 +130,7 @@ const HarleyPage: React.FC = () => {
         color="white"
         w="100%"
         p={8}
-        px={{ base: 4, md: 8 }}
+        px="5%"
         minH="100vh"
         as="main"
         overflowX="hidden"
@@ -266,95 +266,84 @@ Harley's journey extends beyond practicing on fake skin; she courageously ventur
               </TabPanels>
             </Tabs>
           </MotionBox>
-
-          {/* ✅ Harley Booking Block (Wix) */}
-          <MotionBox {...motionProps} mb={16} as="section">
-            {!HARLEY_STAFF_RESOURCE_ID ? (
-              <Alert status="warning" variant="subtle" borderRadius="lg">
-                <AlertIcon />
-                <Box>
-                  <Text fontWeight="bold">
-                    Online booking is temporarily unavailable
-                  </Text>
-                  <Text>
-                    Please contact the studio to book with this artist.
-                  </Text>
-                </Box>
-              </Alert>
-            ) : (
-              <Box
-                border="1px solid rgba(255,0,127,0.35)"
-                borderRadius="xl"
-                p={{ base: 4, md: 6 }}
-                boxShadow="0 0 0 1px rgba(0,212,255,0.25) inset, 0 0 22px rgba(255,0,127,0.35), 0 0 28px rgba(0,212,255,0.25)"
-                bg="rgba(0,0,0,0.35)"
-                backdropFilter="blur(8px)"
-              >
-                <WixArtistBookingWidget
-                  title="Book with Harley"
-                  artistName="Harley"
-                  staffResourceId={HARLEY_STAFF_RESOURCE_ID}
-                  hourlyRateGbp={HARLEY_HOURLY_RATE_GBP}
-                  maxMonthsAhead={2}
-                  debug={false}
-                  onSelectEntry={({
-                    serviceId,
-                    staffResourceId,
-                    artistName,
-                    entry,
-                  }) => {
-                    const payload = {
-                      serviceId,
-                      staffResourceId,
-                      artistName,
-                      hourlyRateGbp: HARLEY_HOURLY_RATE_GBP,
-                      entry,
-                    };
-                    sessionStorage.setItem(
-                      "HTS_WIX_CHECKOUT_PAYLOAD",
-                      JSON.stringify(payload)
-                    );
-                    router.push("/checkout");
-                  }}
-                />
-              </Box>
-            )}
-          </MotionBox>
-
-          <MotionBox {...motionProps} mb={16} as="section">
-            <Text
-              fontSize={{ base: "2xl", md: "3xl" }}
-              fontWeight="bold"
-              color="white"
-              textAlign="center"
-              mb={8}
-              textShadow="0 0 10px #ff007f, 0 0 20px #00d4ff"
-              fontFamily="heading"
-            >
-              Connect with Harley
-            </Text>
-            <HStack spacing={6} justify="center">
-              <ChakraLink
-                href="https://www.facebook.com/harley.bovill.79"
-                isExternal
-                aria-label="Harley's Facebook"
-                _hover={{ transform: "scale(1.1)", color: "#ff007f" }}
-                transition="all 0.3s ease"
-              >
-                <FaFacebook size={40} color="#00d4ff" />
-              </ChakraLink>
-              <ChakraLink
-                href="https://www.instagram.com/harleybovilltattoos/"
-                isExternal
-                aria-label="Harley's Instagram"
-                _hover={{ transform: "scale(1.1)", color: "#ff007f" }}
-                transition="all 0.3s ease"
-              >
-                <FaInstagram size={40} color="#ff007f" />
-              </ChakraLink>
-            </HStack>
-          </MotionBox>
         </Box>
+
+        {/* ✅ Harley Booking Block (Wix) */}
+        <MotionBox {...motionProps} mb={16} mt={8} as="section">
+          {!HARLEY_STAFF_RESOURCE_ID ? (
+            <Alert status="warning" variant="subtle" borderRadius="lg">
+              <AlertIcon />
+              <Box>
+                <Text fontWeight="bold">
+                  Online booking is temporarily unavailable
+                </Text>
+                <Text>Please contact the studio to book with this artist.</Text>
+              </Box>
+            </Alert>
+          ) : (
+            <WixArtistBookingWidget
+              title="Book with Harley"
+              artistName="Harley"
+              staffResourceId={HARLEY_STAFF_RESOURCE_ID}
+              hourlyRateGbp={HARLEY_HOURLY_RATE_GBP}
+              maxMonthsAhead={2}
+              debug={false}
+              onSelectEntry={({
+                serviceId,
+                staffResourceId,
+                artistName,
+                entry,
+              }) => {
+                const payload = {
+                  serviceId,
+                  staffResourceId,
+                  artistName,
+                  hourlyRateGbp: HARLEY_HOURLY_RATE_GBP,
+                  entry,
+                };
+                sessionStorage.setItem(
+                  "HTS_WIX_CHECKOUT_PAYLOAD",
+                  JSON.stringify(payload)
+                );
+                router.push("/checkout");
+              }}
+            />
+          )}
+        </MotionBox>
+
+        <MotionBox {...motionProps} mb={16} as="section">
+          <Text
+            fontSize={{ base: "2xl", md: "3xl" }}
+            fontWeight="bold"
+            color="white"
+            textAlign="center"
+            mb={8}
+            textShadow="0 0 10px #ff007f, 0 0 20px #00d4ff"
+            fontFamily="heading"
+          >
+            Connect with Harley
+          </Text>
+          <HStack spacing={6} justify="center">
+            <ChakraLink
+              href="https://www.facebook.com/harley.bovill.79"
+              isExternal
+              aria-label="Harley's Facebook"
+              _hover={{ transform: "scale(1.1)", color: "#ff007f" }}
+              transition="all 0.3s ease"
+            >
+              <FaFacebook size={40} color="#00d4ff" />
+            </ChakraLink>
+            <ChakraLink
+              href="https://www.instagram.com/harleybovilltattoos/"
+              isExternal
+              aria-label="Harley's Instagram"
+              _hover={{ transform: "scale(1.1)", color: "#ff007f" }}
+              transition="all 0.3s ease"
+            >
+              <FaInstagram size={40} color="#ff007f" />
+            </ChakraLink>
+          </HStack>
+        </MotionBox>
       </Box>
     </>
   );

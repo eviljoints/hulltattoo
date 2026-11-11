@@ -333,12 +333,19 @@ test("each artist profile retains its own Wix services and the gift-voucher dest
     }
     const service = page.getByLabel("Service", { exact: true });
     await service.scrollIntoViewIfNeeded();
+    const widget = await page.locator(".booking-widget").boundingBox();
+    const viewport = page.viewportSize()!;
+    expect(widget!.width / viewport.width).toBeGreaterThan(0.89);
+    expect(widget!.width / viewport.width).toBeLessThan(0.91);
     await expect(service).toContainText(`${artist} appointment`);
     await service.selectOption({ label: `${artist} appointment` });
     await expect(
       page.getByRole("button", { name: "10:00", exact: true })
     ).toBeVisible();
     const request = calls.availability[calls.availability.length - 1];
+    await page.locator(".booking-widget").screenshot({
+      path: test.info().outputPath(`${artist}-booking.png`),
+    });
     expect((request.query?.filter || request.filter).resourceId).toEqual([
       ids[artist],
     ]);
@@ -412,4 +419,38 @@ test("aftercare stays in house with centred text and mobile layouts", async ({
       });
     }
   }
+});
+
+test("navigation omits booking and artist menu rows do not overlap", async ({
+  page,
+}, info) => {
+  await mockWix(page);
+  await page.goto("/jen/");
+  await expect(
+    page.locator('nav a[href="/book"], nav a[href="/book/"]')
+  ).toHaveCount(0);
+  const mobile = info.project.name === "mobile";
+  const nav = page.getByRole("navigation", {
+    name: mobile ? "Mobile navigation" : "Main navigation",
+    exact: true,
+  });
+  await nav
+    .getByRole("button", {
+      name: mobile ? "Artists menu" : "Artists",
+      exact: true,
+    })
+    .click();
+  const harley = page.getByRole("menuitem", { name: "Harley", exact: true });
+  const jen = page.getByRole("menuitem", { name: "Jen", exact: true });
+  await expect(harley).toBeVisible();
+  await expect(jen).toBeVisible();
+  // Wait for the opening scale animation before comparing separate measurements.
+  await expect(page.getByRole("menu")).toHaveCSS("transform", "none");
+  const a = (await harley.boundingBox())!;
+  const b = (await jen.boundingBox())!;
+  expect(a.y + a.height).toBeLessThanOrEqual(b.y + 1);
+  expect(b.y + b.height).toBeLessThanOrEqual(page.viewportSize()!.height);
+  await page.screenshot({ path: info.outputPath("artists-menu.png") });
+  await jen.click();
+  await expect(page).toHaveURL(/\/jen\/$/);
 });

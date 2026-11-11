@@ -251,7 +251,7 @@ const MikePage: React.FC = () => {
         color="white"
         w="100%"
         p={8}
-        px={{ base: 4, md: 8 }}
+        px="5%"
         minH="100vh"
       >
         <Box className={styles.backgroundLines} />
@@ -270,6 +270,7 @@ const MikePage: React.FC = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
             mb={16}
+            mt={8}
             as="section"
           >
             <Text
@@ -404,116 +405,105 @@ const MikePage: React.FC = () => {
               </TabPanels>
             </Tabs>
           </MotionBox>
-
-          {/* ✅ Booking Block (Wix, Mike-only, matches neon style) */}
-          <Box ref={bookingRef} mb={16} as="section">
-            {!MIKE_STAFF_RESOURCE_ID ? (
-              <Alert status="warning" variant="subtle" borderRadius="lg">
-                <AlertIcon />
-                <Box>
-                  <Text fontWeight="bold">
-                    Online booking is temporarily unavailable
-                  </Text>
-                  <Text>
-                    Please contact the studio to book with this artist.
-                  </Text>
-                </Box>
-              </Alert>
-            ) : disclaimerAccepted ? (
-              <Box
-                border="1px solid rgba(255,0,127,0.35)"
-                borderRadius="lg"
-                p={{ base: 4, md: 6 }}
-                boxShadow="0 0 20px rgba(255,0,127,0.35), 0 0 28px rgba(0,212,255,0.25)"
-                bg="rgba(0,0,0,0.35)"
-                backdropFilter="blur(8px)"
-              >
-                <WixArtistBookingWidget
-                  title="Book with Mike"
-                  artistName="Mike"
-                  staffResourceId={MIKE_STAFF_RESOURCE_ID}
-                  hourlyRateGbp={MIKE_HOURLY_RATE_GBP}
-                  maxMonthsAhead={2}
-                  debug={false}
-                  onSelectEntry={({
-                    serviceId,
-                    staffResourceId,
-                    artistName,
-                    entry,
-                  }) => {
-                    const payload = {
-                      serviceId,
-                      staffResourceId,
-                      artistName,
-                      hourlyRateGbp: MIKE_HOURLY_RATE_GBP,
-                      entry,
-                    };
-
-                    sessionStorage.setItem(
-                      "HTS_WIX_CHECKOUT_PAYLOAD",
-                      JSON.stringify(payload)
-                    );
-                    router.push("/checkout");
-                  }}
-                />
-              </Box>
-            ) : (
-              <Box
-                p={6}
-                textAlign="center"
-                border="1px solid rgba(255,0,127,0.35)"
-                borderRadius="lg"
-                boxShadow="0 0 20px rgba(255,0,127,0.35), 0 0 28px rgba(0,212,255,0.25)"
-                bg="rgba(0,0,0,0.35)"
-                backdropFilter="blur(8px)"
-              >
-                <Text fontSize="lg" fontWeight="medium" mb={2}>
-                  Please accept the disclaimer to access booking.
-                </Text>
-              </Box>
-            )}
-          </Box>
-
-          {/* Social */}
-          <MotionBox
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.8, delay: 0.6 }}
-            mb={16}
-            as="section"
-          >
-            <Text
-              as="h2"
-              fontSize={{ base: "2xl", md: "3xl" }}
-              fontWeight="bold"
-              textAlign="center"
-              mb={8}
-              textShadow="0 0 10px #ff007f, 0 0 20px #00d4ff"
-            >
-              Connect with Mike
-            </Text>
-            <HStack spacing={6} justify="center">
-              <ChakraLink
-                href="https://facebook.com/Hulltattoostudio"
-                isExternal
-                aria-label="Mike's Facebook Profile"
-                _hover={{ transform: "scale(1.1)", color: "#ff007f" }}
-                transition="all 0.3s ease"
-              >
-                <FaFacebook size={40} color="#00d4ff" />
-              </ChakraLink>
-              <ChakraLink
-                href="https://instagram.com/egg_tattooer"
-                isExternal
-                aria-label="Mike's Instagram Profile"
-                _hover={{ transform: "scale(1.1)", color: "#ff007f" }}
-                transition="all 0.3s ease"
-              >
-                <FaInstagram size={40} color="#ff007f" />
-              </ChakraLink>
-            </HStack>
-          </MotionBox>
         </Box>
+
+        {/* ✅ Booking Block (Wix, Mike-only, matches neon style) */}
+        <Box ref={bookingRef} mb={16} as="section">
+          {!MIKE_STAFF_RESOURCE_ID ? (
+            <Alert status="warning" variant="subtle" borderRadius="lg">
+              <AlertIcon />
+              <Box>
+                <Text fontWeight="bold">
+                  Online booking is temporarily unavailable
+                </Text>
+                <Text>Please contact the studio to book with this artist.</Text>
+              </Box>
+            </Alert>
+          ) : disclaimerAccepted ? (
+            <WixArtistBookingWidget
+              title="Book with Mike"
+              artistName="Mike"
+              staffResourceId={MIKE_STAFF_RESOURCE_ID}
+              hourlyRateGbp={MIKE_HOURLY_RATE_GBP}
+              maxMonthsAhead={2}
+              debug={false}
+              onSelectEntry={({
+                serviceId,
+                staffResourceId,
+                artistName,
+                entry,
+              }) => {
+                const payload = {
+                  serviceId,
+                  staffResourceId,
+                  artistName,
+                  hourlyRateGbp: MIKE_HOURLY_RATE_GBP,
+                  entry,
+                };
+
+                sessionStorage.setItem(
+                  "HTS_WIX_CHECKOUT_PAYLOAD",
+                  JSON.stringify(payload)
+                );
+                router.push("/checkout");
+              }}
+            />
+          ) : (
+            <Box
+              p={6}
+              textAlign="center"
+              border="1px solid rgba(255,0,127,0.35)"
+              borderRadius="lg"
+              boxShadow="0 0 20px rgba(255,0,127,0.35), 0 0 28px rgba(0,212,255,0.25)"
+              bg="rgba(0,0,0,0.35)"
+              backdropFilter="blur(8px)"
+            >
+              <Text fontSize="lg" fontWeight="medium" mb={2}>
+                Please accept the disclaimer to access booking.
+              </Text>
+            </Box>
+          )}
+        </Box>
+
+        {/* Social */}
+        <MotionBox
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.8, delay: 0.6 }}
+          mb={16}
+          as="section"
+        >
+          <Text
+            as="h2"
+            fontSize={{ base: "2xl", md: "3xl" }}
+            fontWeight="bold"
+            textAlign="center"
+            mb={8}
+            textShadow="0 0 10px #ff007f, 0 0 20px #00d4ff"
+          >
+            Connect with Mike
+          </Text>
+          <HStack spacing={6} justify="center">
+            <ChakraLink
+              href="https://facebook.com/Hulltattoostudio"
+              isExternal
+              aria-label="Mike's Facebook Profile"
+              _hover={{ transform: "scale(1.1)", color: "#ff007f" }}
+              transition="all 0.3s ease"
+            >
+              <FaFacebook size={40} color="#00d4ff" />
+            </ChakraLink>
+            <ChakraLink
+              href="https://instagram.com/egg_tattooer"
+              isExternal
+              aria-label="Mike's Instagram Profile"
+              _hover={{ transform: "scale(1.1)", color: "#ff007f" }}
+              transition="all 0.3s ease"
+            >
+              <FaInstagram size={40} color="#ff007f" />
+            </ChakraLink>
+          </HStack>
+        </MotionBox>
       </Box>
 
       {/* ✅ Disclaimer Modal (unchanged behavior) */}
