@@ -15,6 +15,7 @@ import {
   FaTiktok,
   FaUserFriends,
   FaPaintBrush,
+  FaShoppingBag,
 } from "react-icons/fa";
 
 import {
@@ -155,6 +156,10 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             <a className="navbar-link">Blog</a>
           </Link>
 
+          <Link href="/shop" passHref legacyBehavior>
+            <a className="navbar-link">Shop NoirNexus</a>
+          </Link>
+
           {/* Artists Dropdown (Desktop) */}
           <Menu>
             <MenuButton
@@ -276,6 +281,10 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           <a className="navbar-icon" aria-label="Blog">
             <FaNewspaper />
           </a>
+        </Link>
+
+        <Link href="/shop" passHref legacyBehavior>
+          <a className="navbar-icon" aria-label="Shop NoirNexus"><FaShoppingBag /></a>
         </Link>
 
         {/* Artists Dropdown for Mobile */}

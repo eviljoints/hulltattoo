@@ -7,6 +7,7 @@ const nextConfig = {
     // Keep unoptimized for static export; if you move to SSR you can switch this off.
     unoptimized: true,
     remotePatterns: [
+      { protocol: "https", hostname: "cdn.shopify.com" },
       // Your own site (absolute src like https://www.hulltattoostudio.com/images/...)
       {
         protocol: 'https',
